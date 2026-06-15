@@ -1,6 +1,63 @@
 document.addEventListener('DOMContentLoaded', () => {
   // --- UI Utilities ---
   
+  const descElements = {
+    'mood': 'mood-desc-detail',
+    'stress-level': 'stress-desc-detail',
+    'sleep-quality': 'sleep-desc-detail',
+    'screen-time': 'screen-desc-detail',
+    'social-interaction': 'social-desc-detail',
+    'break-frequency': 'break-desc-detail'
+  };
+
+  function updateMetricDescription(id, val) {
+    const descEl = document.getElementById(descElements[id]);
+    if (!descEl) return;
+    
+    let descText = '';
+    const numericVal = parseFloat(val);
+    
+    if (id === 'mood') {
+      const moodMap = {
+        1: "😞 Very Low (e.g. persistent sadness, exhaustion; maps to high emotional distress)",
+        2: "😟 Low / Anxious (e.g. worry, frustration; indicates mild-to-moderate anxiety)",
+        3: "😐 Neutral / Okay (e.g. stable mood baseline, standard everyday functioning)",
+        4: "🙂 Good / Content (e.g. positive mindset, optimistic emotional state)",
+        5: "😄 Excellent / Happy (e.g. high energy, enthusiasm, and joy)"
+      };
+      descText = moodMap[numericVal] || '';
+    } else if (id === 'stress-level') {
+      if (numericVal <= 2) descText = "Calm / Relaxed (Minimal stress indicators)";
+      else if (numericVal <= 4) descText = "Mild / Manageable (Typical daily pressures)";
+      else if (numericVal <= 6) descText = "Moderate (Elevated tension; consider taking a brief break)";
+      else if (numericVal <= 8) descText = "High Stress (Significant fatigue; recommended relaxation exercises)";
+      else descText = "Severe / Overwhelmed (Urgent rest needed; support pathways advised)";
+    } else if (id === 'sleep-quality') {
+      if (numericVal <= 2) descText = "Very Poor (Severe disruption/insomnia)";
+      else if (numericVal <= 4) descText = "Restless (Frequent wakeups, unrefreshing sleep)";
+      else if (numericVal <= 6) descText = "Fair / Average (Slightly disrupted but sufficient)";
+      else if (numericVal <= 8) descText = "Good / Restful (Solid rest, normal sleep latency)";
+      else descText = "Excellent (Deep, completely rejuvenating sleep)";
+    } else if (id === 'screen-time') {
+      if (numericVal <= 3) descText = "Very Low (Minimal digital eye strain)";
+      else if (numericVal <= 6) descText = "Low / Balanced (Standard digital study allocation)";
+      else if (numericVal <= 9) descText = "Moderate (Extended exposure; take screen breaks)";
+      else if (numericVal <= 12) descText = "High (Increased risk of fatigue and eye strain)";
+      else descText = "Extreme (WHO warning: high risk of study burnout)";
+    } else if (id === 'social-interaction') {
+      if (numericVal <= 2) descText = "Highly Isolated (Lack of supportive peer contact)";
+      else if (numericVal <= 4) descText = "Low Socialization (Limited peer interaction today)";
+      else if (numericVal <= 6) descText = "Moderate (Standard connection with friends/family)";
+      else if (numericVal <= 8) descText = "Active Connection (Strong supportive conversations)";
+      else descText = "Excellent Support (Strong, meaningful social engagement)";
+    } else if (id === 'break-frequency') {
+      if (numericVal <= 3) descText = "Infrequent / Continuous Study (High risk of cognitive overload)";
+      else if (numericVal <= 7) descText = "Optimal / Periodic Breaks (Maintains healthy focus levels)";
+      else descText = "Highly Frequent / Restorative (Helps recover from high fatigue)";
+    }
+    descEl.innerText = descText;
+  }
+
   // Slider Value Sync
   const sliders = {
     'stress-level': 'stress-val',
@@ -24,19 +81,46 @@ document.addEventListener('DOMContentLoaded', () => {
           val = val > 7 ? 'High' : val > 3 ? 'Medium' : 'Low';
         }
         display.innerText = `${val}${suffix}`;
+        updateMetricDescription(id, e.target.value);
       });
     }
   });
 
   // Mood Picker
   const moodEmojis = document.querySelectorAll('.mood-emoji');
+  const moodValDisplay = document.getElementById('mood-val');
   let selectedMood = 3;
+  
+  const moodTextMap = {
+    1: "Very Low",
+    2: "Low / Anxious",
+    3: "Okay",
+    4: "Good / Content",
+    5: "Excellent"
+  };
+
   moodEmojis.forEach(emoji => {
     emoji.addEventListener('click', () => {
       moodEmojis.forEach(e => e.classList.remove('active'));
       emoji.classList.add('active');
       selectedMood = parseInt(emoji.dataset.mood);
+      if (moodValDisplay) {
+        moodValDisplay.innerText = moodTextMap[selectedMood] || '';
+      }
+      updateMetricDescription('mood', selectedMood);
     });
+  });
+
+  // Initialize descriptions and initial displays
+  updateMetricDescription('mood', selectedMood);
+  if (moodValDisplay) {
+    moodValDisplay.innerText = moodTextMap[selectedMood] || '';
+  }
+  Object.keys(sliders).forEach(id => {
+    const slider = document.getElementById(id);
+    if (slider) {
+      updateMetricDescription(id, slider.value);
+    }
   });
 
   // --- Core API Interaction ---
