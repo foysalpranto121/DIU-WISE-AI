@@ -37,7 +37,15 @@
                 <div class="glass-card section-card">
                     <div class="section-header">
                         <h3>Basic Information</h3>
-                        <div class="profile-avatar-xl">{{ user.full_name[:1] }}</div>
+        {% if user.profile_picture %}
+                <img src="{{ url_for('static', filename=user.profile_picture) }}" alt="Avatar" id="avatarDisplay" style="width:80px;height:80px;border-radius:20px;object-fit:cover;">
+                {% else %}
+                <div class="profile-avatar-xl" id="avatarDisplay">{{ user.full_name[:1] }}</div>
+                {% endif %}
+                <div class="avatar-upload" style="margin-top:10px;">
+                  <label for="avatarInput" class="form-label" style="color: var(--text-primary);">Upload Profile Picture</label>
+                  <input type="file" id="avatarInput" name="profile_picture" accept="image/*" class="form-input" style="margin-top:5px;">
+                </div>
                     </div>
                     <div class="form-grid">
                         <div class="form-group">
@@ -259,6 +267,52 @@
                 <button type="submit" class="btn btn-primary btn-lg">Apply All Changes</button>
             </div>
         </form>
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const avatarInput = document.getElementById('avatarInput');
+  const avatarDisplay = document.getElementById('avatarDisplay');
+  if (avatarInput) {
+    avatarInput.addEventListener('change', function() {
+      const file = avatarInput.files[0];
+      if (!file) return;
+      const formData = new FormData();
+      formData.append('profile_picture', file);
+      fetch('{{ url_for('user.upload_avatar') }}', {
+        method: 'POST',
+        body: formData,
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.url) {
+          // If avatarDisplay is an <img>, update src; otherwise replace innerHTML
+          if (avatarDisplay.tagName.toLowerCase() === 'img') {
+            avatarDisplay.src = data.url;
+          } else {
+            // Replace the avatar container with the new image
+            const img = document.createElement('img');
+            img.id = 'avatarDisplay';
+            img.src = data.url;
+            img.alt = 'Avatar';
+            img.style.width = '80px';
+            img.style.height = '80px';
+            img.style.borderRadius = '20px';
+            img.style.objectFit = 'cover';
+            avatarDisplay.parentNode.replaceChild(img, avatarDisplay);
+          }
+        } else if (data.error) {
+          alert('Upload error: ' + data.error);
+        }
+      })
+      .catch(err => {
+        console.error('Upload failed', err);
+        alert('Failed to upload avatar.');
+      });
+    });
+  }
+});
+</script>
+{% endblock %}
     </div>
 </div>
 

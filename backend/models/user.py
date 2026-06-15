@@ -22,6 +22,7 @@ class User(UserMixin, db.Model):
     department = db.Column(db.String(150), nullable=True)
     student_id = db.Column(db.String(50), nullable=True)
     phone_number = db.Column(db.String(20), nullable=True)
+    profile_picture = db.Column(db.String(255), nullable=True)
     
     # Guardian / Contact Details
     guardian_name = db.Column(db.String(120), nullable=True)
@@ -59,6 +60,7 @@ class User(UserMixin, db.Model):
             "department": self.department,
             "student_id": self.student_id,
             "phone_number": self.phone_number,
+            "profile_picture": self.profile_picture,
             "guardian_name": self.guardian_name,
             "guardian_email": self.guardian_email,
             "guardian_phone": self.guardian_phone,

@@ -1,6 +1,13 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
 from flask_login import login_required, current_user
 from models import db, User
+import os
+from werkzeug.utils import secure_filename
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 user_bp = Blueprint('user', __name__)
 
@@ -41,3 +48,32 @@ def update_profile():
         flash(f'Error updating profile: {str(e)}', 'danger')
         
     return redirect(url_for('user.profile'))
+
+
+@user_bp.route('/profile/upload-avatar', methods=['POST'])
+@login_required
+def upload_avatar():
+    if 'profile_picture' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+    file = request.files['profile_picture']
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+    if file and allowed_file(file.filename):
+        filename = secure_filename(f"user_{current_user.id}_{file.filename}")
+        # Create uploads folder inside static
+        upload_folder = os.path.join(current_app.config['BASE_DIR'], 'static', 'uploads')
+        os.makedirs(upload_folder, exist_ok=True)
+        
+        file_path = os.path.join(upload_folder, filename)
+        file.save(file_path)
+        
+        current_user.profile_picture = f"uploads/{filename}"
+        db.session.commit()
+        
+        return jsonify({
+            "message": "Profile picture updated successfully!",
+            "url": url_for('static', filename=f"uploads/{filename}")
+        }), 200
+        
+    return jsonify({"error": "Invalid file type. Allowed: png, jpg, jpeg, gif"}), 400
+
