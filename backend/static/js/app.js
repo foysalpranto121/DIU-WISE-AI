@@ -12,138 +12,101 @@ async function postJSON(url, payload) {
   });
 }
 
-function renderStats(data) {
-  const cards = document.getElementById("stats-cards");
-  const high = data.burnout_summary.High || 0;
-  const medium = data.burnout_summary.Medium || 0;
-  cards.innerHTML = `
-    <div class="card"><h4>Total Students</h4><div class="value">${data.total_students}</div></div>
-    <div class="card"><h4>At Risk</h4><div class="value">${data.at_risk_students.length}</div></div>
-    <div class="card"><h4>High Burnout</h4><div class="value">${high}</div></div>
-    <div class="card"><h4>Medium Burnout</h4><div class="value">${medium}</div></div>
-  `;
-}
-
-function renderTrends(trends) {
-  const root = document.getElementById("trend-bars");
-  const max = Math.max(...trends.map((t) => t.stress_index), 1);
-  root.innerHTML = trends
-    .map((t) => {
-      const h = Math.round((t.stress_index / max) * 150);
-      return `
-        <div class="bar-col">
-          <div class="bar" style="height:${h}px"></div>
-          <div class="bar-label">${t.period}</div>
-        </div>
-      `;
-    })
-    .join("");
-}
-
-function renderHeatmap(items) {
-  const root = document.getElementById("heatmap");
-  root.innerHTML = items
-    .map((h) => {
-      const opacity = Math.min(h.stress / 10, 1);
-      return `<div class="heat" style="opacity:${opacity}">${h.zone}: ${h.stress}</div>`;
-    })
-    .join("");
-}
-
-function renderRiskTable(rows) {
-  const body = document.getElementById("risk-table-body");
-  body.innerHTML = rows
-    .map(
-      (r) => `
-      <tr>
-        <td>${r.student_id}</td>
-        <td>${r.burnout_risk}</td>
-        <td>${r.distress_level}</td>
-        <td>${r.stress_label}</td>
-      </tr>
-    `
-    )
-    .join("");
-}
-
-// Chat is now handled by chat.js — removed duplicate handler here.
-
+// Quick Reflection / Emotion Analyzer
 async function handleEmotion() {
-  const text = document.getElementById("emotion-input").value.trim();
+  const inputEl = document.getElementById("emotion-input");
+  const sendEl = document.getElementById("emotion-send");
+  const text = inputEl ? inputEl.value.trim() : "";
   if (!text) return;
-  const data = await postJSON("/emotion", { text });
-  document.getElementById("emotion-result").textContent = JSON.stringify(data, null, 2);
+
+  if (sendEl) {
+    sendEl.disabled = true;
+    sendEl.textContent = "Analyzing...";
+  }
+
+  try {
+    const data = await postJSON("/emotion", { text });
+    
+    // Display results in the DOM
+    const container = document.getElementById("emotion-result-container");
+    if (container) container.style.display = "block";
+
+    const valLabel = document.getElementById("emotion-value-label");
+    if (valLabel) {
+      valLabel.textContent = `Emotion: ${data.emotion.emotion}`;
+    }
+
+    const priority = document.getElementById("triage-priority");
+    if (priority) {
+      priority.textContent = data.triage.urgency.toUpperCase();
+      priority.className = `triage-priority-badge badge-${data.triage.urgency}`;
+      
+      // Update color coding based on urgency
+      if (data.triage.urgency === "high") {
+        priority.style.background = "rgba(244, 63, 94, 0.2)";
+        priority.style.color = "var(--danger)";
+      } else if (data.triage.urgency === "medium") {
+        priority.style.background = "rgba(245, 158, 11, 0.2)";
+        priority.style.color = "var(--warning)";
+      } else {
+        priority.style.background = "rgba(16, 185, 129, 0.2)";
+        priority.style.color = "var(--success)";
+      }
+    }
+
+    const message = document.getElementById("triage-message");
+    if (message) {
+      message.textContent = data.triage.message;
+    }
+  } catch (e) {
+    console.error("Emotion analysis failed:", e);
+  } finally {
+    if (sendEl) {
+      sendEl.disabled = false;
+      sendEl.textContent = "🔍 Get Perspective";
+    }
+  }
 }
 
-async function handlePredict() {
-  const payload = {
-    attendance_rate: Number(document.getElementById("attendance").value || 0),
-    submission_delay: Number(document.getElementById("delay").value || 0),
-    grades: Number(document.getElementById("grades").value || 0),
-    activity_score: Number(document.getElementById("activity").value || 0),
-    engagement_decline: Number(document.getElementById("decline").value || 0),
-  };
-  const data = await postJSON("/predict", payload);
-  document.getElementById("predict-result").textContent = JSON.stringify(data, null, 2);
-}
-
+// Password Update (Profile Page)
 async function handlePasswordUpdate() {
   const oldPassword = document.getElementById("old-password").value;
   const newPassword = document.getElementById("new-password").value;
   const msg = document.getElementById("password-message");
+  if (!oldPassword || !newPassword) return;
+  
   try {
     const data = await postJSON("/account/password", {
       old_password: oldPassword,
       new_password: newPassword,
     });
     msg.textContent = data.message;
+    msg.style.color = "var(--success)";
   } catch (e) {
     msg.textContent = "Password update failed.";
+    msg.style.color = "var(--danger)";
   }
 }
 
-async function loadMe() {
-  const me = await getJSON("/me");
-  if (!me.authenticated) {
-    window.location.href = "/login";
-    return;
-  }
-  const meLabel = document.getElementById("me-label");
-  if (meLabel) meLabel.textContent = `${me.user.full_name} (${me.user.role})`;
-  const adminLink = document.getElementById("admin-link");
-  if (adminLink && me.user.role === "admin") {
-    adminLink.classList.remove("hidden");
-  }
-}
-
+// Global Logout
 async function logout() {
-  await postJSON("/logout", {});
-  window.location.href = "/login";
+  const logoutBtnEl = document.getElementById("logout-btn");
+  if (logoutBtnEl) {
+    logoutBtnEl.disabled = true;
+    logoutBtnEl.textContent = "Logging out...";
+  }
+  try {
+    await postJSON("/logout", {});
+    window.location.href = "/login";
+  } catch (e) {
+    console.error("Logout failed:", e);
+    window.location.href = "/login";
+  }
 }
 
-async function init() {
-  try {
-    await loadMe();
-    const data = await getJSON("/dashboard-data");
-    if (document.getElementById("stats-cards")) renderStats(data);
-    if (document.getElementById("trend-bars")) renderTrends(data.wellness_trends);
-    if (document.getElementById("heatmap")) renderHeatmap(data.stress_heatmap);
-    if (document.getElementById("risk-table-body")) renderRiskTable(data.at_risk_students);
-  } catch (e) {
-    console.error(e);
-  }
-
-  // Bind only if elements exist (chat is handled by chat.js)
-  const emotionSendEl = document.getElementById("emotion-send");
-  if (emotionSendEl) emotionSendEl.addEventListener("click", handleEmotion);
-  const predictSendEl = document.getElementById("predict-send");
-  if (predictSendEl) predictSendEl.addEventListener("click", handlePredict);
-  const passwordSaveEl = document.getElementById("password-save");
-  if (passwordSaveEl) passwordSaveEl.addEventListener("click", handlePasswordUpdate);
-  const logoutBtnEl = document.getElementById("logout-btn");
-  if (logoutBtnEl) logoutBtnEl.addEventListener("click", logout);
-
-  // Theme Toggle
+// Initialize Global Interactivity immediately
+function initGlobalApp() {
+  // 1. Theme Toggle
   const themeToggleEl = document.getElementById("theme-toggle-btn");
   if (themeToggleEl) {
     themeToggleEl.addEventListener("click", () => {
@@ -154,6 +117,26 @@ async function init() {
       window.dispatchEvent(new CustomEvent("themechanged", { detail: { theme: newTheme } }));
     });
   }
+
+  // 2. Bind Profile Password Update
+  const passwordSaveEl = document.getElementById("password-save");
+  if (passwordSaveEl) {
+    passwordSaveEl.addEventListener("click", handlePasswordUpdate);
+  }
+
+  // 3. Bind Logout Button
+  const logoutBtnEl = document.getElementById("logout-btn");
+  if (logoutBtnEl) {
+    logoutBtnEl.addEventListener("click", logout);
+  }
+
+  // 4. Bind Quick Reflection Emotion Analyzer
+  const emotionSendEl = document.getElementById("emotion-send");
+  if (emotionSendEl) {
+    emotionSendEl.addEventListener("click", handleEmotion);
+  }
 }
 
-init();
+// Run setup immediately since script is loaded at the bottom of the body
+initGlobalApp();
+

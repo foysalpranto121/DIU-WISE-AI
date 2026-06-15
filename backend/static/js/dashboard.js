@@ -304,20 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Logout functionality
-  const logoutBtn = document.getElementById('logout-btn');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', async () => {
-      logoutBtn.innerText = 'Logging out...';
-      try {
-        await fetch('/logout', { method: 'POST' });
-        window.location.href = '/login';
-      } catch (err) {
-        console.error('Logout failed:', err);
-        window.location.href = '/login'; // Fallback
-      }
-    });
-  }
+
 
   // Placeholder Links
   document.querySelectorAll('.nav-link[href="#"]').forEach(link => {
