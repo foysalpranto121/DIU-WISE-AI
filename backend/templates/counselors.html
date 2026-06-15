@@ -1,0 +1,398 @@
+{% extends "layout.html" %}
+
+{% block page_title %}Counselor Support & Booking{% endblock %}
+{% block page_subtitle %}Connect with DIU Psychological Center counselors and book professional sessions{% endblock %}
+
+{% block content %}
+<div class="counselors-container">
+
+    <!-- Appointments Summary Section -->
+    <div class="glass-card appointments-summary mb-4">
+        <div class="summary-header">
+            <h3>🗓️ My Scheduled Appointments</h3>
+            <span class="appointment-badge">{{ appointments|length }} Active</span>
+        </div>
+        
+        {% if appointments %}
+        <div class="appointments-list-grid">
+            {% for appt in appointments %}
+            <div class="appointment-item-card glass-card">
+                <div class="appt-status {{ appt.status|lower }}">
+                    <span>●</span> {{ appt.status }}
+                </div>
+                <div class="appt-counselor">
+                    <strong>{{ appt.counselor_name }}</strong>
+                </div>
+                <div class="appt-meta">
+                    <span class="appt-meta-item">📅 {{ appt.appointment_date }}</span>
+                    <span class="appt-meta-item">⏰ {{ appt.appointment_time }}</span>
+                </div>
+                {% if appt.reason %}
+                <div class="appt-reason">
+                    <em>"{{ appt.reason }}"</em>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <p>You have no upcoming or past appointments scheduled. Click "Book Session" below to connect with our counseling team.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Counselors Directory Header -->
+    <div class="directory-header mb-4">
+        <h3>👩‍⚕️ DIU Wellness Counseling Directory</h3>
+        <p class="text-secondary">Free, confidential support for all Daffodil International University students.</p>
+    </div>
+
+    <!-- Counselors Grid -->
+    <div class="counselors-grid">
+        {% for c in counselors %}
+        <div class="counselor-card glass-card">
+            <div class="counselor-avatar">
+                {{ c.avatar }}
+            </div>
+            <div class="counselor-details">
+                <h4 class="counselor-name">{{ c.name }}</h4>
+                <div class="counselor-specialty">{{ c.specialty }}</div>
+                
+                <div class="counselor-info-item">
+                    <span class="info-icon">📍</span>
+                    <span>{{ c.room }}</span>
+                </div>
+                <div class="counselor-info-item">
+                    <span class="info-icon">🕒</span>
+                    <span>{{ c.availability }}</span>
+                </div>
+                <div class="counselor-info-item">
+                    <span class="info-icon">📧</span>
+                    <span><a href="mailto:{{ c.email }}">{{ c.email }}</a></span>
+                </div>
+                <div class="counselor-info-item">
+                    <span class="info-icon">📞</span>
+                    <span>{{ c.phone }}</span>
+                </div>
+
+                <button class="btn btn-primary btn-book mt-3 w-full" 
+                        data-id="{{ c.id }}" 
+                        data-name="{{ c.name }}"
+                        onclick="openBookingModal(this)">
+                    Book Session
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal-overlay" style="display: none;">
+        <div class="booking-modal-card glass-card animate-pop">
+            <div class="modal-header">
+                <h3>Book Counseling Session</h3>
+                <button class="close-modal-btn" onclick="closeBookingModal()">&times;</button>
+            </div>
+            <form id="bookingForm" onsubmit="submitBooking(event)">
+                <input type="hidden" id="counselorId" name="counselor_id">
+                
+                <div class="form-group mb-3">
+                    <label>Selected Counselor</label>
+                    <input type="text" id="counselorName" class="form-input" readonly style="opacity: 0.8; cursor: not-allowed;">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Select Date</label>
+                    <input type="date" id="appointmentDate" class="form-input" required min="{{ datetime }}">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Select Time Slot</label>
+                    <select id="appointmentTime" class="form-input" required>
+                        <option value="">-- Choose a Slot --</option>
+                        <option value="10:00 AM - 11:00 AM">10:00 AM - 11:00 AM</option>
+                        <option value="11:00 AM - 12:00 PM">11:00 AM - 12:00 PM</option>
+                        <option value="12:00 PM - 01:00 PM">12:00 PM - 01:00 PM</option>
+                        <option value="02:00 PM - 03:00 PM">02:00 PM - 03:00 PM</option>
+                        <option value="03:00 PM - 04:00 PM">03:00 PM - 04:00 PM</option>
+                        <option value="04:00 PM - 05:00 PM">04:00 PM - 05:00 PM</option>
+                    </select>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label>Reason for Session (Optional)</label>
+                    <textarea id="bookingReason" rows="3" placeholder="Briefly describe what you'd like to discuss..." class="form-input"></textarea>
+                </div>
+
+                <div class="modal-footer-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeBookingModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Confirm Booking</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<style>
+.counselors-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-bottom: 50px;
+}
+
+/* Appointments List Styles */
+.appointments-summary {
+    padding: 24px;
+}
+.summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+}
+.appointment-badge {
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 0.85rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+.appointments-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+.appointment-item-card {
+    padding: 16px;
+    border-left: 4px solid var(--primary-color);
+    position: relative;
+}
+.appt-status {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+}
+.appt-status.scheduled {
+    color: #3b82f6;
+}
+.appt-status.completed {
+    color: #10b981;
+}
+.appt-counselor {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+.appt-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+.appt-reason {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px;
+    border-radius: 6px;
+    border-left: 2px solid var(--border-color);
+}
+.empty-state {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 24px 0;
+    font-style: italic;
+}
+
+/* Counselors Grid Styles */
+.counselors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+}
+.counselor-card {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.counselor-card:hover {
+    transform: translateY(-4px);
+}
+.counselor-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color, #8b5cf6));
+    color: white;
+    font-weight: 600;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+.counselor-name {
+    font-size: 1.15rem;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+.counselor-specialty {
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    font-weight: 500;
+    margin-bottom: 16px;
+}
+.counselor-info-item {
+    display: flex;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    align-items: flex-start;
+}
+.counselor-info-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+.counselor-info-item a:hover {
+    text-decoration: underline;
+}
+.info-icon {
+    font-size: 1rem;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+.booking-modal-card {
+    width: 90%;
+    max-width: 480px;
+    padding: 28px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
+}
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+.close-modal-btn {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    line-height: 1;
+}
+.close-modal-btn:hover {
+    color: var(--text-primary);
+}
+.modal-footer-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* Animations */
+.animate-pop {
+    animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes popIn {
+    0% { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Set min date of picker to today
+document.addEventListener("DOMContentLoaded", () => {
+    const today = new Date().toISOString().split("T")[0];
+    document.getElementById("appointmentDate").setAttribute("min", today);
+});
+
+function openBookingModal(button) {
+    const id = button.getAttribute("data-id");
+    const name = button.getAttribute("data-name");
+    
+    document.getElementById("counselorId").value = id;
+    document.getElementById("counselorName").value = name;
+    document.getElementById("bookingModal").style.display = "flex";
+}
+
+function closeBookingModal() {
+    document.getElementById("bookingModal").style.display = "none";
+    document.getElementById("bookingForm").reset();
+}
+
+async function submitBooking(event) {
+    event.preventDefault();
+    
+    const counselorId = document.getElementById("counselorId").value;
+    const counselorName = document.getElementById("counselorName").value;
+    const appointmentDate = document.getElementById("appointmentDate").value;
+    const appointmentTime = document.getElementById("appointmentTime").value;
+    const reason = document.getElementById("bookingReason").value;
+    
+    try {
+        const response = await fetch("/appointments/create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                counselor_id: counselorId,
+                counselor_name: counselorName,
+                appointment_date: appointmentDate,
+                appointment_time: appointmentTime,
+                reason: reason
+            })
+        });
+        
+        const data = await response.json();
+        if (response.ok) {
+            alert(data.message || "Appointment booked successfully!");
+            location.reload();
+        } else {
+            alert(data.error || "Failed to book appointment.");
+        }
+    } catch (err) {
+        console.error("Booking error:", err);
+        alert("An error occurred. Please try again.");
+    }
+}
+</script>
+{% endblock %}

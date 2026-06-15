@@ -1,5 +1,5 @@
 from flask import Blueprint, current_app, jsonify, request
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 ai_bp = Blueprint("ai", __name__)
 
@@ -28,6 +28,18 @@ def predict():
         text=payload.get("journal_text", "")
     )
     
+    # Trigger emergency notification if risk is critical/emergency
+    if triage.get("priority") == "critical" or triage.get("route_to") == "emergency services":
+        try:
+            notification_service = ServiceRegistry.get("notification_service")
+            notification_service.send_emergency_alert(
+                user=current_user,
+                journal_text=payload.get("journal_text", ""),
+                risk_reason=triage.get("message", "Critical distress detected via mood journal analysis.")
+            )
+        except Exception as e:
+            print(f"Failed to dispatch emergency alerts: {e}")
+            
     return jsonify({
         "wellbeing": {
             "status": burnout["status"],

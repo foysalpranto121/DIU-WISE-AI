@@ -23,6 +23,11 @@ class User(UserMixin, db.Model):
     student_id = db.Column(db.String(50), nullable=True)
     phone_number = db.Column(db.String(20), nullable=True)
     
+    # Guardian / Contact Details
+    guardian_name = db.Column(db.String(120), nullable=True)
+    guardian_email = db.Column(db.String(160), nullable=True)
+    guardian_phone = db.Column(db.String(20), nullable=True)
+    
     # Expanded Student Info
     semester = db.Column(db.String(50), nullable=True)
     batch = db.Column(db.String(50), nullable=True)
@@ -54,6 +59,9 @@ class User(UserMixin, db.Model):
             "department": self.department,
             "student_id": self.student_id,
             "phone_number": self.phone_number,
+            "guardian_name": self.guardian_name,
+            "guardian_email": self.guardian_email,
+            "guardian_phone": self.guardian_phone,
             "semester": self.semester,
             "batch": self.batch,
             "current_gpa": self.current_gpa,

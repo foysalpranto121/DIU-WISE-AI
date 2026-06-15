@@ -10,10 +10,11 @@ from ai_engine.emotion_classifier import EmotionClassifier
 from ai_engine.rag_engine import RAGEngine
 from ai_engine.agent_router import AgentRouter
 from config import Config
-from models import User, db
+from models import User, db, Appointment
 from routes import ai_bp, auth_bp, chat_bp, dashboard_bp, user_bp, pages_bp
 from services.data_service import DataService
 from services.triage_service import TriageService
+from services.notification_service import NotificationService
 from extensions import cors, login_manager
 from services.registry import ServiceRegistry
 
@@ -76,6 +77,9 @@ def create_app():
 
     triage_service = TriageService()
     ServiceRegistry.register("triage_service", triage_service)
+
+    notification_service = NotificationService()
+    ServiceRegistry.register("notification_service", notification_service)
 
     data_service = DataService()
     ServiceRegistry.register("data_service", data_service)

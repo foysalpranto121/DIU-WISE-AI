@@ -5,6 +5,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 class Config:
+    BASE_DIR = BASE_DIR
     # Production uses PostgreSQL via DATABASE_URL; local demo falls back to SQLite
     SQLALCHEMY_DATABASE_URI = os.getenv(
         "DATABASE_URL",

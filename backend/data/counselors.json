@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "name": "Dr. Sarah Chen",
+    "specialty": "Clinical Psychologist & Stress Management",
+    "email": "sarah.chen@diu-wise.ai",
+    "phone": "+8801711223344",
+    "room": "Room 402, Building 4, Main Campus",
+    "availability": "Sun, Tue, Thu (10:00 AM - 4:00 PM)",
+    "avatar": "SC"
+  },
+  {
+    "id": 2,
+    "name": "Prof. Mark Williams",
+    "specialty": "Cognitive Behavioral Therapy (CBT) & Anxiety Specialist",
+    "email": "mark.williams@diu-wise.ai",
+    "phone": "+8801711556677",
+    "room": "Room 405, Building 4, Main Campus",
+    "availability": "Mon, Wed (9:00 AM - 3:00 PM)",
+    "avatar": "MW"
+  },
+  {
+    "id": 3,
+    "name": "Dr. Ayesha Rahman",
+    "specialty": "Academic Burnout & Emotional Resilience Coach",
+    "email": "ayesha.rahman@diu-wise.ai",
+    "phone": "+8801711889900",
+    "room": "Room 408, Building 4, Main Campus",
+    "availability": "Sun, Mon, Wed (11:00 AM - 5:00 PM)",
+    "avatar": "AR"
+  },
+  {
+    "id": 4,
+    "name": "Dr. Faisal Hossain",
+    "specialty": "Crisis Intervention & Relationship Counseling",
+    "email": "faisal.hossain@diu-wise.ai",
+    "phone": "+8801711001122",
+    "room": "Room 410, Building 4, Main Campus",
+    "availability": "Tue, Thu (12:00 PM - 6:00 PM)",
+    "avatar": "FH"
+  }
+]

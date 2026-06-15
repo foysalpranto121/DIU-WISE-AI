@@ -1,6 +1,9 @@
-from flask import Blueprint, render_template, current_app, jsonify
+from flask import Blueprint, render_template, current_app, jsonify, request
 from flask_login import login_required, current_user
 import random
+import json
+import os
+from models import db, Appointment
 
 pages_bp = Blueprint('pages', __name__)
 
@@ -482,3 +485,60 @@ def resources():
 @login_required
 def privacy_settings():
     return render_template('privacy_settings.html')
+
+
+@pages_bp.route('/counselors')
+@login_required
+def counselors():
+    # Load counselors json database
+    json_path = os.path.join(current_app.config['BASE_DIR'], 'data', 'counselors.json')
+    counselors_list = []
+    if os.path.exists(json_path):
+        try:
+            with open(json_path, 'r', encoding='utf-8') as f:
+                counselors_list = json.load(f)
+        except Exception as e:
+            print(f"Error loading counselors.json: {e}")
+
+    # Fetch user's scheduled/completed appointments
+    user_appointments = Appointment.query.filter_by(user_id=current_user.id).order_by(Appointment.id.desc()).all()
+    
+    return render_template('counselors.html', counselors=counselors_list, appointments=user_appointments)
+
+
+@pages_bp.route('/appointments/create', methods=['POST'])
+@login_required
+def create_appointment():
+    try:
+        data = request.get_json(force=True)
+        counselor_id = int(data.get('counselor_id'))
+        counselor_name = data.get('counselor_name', '').strip()
+        appointment_date = data.get('appointment_date', '').strip()
+        appointment_time = data.get('appointment_time', '').strip()
+        reason = data.get('reason', '').strip()
+
+        if not counselor_id or not counselor_name or not appointment_date or not appointment_time:
+            return jsonify({"error": "Counselor, Date, and Time are required"}), 400
+
+        # Save to DB
+        appointment = Appointment(
+            user_id=current_user.id,
+            counselor_id=counselor_id,
+            counselor_name=counselor_name,
+            appointment_date=appointment_date,
+            appointment_time=appointment_time,
+            reason=reason,
+            status="Scheduled"
+        )
+        db.session.add(appointment)
+        db.session.commit()
+
+        return jsonify({
+            "message": "Appointment booked successfully!",
+            "appointment": appointment.to_dict()
+        }), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": f"Failed to book appointment: {str(e)}"}), 500
+

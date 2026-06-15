@@ -73,6 +73,26 @@
                             <label>Batch</label>
                             <input type="text" name="batch" value="{{ user.batch or '' }}" placeholder="e.g. 56th" class="form-input">
                         </div>
+                        <div class="form-group">
+                            <label>Personal Phone Number</label>
+                            <input type="tel" name="phone_number" value="{{ user.phone_number or '' }}" placeholder="+8801XXXXXXXXX" class="form-input">
+                        </div>
+                        <div class="form-group" style="grid-column: span 2; margin-top: 15px;">
+                            <h4 style="color: var(--text-primary); margin-bottom: 5px; font-size: 1.1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">Emergency Contact (Guardian)</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 15px;">Used to automatically notify your guardian in case of severe distress or risk detected in your logs.</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Guardian Full Name</label>
+                            <input type="text" name="guardian_name" value="{{ user.guardian_name or '' }}" placeholder="Guardian's Name" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>Guardian Email</label>
+                            <input type="email" name="guardian_email" value="{{ user.guardian_email or '' }}" placeholder="guardian@email.com" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>Guardian Phone Number</label>
+                            <input type="tel" name="guardian_phone" value="{{ user.guardian_phone or '' }}" placeholder="Guardian's phone" class="form-input">
+                        </div>
                     </div>
                 </div>
             </section>
