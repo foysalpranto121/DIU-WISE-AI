@@ -1,0 +1,96 @@
+# DIU WISE - University Student Wellness Knowledge Base
+# Comprehensive dataset for RAG-powered student mental health and academic intelligence
+
+## MENTAL HEALTH - Stress Management
+Students experiencing exam stress should try the 4-7-8 breathing technique: inhale for 4 seconds, hold for 7 seconds, exhale for 8 seconds. Repeat 3-4 cycles. This activates the parasympathetic nervous system and reduces cortisol levels within minutes.
+Academic stress is the leading cause of student mental health decline. Research from the American College Health Association shows that 45% of university students report stress levels that negatively impact their academic performance.
+Progressive Muscle Relaxation (PMR) is highly effective for students with chronic stress. Tense each muscle group for 5 seconds then release for 30 seconds. Start from toes and work up to the forehead. Practice daily for 15 minutes.
+Grounding techniques like the 5-4-3-2-1 method help during acute stress or panic episodes. Name 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell, and 1 you can taste. This anchors your mind to the present moment.
+Journaling for 10-15 minutes before bed about worries and next-day plans significantly reduces rumination and improves sleep quality. Research from the Journal of Experimental Psychology confirms this approach reduces time to fall asleep by up to 50%.
+
+## MENTAL HEALTH - Anxiety
+Anxiety disorders affect approximately 30% of university students globally. Common symptoms include persistent worry, difficulty concentrating, muscle tension, irritability, and sleep disturbance.
+Cognitive Behavioral Therapy (CBT) techniques students can practice include: identifying automatic negative thoughts, challenging catastrophic thinking, and replacing irrational beliefs with evidence-based alternatives.
+Social anxiety in university settings often manifests as avoidance of group projects, class participation, and campus events. Gradual exposure therapy — starting with small social interactions and building up — is highly effective.
+Test anxiety can be managed through preparation routines: study in the same environment as the test, practice with timed mock exams, arrive early to the exam hall, and use deep breathing for 2 minutes before starting.
+If anxiety symptoms persist for more than 2 weeks and interfere with daily functioning, students should seek professional help from the campus counseling center. Early intervention leads to significantly better outcomes.
+
+## MENTAL HEALTH - Depression
+Warning signs of depression in students include: withdrawal from friends and activities, declining grades, irregular sleep patterns, loss of appetite, persistent sadness lasting more than 2 weeks, and difficulty getting out of bed.
+Students showing signs of depression should be encouraged to maintain a basic daily routine: wake at a consistent time, eat at least 2 meals, take a 15-minute walk outside, and connect with at least one person each day.
+Physical exercise is a clinically proven antidepressant. Even 30 minutes of moderate activity like walking 3 times per week can reduce depressive symptoms by 30-50% according to research published in JAMA Psychiatry.
+Light exposure therapy is effective for seasonal depression common in students. Spending 30 minutes near a 10,000 lux light box or getting morning sunlight can regulate circadian rhythms and improve mood.
+Isolation is both a symptom and accelerator of depression. Students should be encouraged to join at least one campus club, attend group study sessions, or participate in recreational activities to maintain social connections.
+
+## MENTAL HEALTH - Burnout
+Student burnout is characterized by three dimensions: emotional exhaustion, cynicism toward academic work, and reduced sense of academic accomplishment. It differs from depression in that it is primarily context-specific to academic life.
+Early warning signs of burnout include: declining attendance below 75%, submission delays exceeding 3 days consistently, grade drops of more than 10% from baseline, and expressed feelings of "not caring anymore" about coursework.
+Recovery from burnout requires a multi-step approach: 1) Acknowledge the problem, 2) Reduce course load if possible, 3) Establish firm boundaries between study and rest, 4) Reconnect with your reasons for studying, 5) Seek support from an academic advisor.
+The Maslach Burnout Inventory adapted for students identifies three subscales: Exhaustion, Cynicism, and Professional Efficacy. Scores above 27 on Exhaustion or above 10 on Cynicism indicate clinical burnout requiring intervention.
+Preventing burnout requires proactive scheduling: never study more than 4 hours without a 30-minute break, take at least one full day off per week, maintain social activities, and practice at least one non-academic hobby.
+
+## CRISIS INTERVENTION
+If a student expresses suicidal thoughts, this is a mental health emergency. The campus should activate its crisis protocol: 1) Stay with the student, 2) Listen without judgment, 3) Call the crisis helpline immediately, 4) Do not leave the student alone, 5) Follow up within 24 hours.
+National crisis resources include: 988 Suicide and Crisis Lifeline (call or text 988), Crisis Text Line (text HOME to 741741), and the campus emergency counseling service. These are available 24 hours a day, 7 days a week.
+Self-harm behaviors in students require immediate professional intervention. Faculty and peers who notice signs such as unexplained injuries, wearing long sleeves in warm weather, or expressions of self-hatred should report to the campus wellness center confidentially.
+Students in crisis should never be told to "just relax" or "think positive." Validated approaches include: active listening, validating their emotions, asking directly about suicidal thoughts (this does NOT increase risk), and facilitating connection to professional help.
+Post-crisis follow-up is essential. Students who experience a mental health crisis should have weekly check-ins with a counselor for at least 6 weeks, modified academic accommodations if needed, and a safety plan with identified support contacts.
+
+## ACADEMIC SUPPORT - Study Strategies
+The Pomodoro Technique is scientifically validated for improving focus: study for 25 minutes, take a 5-minute break, repeat 4 times, then take a 15-30 minute longer break. This aligns with the brain's natural attention cycles.
+Active recall is 3x more effective than passive re-reading. After studying a section, close the book and write down everything you remember. Then check what you missed. This builds stronger neural pathways for long-term retention.
+Spaced repetition using tools like Anki flashcards exploits the spacing effect: review material at increasing intervals (1 day, 3 days, 7 days, 14 days, 30 days). This is the most efficient way to transfer information to long-term memory.
+The Feynman Technique for deep understanding: 1) Choose a concept, 2) Explain it in simple language as if teaching a child, 3) Identify gaps in your explanation, 4) Go back to source material to fill gaps, 5) Simplify and use analogies.
+Interleaving — mixing different subjects or problem types during study sessions — is more effective than blocked practice. While it feels harder, research shows it improves problem-solving ability and transfer of knowledge by 43%.
+Mind mapping is effective for visual learners: place the main topic in the center, branch out to subtopics, use colors and images, and draw connections between related concepts. This mirrors how the brain naturally organizes information.
+The SQ3R method for reading textbooks: Survey (skim headings), Question (turn headings into questions), Read (actively), Recite (summarize in own words), Review (go back over key points). This structured approach improves comprehension by 40%.
+
+## ACADEMIC SUPPORT - Time Management
+Time blocking involves scheduling specific blocks of time for specific tasks. Students should block their most cognitively demanding work during their peak alertness hours (typically 9-11 AM and 3-5 PM for most people).
+The Eisenhower Matrix helps prioritize tasks: Quadrant 1 (Urgent + Important) = Do immediately, Quadrant 2 (Important + Not Urgent) = Schedule time, Quadrant 3 (Urgent + Not Important) = Delegate, Quadrant 4 (Neither) = Eliminate.
+Weekly planning on Sunday evening for 30 minutes significantly reduces academic anxiety. List all assignments, exams, and deadlines for the week. Break large projects into daily sub-tasks. Schedule study blocks and protect rest time.
+The 2-Minute Rule: if a task takes less than 2 minutes, do it immediately instead of adding it to your to-do list. This prevents small tasks from accumulating into an overwhelming backlog.
+Deadline management: work backward from the due date. If an assignment is due in 14 days, set milestones: research (days 1-3), outline (days 4-5), first draft (days 6-9), revision (days 10-12), final edit (days 13-14). Never rely on the last day.
+
+## ACADEMIC SUPPORT - Exam Preparation
+Start exam preparation at least 2 weeks before the exam date. Create a study schedule that covers all topics, with more time allocated to weaker areas. Review past exam papers to understand the question format and marking scheme.
+Practice testing is the most effective exam preparation strategy. Create practice questions from lecture notes, attempt them under timed conditions, and review mistakes thoroughly. This approach improves exam scores by an average of 15-20%.
+Group study is effective when structured: assign roles (question asker, explainer, note-taker), set a clear agenda, limit sessions to 2 hours, and follow up individually on weak areas identified during the session.
+For essay exams: create an essay plan before writing, allocate time per question (e.g., 30 minutes per essay in a 2-hour exam), write the strongest answer first to build confidence, and always leave 10 minutes for review.
+Managing exam day anxiety: prepare materials the night before, eat a balanced breakfast with protein and complex carbohydrates, arrive 15 minutes early, avoid discussing content with anxious peers before the exam, and read all questions fully before starting.
+
+## SLEEP AND RECOVERY
+University students need 7-9 hours of sleep per night. Research shows that sleeping less than 6 hours reduces cognitive performance by 25% and increases anxiety symptoms by 40%. Sleep is not a luxury — it is essential for learning.
+Sleep hygiene rules for students: maintain a consistent sleep schedule even on weekends, avoid screens 1 hour before bed, keep the bedroom cool (18-20°C), use the bed only for sleep (not studying), and avoid caffeine after 2 PM.
+Napping strategy: a 20-minute power nap between 1-3 PM can restore alertness without causing sleep inertia. Set an alarm. Naps longer than 30 minutes can interfere with nighttime sleep and leave you feeling groggy.
+All-night study sessions (pulling all-nighters) are counterproductive. Research from Harvard Medical School shows that an all-nighter reduces memory consolidation by 40% and impairs decision-making equivalent to a blood alcohol level of 0.10%.
+Students with persistent insomnia (difficulty sleeping for more than 3 weeks) should seek help. Cognitive Behavioral Therapy for Insomnia (CBT-I) is more effective than medication for long-term sleep improvement and has no side effects.
+
+## NUTRITION AND PHYSICAL HEALTH
+Brain-boosting foods for students: omega-3 rich foods (fish, walnuts, flaxseed), blueberries for memory, dark leafy greens for focus, whole grains for sustained energy, and dark chocolate (70%+ cocoa) for stress reduction.
+Dehydration reduces cognitive performance by up to 25%. Students should drink at least 2 liters of water daily. Keep a water bottle at your desk. Signs of dehydration include headache, difficulty concentrating, and fatigue.
+Skipping meals — especially breakfast — impairs academic performance. A balanced breakfast with protein, fiber, and healthy fats stabilizes blood sugar and improves concentration for 3-4 hours. Examples: eggs with whole grain toast, yogurt with nuts and fruit.
+Caffeine should be used strategically: 200mg (about 2 cups of coffee) in the morning improves alertness. Avoid caffeine after 2 PM as it has a half-life of 5-6 hours and will disrupt sleep quality even if you fall asleep.
+Regular physical exercise (150 minutes per week of moderate activity) improves GPA by an average of 0.4 points according to research from the British Journal of Sports Medicine. Exercise increases BDNF, a protein that enhances learning and memory.
+
+## SOCIAL WELLNESS
+Social isolation is one of the strongest predictors of poor mental health in university students. Students who participate in at least one campus organization report 35% lower stress levels and 28% higher life satisfaction.
+Healthy relationship boundaries in university: it is okay to say no to social events during exam periods, to limit time with emotionally draining individuals, and to prioritize your mental health over social obligations.
+Homesickness is normal and peaks during the first 6 weeks of university. Coping strategies include: maintaining regular contact with family (but not excessively), establishing campus routines, decorating your space with familiar items, and joining a student club.
+Conflict resolution skills for roommates and group projects: use "I" statements instead of "You" statements, address issues within 48 hours, focus on the behavior not the person, seek a compromise, and involve a mediator (RA or advisor) if needed.
+Digital wellness: limit social media to 30 minutes per day. Studies show that social media use exceeding 2 hours daily is associated with increased anxiety, depression, and FOMO. Use app timers to enforce limits. Turn off notifications during study time.
+
+## CAMPUS RESOURCES
+The campus counseling center offers free confidential sessions for all enrolled students. Services include individual therapy, group therapy, crisis intervention, and psychiatric referrals. Appointments can typically be booked online or by phone.
+Academic advising services help students with course selection, study load management, academic probation recovery plans, major or minor changes, and graduation requirement tracking. Students should meet their advisor at least once per semester.
+The disability support office provides accommodations for students with documented conditions including extended exam time, note-taking assistance, alternative exam formats, and priority registration. Early registration is encouraged.
+Peer tutoring programs match struggling students with high-performing peers in the same subject. This is free, confidential, and available for most undergraduate courses. Tutoring significantly reduces failure rates in difficult courses.
+Career services can reduce anxiety about the future by providing resume workshops, interview preparation, internship placement assistance, and career counseling. Students who engage with career services report 40% less career-related anxiety.
+Financial aid emergency funds are available for students experiencing unexpected financial hardship. Food pantries, textbook lending programs, and emergency grants can prevent financial stress from derailing academic progress.
+The health center provides basic medical care, mental health screenings, immunizations, and referrals to specialists. Most services are covered by student health fees. Walk-in appointments are available for urgent concerns.
+
+## WELLNESS TECHNOLOGY AND SELF-MONITORING
+Mood tracking apps help students identify patterns in their emotional states. Recording mood 3 times daily for 2 weeks can reveal triggers and help counselors provide more targeted support.
+Wellness apps recommended for students: Headspace or Calm for meditation, Sleep Cycle for sleep tracking, MyFitnessPal for nutrition, and Forest for focus. Many offer free student plans.
+The DIU WISE platform provides AI-powered wellness monitoring including burnout risk prediction, emotion analysis, and personalized intervention recommendations. Students should check their wellness dashboard weekly and engage with the AI assistant for ongoing support.
+Screen time management: use the 20-20-20 rule — every 20 minutes, look at something 20 feet away for 20 seconds. This reduces eye strain and mental fatigue. Take a 5-minute movement break every hour of screen time.

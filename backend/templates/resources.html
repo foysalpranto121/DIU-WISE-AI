@@ -1,0 +1,400 @@
+{% extends "layout.html" %}
+
+{% block page_title %}Resource Library{% endblock %}
+{% block page_subtitle %}Documents, stories, videos & speeches to fuel your growth{% endblock %}
+
+{% block content %}
+<div class="resources-container">
+
+    <!-- ===== HERO SECTION ===== -->
+    <div class="resource-hero">
+        <div class="hero-content">
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="hero-stat-icon">📚</span>
+                    <div>
+                        <div class="hero-stat-value">{{ documents|length }}</div>
+                        <div class="hero-stat-label">Documents</div>
+                    </div>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-icon">📖</span>
+                    <div>
+                        <div class="hero-stat-value">{{ stories|length }}</div>
+                        <div class="hero-stat-label">Stories</div>
+                    </div>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-icon">🎬</span>
+                    <div>
+                        <div class="hero-stat-value">{{ videos|length }}</div>
+                        <div class="hero-stat-label">Videos</div>
+                    </div>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-icon">🎤</span>
+                    <div>
+                        <div class="hero-stat-value">{{ speeches|length }}</div>
+                        <div class="hero-stat-label">Speeches</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SEARCH & FILTERS ===== -->
+    <div class="resource-toolbar">
+        <div class="resource-search-bar">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <input type="text" id="resource-search-input" placeholder="Search documents, stories, videos, speeches...">
+            <span class="search-results-count" id="search-results-count" style="display:none;"></span>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="resource-tabs">
+            <button class="resource-tab active" data-tab="all">
+                🗂️ All Resources <span class="tab-count">{{ total_count }}</span>
+            </button>
+            <button class="resource-tab" data-tab="document">
+                📄 Documents <span class="tab-count">{{ documents|length }}</span>
+            </button>
+            <button class="resource-tab" data-tab="story">
+                📖 Stories <span class="tab-count">{{ stories|length }}</span>
+            </button>
+            <button class="resource-tab" data-tab="video">
+                🎬 Videos <span class="tab-count">{{ videos|length }}</span>
+            </button>
+            <button class="resource-tab" data-tab="speech">
+                🎤 Speeches <span class="tab-count">{{ speeches|length }}</span>
+            </button>
+        </div>
+
+        <!-- Category Chips -->
+        <div class="category-chips">
+            <button class="category-chip active" data-category="all">All Categories</button>
+            {% for cat, count in categories.items() %}
+            <button class="category-chip" data-category="{{ cat }}">{{ cat }} ({{ count }})</button>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ============================== -->
+    <!--   TAB: ALL RESOURCES            -->
+    <!-- ============================== -->
+    <div class="tab-content active" data-tab="all">
+
+        <!-- Featured -->
+        <div class="featured-section">
+            <div class="section-header">
+                <span class="section-badge">⭐ Featured</span>
+                <h3>Top Picks For You</h3>
+            </div>
+            <div class="resource-grid">
+                {% for r in all_resources %}
+                {% if r.featured %}
+                {{ render_resource_card(r) }}
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- All -->
+        <div class="section-header" style="margin-top:32px;">
+            <h3>All Resources</h3>
+        </div>
+        <div class="resource-grid">
+            {% for r in all_resources %}
+            {% if not r.featured %}
+            {{ render_resource_card(r) }}
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="empty-state" style="display:none;">
+            <div class="empty-state-icon">🔍</div>
+            <h3>No resources found</h3>
+            <p>Try adjusting your search or filter to find what you're looking for.</p>
+        </div>
+    </div>
+
+    <!-- ============================== -->
+    <!--   TAB: DOCUMENTS                -->
+    <!-- ============================== -->
+    <div class="tab-content" data-tab="document">
+        <div class="featured-section">
+            <div class="section-header">
+                <span class="section-badge">⭐ Featured</span>
+                <h3>Essential Reads</h3>
+            </div>
+            <div class="resource-grid">
+                {% for r in documents %}
+                {% if r.featured %}
+                {{ render_resource_card(r) }}
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="section-header" style="margin-top:32px;">
+            <h3>All Documents</h3>
+        </div>
+        <div class="resource-grid">
+            {% for r in documents %}
+            {% if not r.featured %}
+            {{ render_resource_card(r) }}
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="empty-state" style="display:none;">
+            <div class="empty-state-icon">📄</div>
+            <h3>No documents found</h3>
+            <p>Try adjusting your search or filter.</p>
+        </div>
+    </div>
+
+    <!-- ============================== -->
+    <!--   TAB: STORIES                  -->
+    <!-- ============================== -->
+    <div class="tab-content" data-tab="story">
+        <div class="featured-section">
+            <div class="section-header">
+                <span class="section-badge">⭐ Featured</span>
+                <h3>Must-Read Stories</h3>
+            </div>
+            <div class="resource-grid">
+                {% for r in stories %}
+                {% if r.featured %}
+                {{ render_resource_card(r) }}
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="section-header" style="margin-top:32px;">
+            <h3>All Stories</h3>
+        </div>
+        <div class="resource-grid">
+            {% for r in stories %}
+            {% if not r.featured %}
+            {{ render_resource_card(r) }}
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="empty-state" style="display:none;">
+            <div class="empty-state-icon">📖</div>
+            <h3>No stories found</h3>
+            <p>Try adjusting your search or filter.</p>
+        </div>
+    </div>
+
+    <!-- ============================== -->
+    <!--   TAB: VIDEOS                   -->
+    <!-- ============================== -->
+    <div class="tab-content" data-tab="video">
+        <div class="featured-section">
+            <div class="section-header">
+                <span class="section-badge">⭐ Featured</span>
+                <h3>Top Videos</h3>
+            </div>
+            <div class="resource-grid">
+                {% for r in videos %}
+                {% if r.featured %}
+                {{ render_resource_card(r) }}
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="section-header" style="margin-top:32px;">
+            <h3>All Videos</h3>
+        </div>
+        <div class="resource-grid">
+            {% for r in videos %}
+            {% if not r.featured %}
+            {{ render_resource_card(r) }}
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="empty-state" style="display:none;">
+            <div class="empty-state-icon">🎬</div>
+            <h3>No videos found</h3>
+            <p>Try adjusting your search or filter.</p>
+        </div>
+    </div>
+
+    <!-- ============================== -->
+    <!--   TAB: SPEECHES                 -->
+    <!-- ============================== -->
+    <div class="tab-content" data-tab="speech">
+        <div class="featured-section">
+            <div class="section-header">
+                <span class="section-badge">⭐ Featured</span>
+                <h3>Iconic Speeches</h3>
+            </div>
+            <div class="resource-grid">
+                {% for r in speeches %}
+                {% if r.featured %}
+                {{ render_resource_card(r) }}
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="section-header" style="margin-top:32px;">
+            <h3>All Speeches</h3>
+        </div>
+        <div class="resource-grid">
+            {% for r in speeches %}
+            {% if not r.featured %}
+            {{ render_resource_card(r) }}
+            {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="empty-state" style="display:none;">
+            <div class="empty-state-icon">🎤</div>
+            <h3>No speeches found</h3>
+            <p>Try adjusting your search or filter.</p>
+        </div>
+    </div>
+
+    <!-- ===== RECOMMENDATIONS ===== -->
+    <div class="recommendations-section">
+        <h3>✨ Recommended for You</h3>
+        <p>Based on your recent wellbeing trends and activity.</p>
+        <div class="rec-grid">
+            <div class="rec-card">
+                <div class="rec-icon">🌙</div>
+                <div class="rec-content">
+                    <h4>Optimizing Your Sleep Routine</h4>
+                    <p>Since your sleep quality was "Okay" lately, this guide might help improve rest and focus.</p>
+                </div>
+            </div>
+            <div class="rec-card">
+                <div class="rec-icon">🧘</div>
+                <div class="rec-content">
+                    <h4>5-Minute Desk Stretches</h4>
+                    <p>Relieve physical tension and boost energy during long study sessions.</p>
+                </div>
+            </div>
+            <div class="rec-card">
+                <div class="rec-icon">🎯</div>
+                <div class="rec-content">
+                    <h4>Goal Setting for Next Semester</h4>
+                    <p>Plan your academic goals with SMART targets and weekly check-ins.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL ===== -->
+<div class="resource-modal-overlay" id="resource-modal-overlay">
+    <div class="resource-modal">
+        <div class="modal-header">
+            <div class="modal-header-left">
+                <h2 class="modal-title" id="modal-title"></h2>
+                <div class="modal-meta" id="modal-meta"></div>
+            </div>
+            <button class="modal-close-btn" id="modal-close-btn" aria-label="Close">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+        </div>
+        <div class="modal-body" id="modal-body"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/resources.css') }}">
+<script src="{{ url_for('static', filename='js/resources.js') }}"></script>
+{% endblock %}
+
+
+{# ===== MACRO: Render a Resource Card ===== #}
+{% macro render_resource_card(r) %}
+{% set type_lower = r.type|lower %}
+{% set badge_class = 'badge-document' if type_lower == 'document' else ('badge-story' if type_lower == 'story' else ('badge-video' if type_lower == 'video' else 'badge-speech')) %}
+{% set icon_class = 'doc' if type_lower == 'document' else ('story' if type_lower == 'story' else ('video' if type_lower == 'video' else 'speech')) %}
+
+<div class="resource-card {% if r.featured %}featured-card{% endif %}"
+     data-searchable
+     data-id="{{ r.id }}"
+     data-type="{{ type_lower }}"
+     data-category="{{ r.category }}"
+     data-title="{{ r.title }}"
+     data-summary="{{ r.summary }}"
+     data-author="{{ r.author }}"
+     data-date="{{ r.date }}"
+     {% if r.read_time %}data-readtime="{{ r.read_time }}"{% endif %}
+     {% if r.duration %}data-duration="{{ r.duration }}"{% endif %}
+     {% if r.youtube_id %}data-youtube="{{ r.youtube_id }}"{% endif %}
+>
+    {# Video/Speech Thumbnail #}
+    {% if type_lower in ['video', 'speech'] and r.youtube_id %}
+    <div class="video-thumbnail-wrapper">
+        <img class="video-thumbnail" src="{{ r.thumbnail }}" alt="{{ r.title }}" loading="lazy">
+        <div class="video-play-overlay">
+            <div class="play-icon">
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+        </div>
+        {% if r.duration %}
+        <span class="video-duration">{{ r.duration }}</span>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {# Card Top Row (icon + badge) #}
+    {% if type_lower not in ['video', 'speech'] or not r.youtube_id %}
+    <div class="card-top-row">
+        <div class="card-icon {{ icon_class }}">{{ r.icon }}</div>
+        <span class="card-type-badge {{ badge_class }}">{{ r.type }}</span>
+    </div>
+    {% else %}
+    <div class="card-top-row">
+        <span class="card-type-badge {{ badge_class }}">{{ r.type }}</span>
+    </div>
+    {% endif %}
+
+    <h3 class="card-title">{{ r.title }}</h3>
+    <p class="card-summary">{{ r.summary }}</p>
+
+    <div class="card-meta">
+        {% if r.author %}
+        <span class="card-meta-item">✍️ {{ r.author }}</span>
+        {% endif %}
+        {% if r.read_time %}
+        <span class="card-meta-item">⏱️ {{ r.read_time }}</span>
+        {% endif %}
+        {% if r.duration and type_lower not in ['video', 'speech'] %}
+        <span class="card-meta-item">🎬 {{ r.duration }}</span>
+        {% endif %}
+    </div>
+
+    <div class="card-footer">
+        <span class="card-category">{{ r.category }}</span>
+        <button class="card-action-btn">
+            {% if type_lower == 'video' or type_lower == 'speech' %}
+                <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg> Watch
+            {% else %}
+                <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg> Read
+            {% endif %}
+        </button>
+    </div>
+
+    {# Hidden Full Content for Modal #}
+    {% if r.content %}
+    <div class="resource-full-content" style="display:none;">
+        {{ r.content|safe }}
+    </div>
+    {% elif r.transcript_excerpt %}
+    <div class="resource-full-content" style="display:none;">
+        {{ r.transcript_excerpt|safe }}
+    </div>
+    {% endif %}
+</div>
+{% endmacro %}

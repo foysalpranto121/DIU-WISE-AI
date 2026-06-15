@@ -1,0 +1,226 @@
+{% extends "layout.html" %}
+
+{% block page_title %}Mood History{% endblock %}
+{% block page_subtitle %}Analyze your emotional trends and well-being patterns{% endblock %}
+
+{% block content %}
+<div class="mood-container">
+    <div class="mood-grid">
+        <!-- Mood Trend Chart -->
+        <div class="glass-card chart-card-large">
+            <div class="card-header-row">
+                <h3>Mood & Stress Trend (Last 7 Days)</h3>
+                <div class="filter-group">
+                    <button class="btn btn-sm btn-secondary active">7 Days</button>
+                    <button class="btn btn-sm btn-secondary">30 Days</button>
+                </div>
+            </div>
+            <div class="chart-container-large">
+                <canvas id="moodTrendChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Key Insights -->
+        <div class="glass-card insight-card">
+            <h3>Key Insights</h3>
+            <div class="insight-list">
+                <div class="insight-item positive">
+                    <div class="insight-icon">📈</div>
+                    <div class="insight-text">Your mood is <strong>20% higher</strong> on weekends compared to weekdays.</div>
+                </div>
+                <div class="insight-item warning">
+                    <div class="insight-icon">⚠️</div>
+                    <div class="insight-text">Stress levels tend to spike when screen time exceeds <strong>6 hours</strong>.</div>
+                </div>
+                <div class="insight-item info">
+                    <div class="insight-icon">💡</div>
+                    <div class="insight-text">Consistently good sleep (7+ hrs) correlates with a <strong>4.5/5 mood score</strong>.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Journal History -->
+        <div class="glass-card journal-history">
+            <h3>Journal History</h3>
+            <div class="journal-list">
+                <div class="journal-entry">
+                    <div class="journal-date">Apr 28, 2026</div>
+                    <div class="journal-content">Feeling a bit overwhelmed with the upcoming project deadline, but managed to finish the core logic. Sleep was okay.</div>
+                    <div class="journal-mood">Mood: 😐 | Stress: 6/10</div>
+                </div>
+                <div class="journal-entry">
+                    <div class="journal-date">Apr 27, 2026</div>
+                    <div class="journal-content">Had a great study session with the group! Feeling very productive and confident.</div>
+                    <div class="journal-mood">Mood: 😄 | Stress: 2/10</div>
+                </div>
+                <div class="journal-entry">
+                    <div class="journal-date">Apr 26, 2026</div>
+                    <div class="journal-content">Spent too much time on my phone today. Need to get back on track tomorrow.</div>
+                    <div class="journal-mood">Mood: 😟 | Stress: 5/10</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.mood-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.mood-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+}
+
+.chart-card-large {
+    grid-column: span 2;
+    padding: 24px;
+}
+
+.card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.chart-container-large {
+    height: 350px;
+    position: relative;
+}
+
+.insight-card {
+    padding: 24px;
+}
+
+.insight-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.insight-item {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 12px;
+}
+
+.insight-item.positive { background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
+.insight-item.warning { background: rgba(234, 179, 8, 0.1); border: 1px solid rgba(234, 179, 8, 0.2); }
+.insight-item.info { background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2); }
+
+.journal-history {
+    padding: 24px;
+}
+
+.journal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.journal-entry {
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+}
+
+.journal-date {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent-primary);
+    margin-bottom: 8px;
+}
+
+.journal-content {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 8px;
+}
+
+.journal-mood {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+[data-theme="light"] .journal-entry {
+    background: rgba(99, 102, 241, 0.03);
+}
+
+[data-theme="light"] .glass-card {
+    background: rgba(255, 255, 255, 0.7);
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('moodTrendChart').getContext('2d');
+    const labels = {{ mood_data|map(attribute='day')|list|tojson }};
+    const moodScores = {{ mood_data|map(attribute='mood')|list|tojson }};
+    const stressLevels = {{ mood_data|map(attribute='stress')|list|tojson }};
+    let moodTrendChartInstance = null;
+
+    function renderChart() {
+        if (moodTrendChartInstance) moodTrendChartInstance.destroy();
+
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        const textSec = isLight ? '#475569' : '#94a3b8';
+        const gridColor = isLight ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.05)';
+
+        moodTrendChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Mood Score (1-5)',
+                        data: moodScores,
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Stress Level (1-10)',
+                        data: stressLevels,
+                        borderColor: '#f43f5e',
+                        backgroundColor: 'transparent',
+                        tension: 0.4,
+                        borderDash: [5, 5]
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: textSec } }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 10,
+                        grid: { color: gridColor },
+                        ticks: { color: textSec }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: textSec }
+                    }
+                }
+            }
+        });
+    }
+
+    renderChart();
+
+    window.addEventListener('themechanged', renderChart);
+});
+</script>
+{% endblock %}

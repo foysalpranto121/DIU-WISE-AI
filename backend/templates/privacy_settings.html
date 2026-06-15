@@ -1,0 +1,196 @@
+{% extends "layout.html" %}
+
+{% block page_title %}Privacy & Data Control{% endblock %}
+{% block page_subtitle %}Manage how your data is collected and used to support your wellness{% endblock %}
+
+{% block content %}
+<div class="privacy-container">
+    <div class="privacy-grid">
+        <!-- Overview Section -->
+        <div class="glass-card full-width">
+            <div class="card-header">
+                <div class="icon-circle">🔒</div>
+                <h3>Our Privacy Promise</h3>
+            </div>
+            <p class="text-secondary">At DIU WISE, your privacy is our top priority. We use behavioral and emotional data exclusively to provide personalized wellness support. We never share your individual data with third parties or academic staff without your explicit consent.</p>
+        </div>
+
+        <!-- Data Collection Toggles -->
+        <div class="glass-card section-card">
+            <h3>Data Collection Permissions</h3>
+            <div class="settings-list">
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <strong>Emotional Tracking</strong>
+                        <p>Allow the system to analyze your mood and stress entries to provide better guidance.</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <strong>Behavioral Analysis</strong>
+                        <p>Allow tracking of attendance, activity scores, and submission delays.</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="settings-item">
+                    <div class="settings-info">
+                        <strong>AI Persona Customization</strong>
+                        <p>Let the AI adapt its coaching style based on your academic goals.</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Info -->
+        <div class="glass-card section-card">
+            <h3>Security & Encryption</h3>
+            <div class="info-grid">
+                <div class="info-box">
+                    <div class="info-label">Encryption State</div>
+                    <div class="info-val">AES-256 (Active)</div>
+                </div>
+                <div class="info-box">
+                    <div class="info-label">Data Hosting</div>
+                    <div class="info-val">DIU Private Cloud</div>
+                </div>
+                <div class="info-box">
+                    <div class="info-label">Access Logs</div>
+                    <div class="info-val">View Logs (Admin only)</div>
+                </div>
+            </div>
+            <button class="btn btn-outline-primary mt-4 w-full">Learn More About Security</button>
+        </div>
+
+        <!-- Data Management -->
+        <div class="glass-card full-width danger-section">
+            <h3>Data Management & Rights</h3>
+            <div class="rights-grid">
+                <div class="right-box">
+                    <h4>Download My Data</h4>
+                    <p>Get a full export of your wellbeing and activity history in JSON format.</p>
+                    <button class="btn btn-secondary mt-2">Request Download</button>
+                </div>
+                <div class="right-box">
+                    <h4>Revoke All Consents</h4>
+                    <p>Immediately stop all data collection and analysis services.</p>
+                    <button class="btn btn-outline-danger mt-2">Revoke All</button>
+                </div>
+                <div class="right-box">
+                    <h4>Delete Account</h4>
+                    <p>Permanently remove your account and all associated data from DIU WISE.</p>
+                    <button class="btn btn-danger mt-2">Delete Permanently</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.privacy-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.privacy-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.full-width {
+    grid-column: span 2;
+    padding: 32px;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.icon-circle {
+    width: 48px;
+    height: 48px;
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.section-card { padding: 24px; }
+
+.settings-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.settings-item:last-child { border-bottom: none; }
+
+.settings-info strong { display: block; margin-bottom: 4px; }
+.settings-info p { margin: 0; font-size: 0.85rem; color: var(--text-secondary); }
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.info-box {
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+}
+
+.info-label { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px; }
+.info-val { font-weight: 700; font-size: 1rem; }
+
+.danger-section {
+    border: 1px solid rgba(244, 63, 94, 0.2);
+    background: rgba(244, 63, 94, 0.02);
+}
+
+.rights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px;
+    margin-top: 20px;
+}
+
+.right-box h4 { margin: 0 0 8px 0; font-size: 1.1rem; }
+.right-box p { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 12px; }
+
+/* Custom switch */
+.switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; }
+.slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; }
+input:checked + .slider { background: var(--accent-primary); }
+input:checked + .slider:before { transform: translateX(26px); }
+.slider.round { border-radius: 24px; }
+.slider.round:before { border-radius: 50%; }
+</style>
+{% endblock %}

@@ -1,0 +1,278 @@
+/* ============================================================
+   Crisis Safety Net — calming overlay, breathing exercise,
+   and verified emergency helplines.
+   Matches the DIU WISE glassmorphism design system.
+   ============================================================ */
+
+.crisis-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: radial-gradient(at 50% 30%, rgba(99, 102, 241, 0.25) 0%, transparent 60%),
+              rgba(6, 8, 14, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: crisis-fade-in 0.4s ease both;
+}
+
+.crisis-overlay.active {
+  display: flex;
+}
+
+@keyframes crisis-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.crisis-card {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  max-height: 92vh;
+  overflow-y: auto;
+  padding: 32px 28px 28px;
+  text-align: center;
+  border-radius: var(--radius-lg, 20px);
+  background: var(--glass-bg, rgba(22, 27, 45, 0.85));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08));
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+  animation: crisis-rise 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes crisis-rise {
+  from { transform: translateY(24px) scale(0.97); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.crisis-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary, #a0aec0);
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.crisis-close:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+.crisis-heading {
+  margin: 4px 0 6px;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--text-primary, #fff);
+}
+
+.crisis-subtext {
+  margin: 0 auto 20px;
+  max-width: 380px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--text-secondary, #a0aec0);
+}
+
+/* ---------- Breathing exercise ---------- */
+.breathe-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 8px 0 22px;
+}
+
+.breathe-orb {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 40%,
+              rgba(168, 85, 247, 0.55), rgba(99, 102, 241, 0.35));
+  box-shadow: 0 0 50px rgba(99, 102, 241, 0.5),
+              inset 0 0 30px rgba(255, 255, 255, 0.15);
+  transition: transform 4s ease-in-out, box-shadow 4s ease-in-out;
+  will-change: transform;
+}
+
+.breathe-orb.inhale {
+  transform: scale(1.35);
+  box-shadow: 0 0 70px rgba(168, 85, 247, 0.7),
+              inset 0 0 40px rgba(255, 255, 255, 0.25);
+}
+.breathe-orb.exhale {
+  transform: scale(0.9);
+  box-shadow: 0 0 35px rgba(99, 102, 241, 0.4),
+              inset 0 0 20px rgba(255, 255, 255, 0.1);
+}
+/* Hold phases keep current size but shorten the transition feel */
+.breathe-orb.hold { transition: transform 0.4s ease, box-shadow 0.4s ease; }
+
+.breathe-phase {
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #fff;
+  pointer-events: none;
+}
+
+.breathe-caption {
+  margin-top: 14px;
+  font-size: 0.82rem;
+  color: var(--text-secondary, #a0aec0);
+}
+
+.breathe-toggle {
+  margin-top: 12px;
+  padding: 7px 18px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.12));
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.breathe-toggle:hover { background: rgba(255, 255, 255, 0.16); }
+
+/* ---------- Helpline list ---------- */
+.crisis-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 16px;
+  color: var(--text-secondary, #a0aec0);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.crisis-divider::before,
+.crisis-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--glass-border, rgba(255, 255, 255, 0.1));
+}
+
+.helpline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+
+.helpline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md, 14px);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.08));
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.helpline:hover { border-color: rgba(168, 85, 247, 0.5); transform: translateY(-1px); }
+.helpline.priority { border-left: 3px solid var(--danger, #f43f5e); }
+
+.helpline-info { min-width: 0; }
+.helpline-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary, #fff);
+}
+.helpline-desc {
+  margin-top: 2px;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--text-secondary, #a0aec0);
+}
+.helpline-hours {
+  margin-top: 4px;
+  font-size: 0.72rem;
+  color: rgba(160, 174, 192, 0.75);
+}
+
+.helpline-call {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 999px;
+  background: var(--accent-gradient, linear-gradient(135deg, #6366f1, #a855f7));
+  transition: filter 0.2s ease;
+}
+.helpline-call:hover { filter: brightness(1.12); }
+.helpline-call.no-tel {
+  background: rgba(255, 255, 255, 0.08);
+  cursor: default;
+}
+.helpline-call svg { width: 15px; height: 15px; fill: currentColor; }
+
+.crisis-footnote {
+  margin-top: 18px;
+  font-size: 0.74rem;
+  line-height: 1.5;
+  color: rgba(160, 174, 192, 0.7);
+}
+
+@media (max-width: 480px) {
+  .crisis-card { padding: 26px 18px 22px; }
+  .helpline { flex-direction: column; align-items: flex-start; }
+  .helpline-call { align-self: stretch; justify-content: center; }
+}
+
+/* ==========================================================================
+   Crisis Light Mode Overrides
+   ========================================================================== */
+[data-theme="light"] .crisis-overlay {
+  background: radial-gradient(at 50% 30%, rgba(99, 102, 241, 0.15) 0%, transparent 60%),
+              rgba(255, 255, 255, 0.85);
+}
+
+[data-theme="light"] .crisis-close {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .crisis-close:hover {
+  background: rgba(0, 0, 0, 0.12);
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .breathe-toggle {
+  color: var(--text-primary);
+  background: rgba(99, 102, 241, 0.08);
+  border-color: rgba(99, 102, 241, 0.15);
+}
+
+[data-theme="light"] .breathe-toggle:hover {
+  background: rgba(99, 102, 241, 0.14);
+}
+
+[data-theme="light"] .helpline {
+  background: rgba(99, 102, 241, 0.04);
+}
+
+[data-theme="light"] .helpline-call.no-tel {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--text-secondary);
+}

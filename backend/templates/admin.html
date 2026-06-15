@@ -1,0 +1,118 @@
+{% extends "layout.html" %}
+
+{% block title %}Admin | DIU WISE{% endblock %}
+{% block page_title %}Campus Intelligence{% endblock %}
+{% block page_subtitle %}University-level analytics and early warning system{% endblock %}
+
+{% block content %}
+<div class="stats-grid" id="stats-cards">
+  <!-- Filled by JS -->
+  <div class="stat-card skeleton"></div>
+  <div class="stat-card skeleton"></div>
+  <div class="stat-card skeleton"></div>
+  <div class="stat-card skeleton"></div>
+</div>
+
+<div class="dashboard-grid mt-6">
+  <!-- Award-Winning: AI Cohort Clustering -->
+  <div class="panel glass-panel span-2">
+    <div class="panel-header">
+      <h2>AI Cohort Clustering (Risk Identification)</h2>
+      <span class="badge badge-info">Unsupervised ML</span>
+    </div>
+    <div class="panel-body">
+      <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px;">Clusters students based on attendance vs activity, sizing by submission delays.</p>
+      <canvas id="clusteringChart" width="100%" height="300"></canvas>
+    </div>
+  </div>
+
+  <!-- Award-Winning: Campus Sentiment Pulse -->
+  <div class="panel glass-panel">
+    <div class="panel-header">
+      <h2>Campus Sentiment Pulse</h2>
+      <span class="badge badge-warning">Live Vibe</span>
+    </div>
+    <div class="panel-body">
+      <div id="sentiment-pulse-container" style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; height: 300px;">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Stress Heatmap -->
+  <div class="panel glass-panel span-2">
+    <div class="panel-header">
+      <h2>Campus Wellness Trends</h2>
+    </div>
+    <div class="panel-body">
+      <canvas id="wellnessTrendChart" width="100%" height="300"></canvas>
+    </div>
+  </div>
+
+  <!-- Burnout Distribution -->
+  <div class="panel glass-panel">
+    <div class="panel-header">
+      <h2>Burnout Risk Distribution</h2>
+    </div>
+    <div class="panel-body">
+      <canvas id="burnoutPieChart" width="100%" height="300"></canvas>
+    </div>
+  </div>
+
+  <!-- At Risk Students Table -->
+  <div class="panel glass-panel span-3">
+    <div class="panel-header">
+      <h2>At-Risk Students Watchlist</h2>
+      <button class="btn btn-sm btn-outline">Export Report</button>
+    </div>
+    <div class="panel-body p-0">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Student ID</th>
+              <th>Burnout Risk</th>
+              <th>Distress Level</th>
+              <th>Emotion Signal</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="risk-table-body">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Management -->
+  <div class="panel glass-panel span-3">
+    <div class="panel-header">
+      <h2>User Management</h2>
+    </div>
+    <div class="panel-body p-0">
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Manage</th>
+            </tr>
+          </thead>
+          <tbody id="admin-user-table">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

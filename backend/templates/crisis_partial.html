@@ -1,0 +1,32 @@
+<!-- Crisis Safety Net: shown automatically when the assistant detects high distress -->
+<div class="crisis-overlay" id="crisis-overlay" role="dialog" aria-modal="true" aria-labelledby="crisis-heading">
+  <div class="crisis-card">
+    <button class="crisis-close" id="crisis-close" aria-label="Close">&times;</button>
+
+    <h2 class="crisis-heading" id="crisis-heading">You matter, and you're not alone 💜</h2>
+    <p class="crisis-subtext">
+      It sounds like things feel really heavy right now. Let's take one slow breath together —
+      then, if you'd like, reach out to someone who can help.
+    </p>
+
+    <!-- Guided breathing exercise -->
+    <div class="breathe-stage">
+      <div class="breathe-orb" id="breathe-orb">
+        <span class="breathe-phase" id="breathe-phase">Breathe</span>
+      </div>
+      <div class="breathe-caption" id="breathe-caption">Follow the circle &middot; 4 sec in &middot; 4 hold &middot; 4 out</div>
+      <button class="breathe-toggle" id="breathe-toggle">Pause</button>
+    </div>
+
+    <div class="crisis-divider">Talk to someone now</div>
+
+    <div class="helpline-list" id="helpline-list">
+      <!-- Helplines injected by crisis.js -->
+    </div>
+
+    <p class="crisis-footnote">
+      If you are in immediate danger, please call <strong>999</strong> right away.
+      This tool offers support but is not a substitute for professional or emergency care.
+    </p>
+  </div>
+</div>

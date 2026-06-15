@@ -1,0 +1,215 @@
+{% extends "layout.html" %}
+
+{% block title %}Dashboard | DIU WISE{% endblock %}
+{% block page_title %}Student Dashboard{% endblock %}
+{% block page_subtitle %}Your personalized wellness and academic overview{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+  <!-- Dynamic Wellness Aura (Digital Twin) -->
+  <div class="panel glass-panel span-3" style="text-align: center; position: relative; overflow: hidden; min-height: 250px;">
+    <div class="aura-container" id="wellness-aura-container">
+      <div class="wellness-aura low-risk" id="wellness-aura"></div>
+      <div class="aura-content">
+        <h2>Your Digital Wellness Twin</h2>
+        <p id="aura-status-text">Your wellness state looks stable. Keep up the good work!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Micro-Interventions (Hidden by default, triggered on high stress) -->
+  <div class="panel glass-panel span-3 intervention-panel" id="intervention-panel" style="display: none;">
+    <div class="panel-header">
+      <h2><span style="color: var(--accent-secondary)">✧</span> Recommended Coping Exercise</h2>
+    </div>
+    <div class="panel-body intervention-body">
+      <div class="breathing-circle-container">
+        <div class="breathing-circle" id="breathing-circle"></div>
+        <div class="breathing-text" id="breathing-text">Inhale</div>
+      </div>
+      <div class="intervention-info">
+        <h3>4-7-8 Breathing Technique</h3>
+        <p>We noticed your stress indicators are elevated. Take 60 seconds to reset your nervous system.</p>
+        <button id="start-breathing-btn" class="btn btn-primary mt-4">Start Exercise</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wellbeing Insights Support System -->
+  <div class="panel glass-panel span-3">
+    <div class="panel-header">
+      <h2>🌈 Wellbeing Insights</h2>
+      <span class="badge badge-info">Supportive Guidance</span>
+    </div>
+    <div class="panel-body">
+      <div class="clinical-assessment-grid">
+        <!-- Input Section: Behavioral & Emotional -->
+        <div class="metric-input-panel">
+          <h3 class="metric-section-title">How are you doing today?</h3>
+          <p class="metric-section-desc">Share your current state for personalized wellbeing support.</p>
+          
+          <div class="wellbeing-input-groups">
+            <!-- Mood Check-in -->
+            <div class="wellbeing-input-card">
+              <div class="wellbeing-input-header">
+                <span class="wellbeing-input-label">Current Mood</span>
+              </div>
+              <div class="mood-picker" id="mood-picker">
+                <span class="mood-emoji" data-mood="1">😞</span>
+                <span class="mood-emoji" data-mood="2">😟</span>
+                <span class="mood-emoji active" data-mood="3">😐</span>
+                <span class="mood-emoji" data-mood="4">🙂</span>
+                <span class="mood-emoji" data-mood="5">😄</span>
+              </div>
+            </div>
+
+            <!-- Wellbeing Sliders -->
+            <div class="wellbeing-input-card">
+              <div class="wellbeing-input-header">
+                <span class="wellbeing-input-label">Stress Level</span>
+                <span class="wellbeing-input-value" id="stress-val">3/10</span>
+              </div>
+              <input type="range" id="stress-level" class="wellbeing-slider" min="1" max="10" value="3">
+            </div>
+
+            <div class="wellbeing-input-card">
+              <div class="wellbeing-input-header">
+                <span class="wellbeing-input-label">😴 Sleep Quality</span>
+                <span class="wellbeing-input-value" id="sleep-val">7/10</span>
+              </div>
+              <input type="range" id="sleep-quality" class="wellbeing-slider" min="1" max="10" value="7">
+            </div>
+
+            <div class="wellbeing-input-card">
+              <div class="wellbeing-input-header">
+                <span class="wellbeing-input-label">📱 Screen Time / Study Hours</span>
+                <span class="wellbeing-input-value" id="screen-val">8h</span>
+              </div>
+              <input type="range" id="screen-time" class="wellbeing-slider" min="1" max="16" value="8">
+            </div>
+
+            <div class="wellbeing-input-card">
+              <div class="wellbeing-input-header">
+                <span class="wellbeing-input-label">👥 Social Interaction</span>
+                <span class="wellbeing-input-value" id="social-val">5/10</span>
+              </div>
+              <input type="range" id="social-interaction" class="wellbeing-slider" min="1" max="10" value="5">
+            </div>
+
+            <div class="wellbeing-input-card">
+              <div class="wellbeing-input-header">
+                <span class="wellbeing-input-label">🧘 Break Frequency</span>
+                <span class="wellbeing-input-value" id="break-val">Medium</span>
+              </div>
+              <input type="range" id="break-frequency" class="wellbeing-slider" min="1" max="10" value="5">
+            </div>
+
+            <div class="wellbeing-input-card">
+              <div class="wellbeing-input-header">
+                <span class="wellbeing-input-label">What's on your mind?</span>
+              </div>
+              <textarea id="journal-prompt" rows="2" placeholder="Briefly share what's been most stressful today..."></textarea>
+            </div>
+          </div>
+          
+          <button id="predict-send" class="btn btn-primary w-full mt-6">
+            <span>✨ Update My Wellbeing Insights</span>
+          </button>
+        </div>
+
+        <!-- Results & Support Panel -->
+        <div class="wellbeing-status-panel" id="predict-result-container" style="display: none;">
+          <!-- Status Highlight -->
+          <div class="status-highlight-card">
+            <div class="status-trend" id="status-trend">Stable</div>
+            <div class="risk-gauge-header">Wellbeing Status</div>
+            <div class="status-message-large" id="current-risk-value">Doing Well</div>
+            <div class="confidence-chip" id="confidence-val">92% Confidence</div>
+            <p class="status-description" id="status-desc">Based on your recent activity, you're currently in a stable range.</p>
+          </div>
+
+          <!-- Actionable Guidance -->
+          <div class="guidance-section" id="guidance-section">
+            <div class="guidance-title">🌱 Recommended for You Today</div>
+            <div class="guidance-list" id="guidance-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Support Pathways -->
+          <div class="support-pathways">
+            <button class="support-btn" id="generate-plan-btn"><i class="icon">📜</i> Generate My Plan</button>
+            <button class="support-btn" id="chat-ai-btn"><i class="icon">💬</i> Chat AI</button>
+            <button class="support-btn" id="book-counselor-btn"><i class="icon">🗓️</i> Counselor</button>
+            <button class="support-btn emergency" id="emergency-btn"><i class="icon">🆘</i> Get Urgent Help</button>
+          </div>
+
+          <!-- Forecast Section -->
+          <div class="forecast-card p-4">
+             <div class="guidance-title">📈 30-Day Outlook</div>
+             <div class="forecast-labels-grid" id="forecast-labels">
+                <div class="forecast-label-item">7 Days: <span class="badge badge-success">Stable</span></div>
+                <div class="forecast-label-item">14 Days: <span class="badge badge-success">Stable</span></div>
+                <div class="forecast-label-item">30 Days: <span class="badge badge-info">Improving</span></div>
+             </div>
+             <div style="height: 120px; margin-top: 10px;">
+                <canvas id="forecastChart"></canvas>
+             </div>
+          </div>
+
+          <!-- Transparency & Privacy (Collapsible) -->
+          <details class="transparency-details">
+            <summary>How this is calculated & Privacy</summary>
+            <div class="transparency-content">
+              <p>Calculated based on: Attendance, Submission consistency, Mood trends, Sleep quality, and Engagement levels.</p>
+              <p><strong>Note:</strong> This is a support tool, not a clinical diagnosis.</p>
+              <div class="privacy-controls mt-4">
+                <label class="switch-label">
+                  <input type="checkbox" checked class="switch-input" id="tracking-toggle">
+                  <span class="switch-slider"></span>
+                  <span>Enable wellbeing tracking</span>
+                </label>
+                <button class="btn btn-secondary btn-sm mt-2" id="delete-data-btn">Delete My Insights Data</button>
+              </div>
+            </div>
+          </details>
+          <div class="privacy-badge">🔒 Your data is private and encrypted</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Emotion Analyzer (Simplified for faster response) -->
+  <div class="panel glass-panel span-3">
+    <div class="panel-header">
+      <h2>💬 Quick Reflection</h2>
+      <span class="badge badge-warning">AI Guide</span>
+    </div>
+    <div class="panel-body">
+      <div class="emotion-analysis-grid">
+        <div class="emotion-input-panel">
+          <p class="metric-section-desc">Write a sentence about how you feel. Our AI will provide an immediate supportive perspective.</p>
+          <div class="form-group">
+            <textarea id="emotion-input" rows="3" placeholder="Example: I'm proud of finishing my project today!"></textarea>
+          </div>
+          <button id="emotion-send" class="btn btn-secondary w-full">🔍 Get Perspective</button>
+        </div>
+        
+        <div id="emotion-result-container" class="emotion-results-panel" style="display: none;">
+          <div class="triage-result-card">
+            <div class="triage-result-header">
+              <span id="emotion-value-label">Perspective</span>
+              <span class="triage-priority-badge" id="triage-priority">Normal</span>
+            </div>
+            <div class="triage-result-message" id="triage-message">...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}
