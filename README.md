@@ -19,8 +19,9 @@ A cute, draggable, and interactive AI guide that follows you across the platform
 ### 📊 Student Success Hub
 A comprehensive profile section tracking:
 - **Academic Metrics**: GPA, credit load, and submission status.
-- **Wellbeing Trends**: Mood history, stress indicators, and sleep quality analysis.
+- **Wellbeing Trends**: Mood history, stress indicators, and sleep analysis.
 - **Goals & Achievements**: Track personal study goals and earn badges for consistency.
+- **Profile Picture**: Upload and display a personal avatar.
 
 ### 📈 Predictive Analytics & Triage
 - **Early Distress Detection**: Analyzes attendance and submission patterns to flag students needing support.
