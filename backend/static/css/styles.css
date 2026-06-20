@@ -856,6 +856,86 @@ input:focus, select:focus, textarea:focus {
   border-radius: 12px;
 }
 
+/* ── Bilingual Chat Message Components ── */
+.chat-risk-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  float: right;
+  margin-left: 8px;
+}
+.risk-low    { background: rgba(16,185,129,0.2);  color: var(--success); }
+.risk-medium { background: rgba(245,158,11,0.2);  color: var(--warning); }
+.risk-high   { background: rgba(244,63,94,0.2);   color: var(--danger);  }
+
+.chat-summary {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin: 0 0 8px;
+  line-height: 1.5;
+}
+
+.chat-advice-list {
+  margin: 0 0 8px;
+  padding-left: 18px;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.chat-action-box {
+  margin-top: 8px;
+  padding: 7px 10px;
+  background: rgba(99,102,241,0.08);
+  border-left: 3px solid var(--accent-primary);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+.chat-action-label {
+  font-weight: 700;
+  font-style: normal;
+  margin-right: 4px;
+  color: var(--accent-primary);
+}
+
+/* Bangla section */
+.chat-lang-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent-secondary);
+  opacity: 0.8;
+}
+.chat-lang-divider::before,
+.chat-lang-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--glass-border);
+}
+
+.chat-bn {
+  font-family: 'Noto Sans Bengali', 'SolaimanLipi', 'Vrinda', sans-serif;
+  line-height: 1.7;
+}
+
+/* Follow-up container */
+.follow-up-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
 /* Switch toggle */
 .switch-label {
   display: flex;

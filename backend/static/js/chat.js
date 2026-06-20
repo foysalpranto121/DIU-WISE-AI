@@ -196,50 +196,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const msgDiv = document.createElement('div');
     msgDiv.className = 'message ai-message structured-msg';
-    
-    let html = `<div class="message-content">`;
-    
-    // Risk Badge
-    if (resp.risk_level) {
-      let color = 'var(--success)';
-      if (resp.risk_level === 'medium') color = 'var(--warning)';
-      if (resp.risk_level === 'high') color = 'var(--danger)';
-      html += `<span class="risk-badge" style="background-color: ${color}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; float: right;">${resp.risk_level.toUpperCase()} RISK</span>`;
+
+    // --- Risk badge ---
+    const riskClass = { low: 'risk-low', medium: 'risk-medium', high: 'risk-high' };
+    const riskBadgeHtml = resp.risk_level
+      ? `<span class="chat-risk-badge ${riskClass[resp.risk_level] || 'risk-low'}">${resp.risk_level.toUpperCase()} RISK</span>`
+      : '';
+
+    // --- English block ---
+    let enHtml = '';
+    if (resp.summary) {
+      enHtml += `<p class="chat-summary">${escapeHtml(resp.summary)}</p>`;
     }
-
-    // Summary
-    html += `<strong>${resp.summary}</strong><br><br>`;
-
-    // Advice Bullets
-    if (resp.advice && resp.advice.length > 0) {
-      html += `<ul style="margin: 0; padding-left: 20px;">`;
-      resp.advice.forEach(adv => {
-        html += `<li>${adv}</li>`;
-      });
-      html += `</ul>`;
+    if (resp.advice && resp.advice.length) {
+      enHtml += `<ul class="chat-advice-list">${resp.advice.map(a => `<li>${escapeHtml(a)}</li>`).join('')}</ul>`;
     }
-
-    // Action Required
     if (resp.action_required) {
-      html += `<div style="margin-top: 10px; padding: 8px; background: rgba(255,255,255,0.05); border-left: 3px solid var(--accent-primary); border-radius: 4px;">
-                 <em>Action: ${resp.action_required}</em>
-               </div>`;
+      enHtml += `<div class="chat-action-box"><span class="chat-action-label">Action</span> ${escapeHtml(resp.action_required)}</div>`;
     }
 
-    html += `</div>`; // end message-content
-    
-    // Follow up questions
-    if (resp.follow_up_questions && resp.follow_up_questions.length > 0) {
-      html += `<div class="follow-up-container" style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">`;
-      resp.follow_up_questions.forEach(q => {
-        html += `<button class="suggestion-chip follow-up-btn">${q}</button>`;
+    // --- Bangla block ---
+    let bnHtml = '';
+    if (resp.summary_bn) {
+      bnHtml += `<p class="chat-summary chat-bn">${escapeHtml(resp.summary_bn)}</p>`;
+    }
+    if (resp.advice_bn && resp.advice_bn.length) {
+      bnHtml += `<ul class="chat-advice-list chat-bn">${resp.advice_bn.map(a => `<li>${escapeHtml(a)}</li>`).join('')}</ul>`;
+    }
+    if (resp.action_required_bn) {
+      bnHtml += `<div class="chat-action-box chat-bn"><span class="chat-action-label">পদক্ষেপ</span> ${escapeHtml(resp.action_required_bn)}</div>`;
+    }
+
+    // --- Compose message ---
+    let inner = `<div class="message-content">`;
+    inner += riskBadgeHtml;
+    inner += enHtml;
+
+    if (bnHtml) {
+      inner += `<div class="chat-lang-divider"><span>বাংলা</span></div>`;
+      inner += bnHtml;
+    }
+
+    inner += `</div>`;
+
+    // --- Follow-up questions (both languages) ---
+    const allFollowUps = [
+      ...(resp.follow_up_questions || []),
+      ...(resp.follow_up_questions_bn || [])
+    ];
+    if (allFollowUps.length) {
+      inner += `<div class="follow-up-container">`;
+      allFollowUps.forEach(q => {
+        inner += `<button class="suggestion-chip follow-up-btn">${escapeHtml(q)}</button>`;
       });
-      html += `</div>`;
+      inner += `</div>`;
     }
 
-    msgDiv.innerHTML = html;
+    msgDiv.innerHTML = inner;
     chatLog.appendChild(msgDiv);
     chatLog.scrollTop = chatLog.scrollHeight;
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
   }
 
   function appendLoading() {
