@@ -123,6 +123,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Wire up the aura CTA button to scroll to the insights form
+  const auraStartBtn = document.getElementById('aura-start-btn');
+  if (auraStartBtn) {
+    auraStartBtn.addEventListener('click', () => {
+      const insightsPanel = document.getElementById('predict-send');
+      if (insightsPanel) insightsPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  }
+
   // --- Core API Interaction ---
 
   const predictSend = document.getElementById('predict-send');

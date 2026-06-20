@@ -1,26 +1,71 @@
 {% extends "layout.html" %}
 
-{% block title %}Dashboard | DIU WISE{% endblock %}
-{% block page_title %}Student Dashboard{% endblock %}
+{% block title %}Dashboard | DIU WISE AI{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
 {% block page_subtitle %}Your personalized wellness and academic overview{% endblock %}
 
 {% block content %}
+
+<!-- Quick Stats Row -->
+<div class="quick-stats-row">
+  <div class="quick-stat-card">
+    <div class="quick-stat-icon quick-stat-icon--green">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+    </div>
+    <div class="quick-stat-body">
+      <span class="quick-stat-label">Wellness Status</span>
+      <span class="quick-stat-value" id="qs-wellness">—</span>
+    </div>
+  </div>
+  <div class="quick-stat-card">
+    <div class="quick-stat-icon quick-stat-icon--indigo">
+      <svg viewBox="0 0 24 24"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg>
+    </div>
+    <div class="quick-stat-body">
+      <span class="quick-stat-label">Mood Today</span>
+      <span class="quick-stat-value" id="qs-mood">—</span>
+    </div>
+  </div>
+  <div class="quick-stat-card">
+    <div class="quick-stat-icon quick-stat-icon--purple">
+      <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 16L12 15.45 7.77 18l1.12-4.81-3.73-3.23 4.92-.42L12 5l1.92 4.53 4.92.42-3.73 3.23L16.23 18z"/></svg>
+    </div>
+    <div class="quick-stat-body">
+      <span class="quick-stat-label">Stress Level</span>
+      <span class="quick-stat-value" id="qs-stress">—</span>
+    </div>
+  </div>
+  <div class="quick-stat-card">
+    <div class="quick-stat-icon quick-stat-icon--pink">
+      <svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+    </div>
+    <div class="quick-stat-body">
+      <span class="quick-stat-label">Last Check-in</span>
+      <span class="quick-stat-value" id="qs-checkin">Today</span>
+    </div>
+  </div>
+</div>
+
 <div class="dashboard-grid">
-  <!-- Dynamic Wellness Aura (Digital Twin) -->
-  <div class="panel glass-panel span-3" style="text-align: center; position: relative; overflow: hidden; min-height: 250px;">
+
+  <!-- Digital Wellness Aura -->
+  <div class="panel glass-panel span-3 aura-panel">
     <div class="aura-container" id="wellness-aura-container">
       <div class="wellness-aura low-risk" id="wellness-aura"></div>
       <div class="aura-content">
-        <h2>Your Digital Wellness Twin</h2>
-        <p id="aura-status-text">Your wellness state looks stable. Keep up the good work!</p>
+        <div class="aura-badge">Digital Wellness Twin</div>
+        <h2 class="aura-heading" id="aura-status-text">Your wellness state looks stable — keep it up!</h2>
+        <div class="aura-actions">
+          <button type="button" class="aura-cta" id="aura-start-btn">Update My State</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Micro-Interventions (Hidden by default, triggered on high stress) -->
-  <div class="panel glass-panel span-3 intervention-panel" id="intervention-panel" style="display: none;">
+  <!-- Micro-Intervention Breathing (hidden by default, shown by JS) -->
+  <div class="panel glass-panel span-3 intervention-panel intervention-panel--hidden" id="intervention-panel">
     <div class="panel-header">
-      <h2><span style="color: var(--accent-secondary)">✧</span> Recommended Coping Exercise</h2>
+      <h2><span class="accent-star">✧</span> Recommended Coping Exercise</h2>
     </div>
     <div class="panel-body intervention-body">
       <div class="breathing-circle-container">
@@ -30,48 +75,49 @@
       <div class="intervention-info">
         <h3>4-7-8 Breathing Technique</h3>
         <p>We noticed your stress indicators are elevated. Take 60 seconds to reset your nervous system.</p>
-        <button id="start-breathing-btn" class="btn btn-primary mt-4">Start Exercise</button>
+        <button type="button" id="start-breathing-btn" class="btn btn-primary mt-4">Start Exercise</button>
       </div>
     </div>
   </div>
 
-  <!-- Wellbeing Insights Support System -->
+  <!-- Wellbeing Insights -->
   <div class="panel glass-panel span-3">
     <div class="panel-header">
-      <h2>🌈 Wellbeing Insights</h2>
+      <div>
+        <h2 class="panel-title">Wellbeing Insights</h2>
+        <p class="panel-desc">Share your current state for personalised guidance.</p>
+      </div>
       <span class="badge badge-info">Supportive Guidance</span>
     </div>
     <div class="panel-body">
       <div class="clinical-assessment-grid">
-        <!-- Input Section: Behavioral & Emotional -->
+
+        <!-- Input Panel -->
         <div class="metric-input-panel">
-          <h3 class="metric-section-title">How are you doing today?</h3>
-          <p class="metric-section-desc">Share your current state for personalized wellbeing support.</p>
-          
           <div class="wellbeing-input-groups">
-            <!-- Mood Check-in -->
+
             <div class="wellbeing-input-card">
               <div class="wellbeing-input-header">
                 <span class="wellbeing-input-label">Current Mood</span>
                 <span class="wellbeing-input-value" id="mood-val">Okay</span>
               </div>
-              <div class="mood-picker" id="mood-picker">
-                <span class="mood-emoji" data-mood="1">😞</span>
-                <span class="mood-emoji" data-mood="2">😟</span>
-                <span class="mood-emoji active" data-mood="3">😐</span>
-                <span class="mood-emoji" data-mood="4">🙂</span>
-                <span class="mood-emoji" data-mood="5">😄</span>
+              <div class="mood-picker" id="mood-picker" role="group" aria-label="Mood selection">
+                <span class="mood-emoji" data-mood="1" role="button" tabindex="0" aria-label="Very sad">😞</span>
+                <span class="mood-emoji" data-mood="2" role="button" tabindex="0" aria-label="Sad">😟</span>
+                <span class="mood-emoji active" data-mood="3" role="button" tabindex="0" aria-label="Okay">😐</span>
+                <span class="mood-emoji" data-mood="4" role="button" tabindex="0" aria-label="Good">🙂</span>
+                <span class="mood-emoji" data-mood="5" role="button" tabindex="0" aria-label="Great">😄</span>
               </div>
-              <div class="wellbeing-input-desc" id="mood-desc-detail">Neutral state (Standard PHQ-9 self-check baseline)</div>
+              <div class="wellbeing-input-desc" id="mood-desc-detail">Neutral state (PHQ-9 self-check baseline)</div>
             </div>
 
-            <!-- Wellbeing Sliders -->
             <div class="wellbeing-input-card">
               <div class="wellbeing-input-header">
                 <span class="wellbeing-input-label">Stress Level</span>
                 <span class="wellbeing-input-value" id="stress-val">3/10</span>
               </div>
-              <input type="range" id="stress-level" class="wellbeing-slider" min="1" max="10" value="3">
+              <input type="range" id="stress-level" class="wellbeing-slider" min="1" max="10" value="3"
+                     aria-label="Stress level from 1 to 10" title="Stress level">
               <div class="wellbeing-input-desc" id="stress-desc-detail">Mild / Manageable (PSS-10 Perceived Stress Scale)</div>
             </div>
 
@@ -80,17 +126,19 @@
                 <span class="wellbeing-input-label">😴 Sleep Quality</span>
                 <span class="wellbeing-input-value" id="sleep-val">7/10</span>
               </div>
-              <input type="range" id="sleep-quality" class="wellbeing-slider" min="1" max="10" value="7">
+              <input type="range" id="sleep-quality" class="wellbeing-slider" min="1" max="10" value="7"
+                     aria-label="Sleep quality from 1 to 10" title="Sleep quality">
               <div class="wellbeing-input-desc" id="sleep-desc-detail">Good / Restful (PSQI Sleep Efficiency Index)</div>
             </div>
 
             <div class="wellbeing-input-card">
               <div class="wellbeing-input-header">
-                <span class="wellbeing-input-label">📱 Screen Time / Study Hours</span>
+                <span class="wellbeing-input-label">📱 Screen / Study Hours</span>
                 <span class="wellbeing-input-value" id="screen-val">8h</span>
               </div>
-              <input type="range" id="screen-time" class="wellbeing-slider" min="1" max="16" value="8">
-              <div class="wellbeing-input-desc" id="screen-desc-detail">Moderate (Digital wellness guides suggest regular eye-rest)</div>
+              <input type="range" id="screen-time" class="wellbeing-slider" min="1" max="16" value="8"
+                     aria-label="Screen time or study hours from 1 to 16" title="Screen/study hours">
+              <div class="wellbeing-input-desc" id="screen-desc-detail">Moderate (regular eye-rest recommended)</div>
             </div>
 
             <div class="wellbeing-input-card">
@@ -98,7 +146,8 @@
                 <span class="wellbeing-input-label">👥 Social Interaction</span>
                 <span class="wellbeing-input-value" id="social-val">5/10</span>
               </div>
-              <input type="range" id="social-interaction" class="wellbeing-slider" min="1" max="10" value="5">
+              <input type="range" id="social-interaction" class="wellbeing-slider" min="1" max="10" value="5"
+                     aria-label="Social interaction from 1 to 10" title="Social interaction">
               <div class="wellbeing-input-desc" id="social-desc-detail">Moderate Connection (LSNS Social Support Scale)</div>
             </div>
 
@@ -107,68 +156,62 @@
                 <span class="wellbeing-input-label">🧘 Break Frequency</span>
                 <span class="wellbeing-input-value" id="break-val">Medium</span>
               </div>
-              <input type="range" id="break-frequency" class="wellbeing-slider" min="1" max="10" value="5">
-              <div class="wellbeing-input-desc" id="break-desc-detail">Optimal Breaks (Pomodoro method: 5m break every 25m study)</div>
+              <input type="range" id="break-frequency" class="wellbeing-slider" min="1" max="10" value="5"
+                     aria-label="Break frequency from 1 to 10" title="Break frequency">
+              <div class="wellbeing-input-desc" id="break-desc-detail">Optimal (Pomodoro: 5 min break per 25 min study)</div>
             </div>
 
             <div class="wellbeing-input-card">
               <div class="wellbeing-input-header">
                 <span class="wellbeing-input-label">What's on your mind?</span>
               </div>
-              <textarea id="journal-prompt" rows="2" placeholder="Briefly share what's been most stressful today..."></textarea>
+              <textarea id="journal-prompt" rows="2" placeholder="Briefly share what's been most stressful today..."
+                        aria-label="Journal prompt"></textarea>
             </div>
           </div>
-          
-          <button id="predict-send" class="btn btn-primary w-full mt-6">
-            <span>✨ Update My Wellbeing Insights</span>
+
+          <button type="button" id="predict-send" class="btn btn-primary w-full mt-6">
+            ✨ Update My Wellbeing Insights
           </button>
 
-          <!-- Scientific Reference & Score Validation Guide -->
           <details class="transparency-details mt-4">
-            <summary>📖 Scientific Reference & Score Validation Guide</summary>
+            <summary>📖 Scientific Reference & Score Validation</summary>
             <div class="transparency-content">
-              <p>We use validated clinical and behavioral metrics to determine your digital wellness state. Here is how we define each component and the research supporting it:</p>
-              
-              <div class="ref-guide-section mt-3">
-                <h4 style="color: var(--accent-primary); font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">🧠 Current Mood (PHQ-9 Baseline)</h4>
-                <p>Based on standard self-reported emotional valence tests. Tracked to monitor acute affective states. Persistent low mood indicates high support needs.</p>
-              </div>
+              <p>We use validated clinical and behavioural metrics to determine your digital wellness state.</p>
 
               <div class="ref-guide-section mt-3">
-                <h4 style="color: var(--accent-primary); font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">📈 Stress Level (PSS-10 Scale)</h4>
-                <p>Adapted from the <em>Perceived Stress Scale (PSS-10)</em>. It gauges how unpredictable, uncontrollable, and overloaded you feel your life is. A score of 7+ indicates high acute stress requiring micro-intervention exercises.</p>
+                <h4 class="ref-guide-heading">🧠 Mood (PHQ-9 Baseline)</h4>
+                <p>Based on standard self-reported emotional valence tests. Persistent low mood indicates high support needs.</p>
               </div>
-
               <div class="ref-guide-section mt-3">
-                <h4 style="color: var(--accent-primary); font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">😴 Sleep Quality (PSQI Criteria)</h4>
-                <p>Informed by the <em>Pittsburgh Sleep Quality Index (PSQI)</em>. Measures subjective sleep latency, duration, and restorative efficiency over a 10-point self-assessment scale.</p>
+                <h4 class="ref-guide-heading">📈 Stress (PSS-10 Scale)</h4>
+                <p>Adapted from the Perceived Stress Scale. A score of 7+ indicates high acute stress requiring intervention.</p>
               </div>
-
               <div class="ref-guide-section mt-3">
-                <h4 style="color: var(--accent-primary); font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">📱 Screen Time & Digital Wellness (WHO Guidelines)</h4>
-                <p>Calculates active study hours and digital eye strain risks. Grounded in research suggesting that screen time above 10 hours daily correlates with cognitive fatigue and reduced attention spans.</p>
+                <h4 class="ref-guide-heading">😴 Sleep (PSQI Criteria)</h4>
+                <p>Informed by the Pittsburgh Sleep Quality Index — measuring latency, duration, and restorative efficiency.</p>
               </div>
-
               <div class="ref-guide-section mt-3">
-                <h4 style="color: var(--accent-primary); font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">👥 Social Interaction (LSNS-6 Index)</h4>
-                <p>Derived from the <em>Lubben Social Network Scale (LSNS-6)</em>. Self-rated peer/family connection levels. Active social communication (5+/10) acts as a powerful buffer against study burnout.</p>
+                <h4 class="ref-guide-heading">📱 Screen Time (WHO Guidelines)</h4>
+                <p>Screen time above 10 hours daily correlates with cognitive fatigue and reduced attention spans.</p>
               </div>
-
               <div class="ref-guide-section mt-3">
-                <h4 style="color: var(--accent-primary); font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">🧘 Break Frequency (Pomodoro Fatigue Management)</h4>
-                <p>Tracks periodic rest intervals during long study sessions. Aligns with Pomodoro/active rest guidelines advocating for a 5-10 minute pause every 25-50 minutes of focused academic work.</p>
+                <h4 class="ref-guide-heading">👥 Social (LSNS-6 Index)</h4>
+                <p>Derived from the Lubben Social Network Scale. Active social connection acts as a buffer against burnout.</p>
               </div>
-              
-              <div class="ref-validation-box mt-3" style="background: rgba(255,255,255,0.03); border-left: 3px solid var(--accent-secondary); padding: 8px 12px; border-radius: 6px; font-size: 0.75rem; margin-top: 16px;">
-                <strong>Validation Check:</strong> The overall <strong>Wellbeing Risk Score</strong> is calculated using a weighted random forest classification model trained on academic performance parameters alongside your self-reported wellness inputs.
+              <div class="ref-guide-section mt-3">
+                <h4 class="ref-guide-heading">🧘 Breaks (Pomodoro Method)</h4>
+                <p>Tracks rest intervals aligned with Pomodoro guidelines: 5–10 min pause every 25–50 min of focused work.</p>
+              </div>
+              <div class="ref-validation-box mt-3">
+                <strong>Validation:</strong> Risk Score is calculated using a weighted Random Forest classifier trained on academic and self-reported wellness inputs.
               </div>
             </div>
           </details>
         </div>
 
-        <!-- Results & Support Panel -->
-        <div class="wellbeing-status-panel" id="predict-result-container" style="display: none;">
-          <!-- Status Highlight -->
+        <!-- Results Panel -->
+        <div class="wellbeing-status-panel wellbeing-status-panel--hidden" id="predict-result-container">
           <div class="status-highlight-card">
             <div class="status-trend" id="status-trend">Stable</div>
             <div class="risk-gauge-header">Wellbeing Status</div>
@@ -177,40 +220,34 @@
             <p class="status-description" id="status-desc">Based on your recent activity, you're currently in a stable range.</p>
           </div>
 
-          <!-- Actionable Guidance -->
           <div class="guidance-section" id="guidance-section">
             <div class="guidance-title">🌱 Recommended for You Today</div>
-            <div class="guidance-list" id="guidance-list">
-              <!-- Dynamically populated -->
+            <div class="guidance-list" id="guidance-list"></div>
+          </div>
+
+          <div class="support-pathways">
+            <button type="button" class="support-btn" id="generate-plan-btn">📜 Generate My Plan</button>
+            <button type="button" class="support-btn" id="chat-ai-btn">💬 Chat AI</button>
+            <button type="button" class="support-btn" id="book-counselor-btn">🗓️ Counselor</button>
+            <button type="button" class="support-btn emergency" id="emergency-btn">🆘 Get Urgent Help</button>
+          </div>
+
+          <div class="forecast-card p-4">
+            <div class="guidance-title">📈 30-Day Outlook</div>
+            <div class="forecast-labels-grid" id="forecast-labels">
+              <div class="forecast-label-item">7 Days: <span class="badge badge-success">Stable</span></div>
+              <div class="forecast-label-item">14 Days: <span class="badge badge-success">Stable</span></div>
+              <div class="forecast-label-item">30 Days: <span class="badge badge-info">Improving</span></div>
+            </div>
+            <div class="forecast-chart-wrap">
+              <canvas id="forecastChart"></canvas>
             </div>
           </div>
 
-          <!-- Support Pathways -->
-          <div class="support-pathways">
-            <button class="support-btn" id="generate-plan-btn"><i class="icon">📜</i> Generate My Plan</button>
-            <button class="support-btn" id="chat-ai-btn"><i class="icon">💬</i> Chat AI</button>
-            <button class="support-btn" id="book-counselor-btn"><i class="icon">🗓️</i> Counselor</button>
-            <button class="support-btn emergency" id="emergency-btn"><i class="icon">🆘</i> Get Urgent Help</button>
-          </div>
-
-          <!-- Forecast Section -->
-          <div class="forecast-card p-4">
-             <div class="guidance-title">📈 30-Day Outlook</div>
-             <div class="forecast-labels-grid" id="forecast-labels">
-                <div class="forecast-label-item">7 Days: <span class="badge badge-success">Stable</span></div>
-                <div class="forecast-label-item">14 Days: <span class="badge badge-success">Stable</span></div>
-                <div class="forecast-label-item">30 Days: <span class="badge badge-info">Improving</span></div>
-             </div>
-             <div style="height: 120px; margin-top: 10px;">
-                <canvas id="forecastChart"></canvas>
-             </div>
-          </div>
-
-          <!-- Transparency & Privacy (Collapsible) -->
           <details class="transparency-details">
             <summary>How this is calculated & Privacy</summary>
             <div class="transparency-content">
-              <p>Calculated based on: Attendance, Submission consistency, Mood trends, Sleep quality, and Engagement levels.</p>
+              <p>Calculated from: Attendance, Submission consistency, Mood trends, Sleep quality, and Engagement levels.</p>
               <p><strong>Note:</strong> This is a support tool, not a clinical diagnosis.</p>
               <div class="privacy-controls mt-4">
                 <label class="switch-label">
@@ -218,33 +255,38 @@
                   <span class="switch-slider"></span>
                   <span>Enable wellbeing tracking</span>
                 </label>
-                <button class="btn btn-secondary btn-sm mt-2" id="delete-data-btn">Delete My Insights Data</button>
+                <button type="button" class="btn btn-secondary btn-sm mt-2" id="delete-data-btn">Delete My Insights Data</button>
               </div>
             </div>
           </details>
           <div class="privacy-badge">🔒 Your data is private and encrypted</div>
         </div>
+
       </div>
     </div>
   </div>
 
-  <!-- Emotion Analyzer (Simplified for faster response) -->
+  <!-- Quick Reflection -->
   <div class="panel glass-panel span-3">
     <div class="panel-header">
-      <h2>💬 Quick Reflection</h2>
+      <div>
+        <h2 class="panel-title">Quick Reflection</h2>
+        <p class="panel-desc">Write a sentence about how you feel — AI provides an immediate supportive perspective.</p>
+      </div>
       <span class="badge badge-warning">AI Guide</span>
     </div>
     <div class="panel-body">
       <div class="emotion-analysis-grid">
         <div class="emotion-input-panel">
-          <p class="metric-section-desc">Write a sentence about how you feel. Our AI will provide an immediate supportive perspective.</p>
           <div class="form-group">
-            <textarea id="emotion-input" rows="3" placeholder="Example: I'm proud of finishing my project today!"></textarea>
+            <textarea id="emotion-input" rows="3"
+                      placeholder="Example: I'm proud of finishing my project today!"
+                      aria-label="Reflection input"></textarea>
           </div>
-          <button id="emotion-send" class="btn btn-secondary w-full">🔍 Get Perspective</button>
+          <button type="button" id="emotion-send" class="btn btn-secondary w-full">🔍 Get Perspective</button>
         </div>
-        
-        <div id="emotion-result-container" class="emotion-results-panel" style="display: none;">
+
+        <div id="emotion-result-container" class="emotion-results-panel emotion-results-panel--hidden">
           <div class="triage-result-card">
             <div class="triage-result-header">
               <span id="emotion-value-label">Perspective</span>
@@ -256,6 +298,7 @@
       </div>
     </div>
   </div>
+
 </div>
 {% endblock %}
 

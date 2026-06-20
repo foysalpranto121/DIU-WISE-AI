@@ -1,3 +1,4 @@
+:root {
   --success: #10b981;
   --warning: #f59e0b;
   --danger: #f43f5e;
@@ -691,4 +692,8 @@
 [data-theme="light"] .ref-validation-box {
   background: rgba(0, 0, 0, 0.03) !important;
   color: #334155;
+}
+
+[data-theme="light"] .ref-guide-heading {
+  color: var(--accent-primary);
 }
