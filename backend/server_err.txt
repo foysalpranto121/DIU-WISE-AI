@@ -1,0 +1,133 @@
+M:\DIU-WISE-AI\backend\.venv\Lib\site-packages\sklearn\base.py:525: InconsistentVersionWarning: Trying to unpickle estimator DecisionTreeClassifier from version 1.8.0 when using version 1.9.0. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+M:\DIU-WISE-AI\backend\.venv\Lib\site-packages\sklearn\base.py:525: InconsistentVersionWarning: Trying to unpickle estimator RandomForestClassifier from version 1.8.0 when using version 1.9.0. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|##########| 103/103 [00:00<00:00, 4005.17it/s]
+M:\DIU-WISE-AI\backend\ai_engine\rag_engine.py:14: LangChainDeprecationWarning: The class `HuggingFaceEmbeddings` was deprecated in LangChain 0.2.2 and will be removed in 1.0. An updated version of the class exists in the `langchain-huggingface package and should be used instead. To use it run `pip install -U `langchain-huggingface` and import as `from `langchain_huggingface import HuggingFaceEmbeddings``.
+  self.embedding_model = HuggingFaceEmbeddings(
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|##########| 103/103 [00:00<00:00, 5084.06it/s]
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.104:5000
+Press CTRL+C to quit
+127.0.0.1 - - [21/Jun/2026 00:23:16] "GET /voice-journal HTTP/1.1" 302 -
+127.0.0.1 - - [21/Jun/2026 00:23:16] "GET /stress-calendar HTTP/1.1" 302 -
+127.0.0.1 - - [21/Jun/2026 00:23:16] "GET /api/events HTTP/1.1" 401 -
+127.0.0.1 - - [21/Jun/2026 00:23:16] "GET /api/stress-forecast HTTP/1.1" 401 -
+127.0.0.1 - - [21/Jun/2026 00:23:27] "GET /voice-journal HTTP/1.1" 302 -
+127.0.0.1 - - [21/Jun/2026 00:23:27] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:23:27] "GET /stress-calendar HTTP/1.1" 302 -
+127.0.0.1 - - [21/Jun/2026 00:23:27] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:23:37] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:24:22] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:24:22] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:24:22] "GET /static/css/clinical.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:24:22] "GET /static/js/crisis.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:24:22] "GET /static/js/chat.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:24:22] "GET /static/images/wellness_bot.png HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:24:22] "GET /static/js/app.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:24:22] "GET /static/js/dashboard.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:24:22] "GET /static/css/crisis.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:24:22] "GET /static/css/features.css HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:24:30] "GET /voice-journal HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:24:30] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:24:30] "GET /static/css/clinical.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:24:30] "GET /static/css/crisis.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:24:30] "GET /static/css/features.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:24:30] "GET /static/images/wellness_bot.png HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:24:30] "GET /static/js/app.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:24:30] "GET /static/js/crisis.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:24:30] "GET /static/js/chat.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:24:30] "GET /static/js/voice_journal.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:25:05] "GET /stress-calendar HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:25:05] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:25:05] "GET /static/css/clinical.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:25:05] "GET /static/css/crisis.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:25:05] "GET /static/css/features.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:25:05] "GET /static/images/wellness_bot.png HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:25:05] "GET /static/js/app.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:25:05] "GET /static/js/crisis.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:25:05] "GET /static/js/chat.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:25:05] "GET /static/js/stress_calendar.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:25:05] "GET /api/events HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:25:05] "GET /api/stress-forecast HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:25:27] "GET /voice-journal HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:25:27] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:25:27] "GET /static/css/clinical.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:25:27] "GET /static/css/crisis.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:25:27] "GET /static/css/features.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:25:27] "GET /static/images/wellness_bot.png HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:25:27] "GET /static/js/app.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:25:27] "GET /static/js/crisis.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:25:27] "GET /static/js/chat.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:25:27] "GET /static/js/voice_journal.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:34:51] "GET /voice-journal HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:34:51] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:34:51] "GET /static/css/clinical.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:34:51] "GET /static/css/crisis.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:34:51] "GET /static/css/features.css HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:34:51] "GET /static/images/wellness_bot.png HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:34:51] "GET /static/js/app.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:34:51] "GET /static/js/crisis.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:34:51] "GET /static/js/chat.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:34:51] "GET /static/js/voice_journal.js HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:38:54] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:38:54] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:38:54] "GET /static/css/clinical.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:38:54] "GET /static/css/crisis.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:38:54] "GET /static/css/features.css HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:38:54] "GET /static/images/wellness_bot.png HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:38:54] "GET /static/js/app.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:38:54] "GET /static/js/crisis.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:38:54] "GET /static/js/chat.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:38:54] "GET /static/js/dashboard.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:00] "GET /mood-history HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:39:00] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:00] "GET /static/css/crisis.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:00] "GET /static/css/clinical.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:00] "GET /static/css/features.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:00] "GET /static/images/wellness_bot.png HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:00] "GET /static/js/app.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:00] "GET /static/js/crisis.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:00] "GET /static/js/chat.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:01] "GET /profile HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:39:01] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:01] "GET /static/css/clinical.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:01] "GET /static/css/crisis.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:01] "GET /static/css/features.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:01] "GET /static/images/wellness_bot.png HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:01] "GET /static/js/app.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:01] "GET /static/js/crisis.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:01] "GET /static/js/chat.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:03] "GET /mood-history HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:39:03] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:03] "GET /static/css/clinical.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:03] "GET /static/css/crisis.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:03] "GET /static/css/features.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:03] "GET /static/images/wellness_bot.png HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:03] "GET /static/js/app.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:03] "GET /static/js/crisis.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:03] "GET /static/js/chat.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:05] "GET /profile HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:39:05] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:05] "GET /static/css/clinical.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:05] "GET /static/css/crisis.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:05] "GET /static/css/features.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:05] "GET /static/images/wellness_bot.png HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:05] "GET /static/js/app.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:05] "GET /static/js/crisis.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:05] "GET /static/js/chat.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:18] "GET /voice-journal HTTP/1.1" 200 -
+127.0.0.1 - - [21/Jun/2026 00:39:18] "GET /static/css/styles.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:18] "GET /static/css/clinical.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:18] "GET /static/css/crisis.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:18] "GET /static/css/features.css HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:18] "GET /static/images/wellness_bot.png HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:18] "GET /static/js/app.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:18] "GET /static/js/crisis.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:18] "GET /static/js/chat.js HTTP/1.1" 304 -
+127.0.0.1 - - [21/Jun/2026 00:39:18] "GET /static/js/voice_journal.js HTTP/1.1" 200 -

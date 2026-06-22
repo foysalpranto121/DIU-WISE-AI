@@ -101,6 +101,39 @@
                             <label>Guardian Phone Number</label>
                             <input type="tel" name="guardian_phone" value="{{ user.guardian_phone or '' }}" placeholder="Guardian's phone" class="form-input">
                         </div>
+
+                        <!-- Faculty Advisor Alert System -->
+                        <div class="form-group" style="grid-column: span 2; margin-top: 24px;">
+                            <div class="advisor-alert-section">
+                                <div class="advisor-alert-header">
+                                    <span class="advisor-alert-icon">🎓</span>
+                                    <div>
+                                        <h4>Faculty Advisor Alert</h4>
+                                        <p>When enabled, your faculty advisor receives a private notification if the AI detects high burnout risk — helping you get institutional support early.</p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Faculty Advisor Email</label>
+                                    <input type="email" name="faculty_advisor_email"
+                                           value="{{ user.faculty_advisor_email or '' }}"
+                                           placeholder="advisor@diu.edu.bd"
+                                           class="form-input">
+                                </div>
+                                <div class="advisor-consent-row">
+                                    <label class="advisor-consent-label">
+                                        <input type="checkbox" name="advisor_alert_consent"
+                                               {% if user.advisor_alert_consent %}checked{% endif %}>
+                                        <span class="advisor-consent-text">
+                                            I consent to automatic advisor notifications when my burnout risk is high.
+                                            <span class="advisor-consent-sub">Alerts are sent at most once per 24 hours. Only your advisor email is notified.</span>
+                                        </span>
+                                    </label>
+                                    {% if user.advisor_alert_sent_at %}
+                                    <span class="advisor-last-sent">Last alert sent: {{ user.advisor_alert_sent_at.strftime('%b %d, %Y %H:%M') }} UTC</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>

@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Account — WISE AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0d0f18;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+    }
+
+    /* ── LEFT PANEL ── */
+    .left-panel {
+      width: 46%;
+      min-height: 100vh;
+      background: radial-gradient(ellipse at 30% 40%, rgba(99,102,241,0.22) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 80%, rgba(236,72,153,0.14) 0%, transparent 55%),
+                  #0d0f18;
+      display: flex;
+      flex-direction: column;
+      padding: 40px 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .left-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(99,102,241,0.06) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .left-logo { display: flex; align-items: center; gap: 10px; margin-bottom: auto; }
+    .left-logo svg { flex-shrink: 0; }
+    .left-logo-text { display: flex; flex-direction: column; line-height: 1.1; }
+    .left-logo-wise { font-size: 1.05rem; font-weight: 700; color: #fff; }
+    .left-logo-ai {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em;
+      background: linear-gradient(90deg, #6366f1, #a855f7);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .left-hero { margin: auto 0; padding: 32px 0; }
+    .left-hero h1 {
+      font-size: 2rem; font-weight: 800; line-height: 1.25;
+      color: #fff; margin-bottom: 14px;
+    }
+    .left-hero h1 span {
+      background: linear-gradient(90deg, #6366f1, #a855f7);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .left-hero p { font-size: 0.95rem; color: #c8d6e8; line-height: 1.65; margin-bottom: 28px; }
+
+    .benefit-cards { display: flex; flex-direction: column; gap: 10px; }
+    .benefit-card {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(255,255,255,0.05);
+      -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px; padding: 12px 16px;
+      font-size: 0.88rem; font-weight: 500; color: #e2e8f0;
+    }
+    .benefit-card .bc-icon {
+      width: 34px; height: 34px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+    }
+    .bc-indigo { background: rgba(99,102,241,0.18); }
+    .bc-emerald { background: rgba(16,185,129,0.18); }
+    .bc-sky    { background: rgba(56,189,248,0.18); }
+
+    .left-back {
+      margin-top: 32px; font-size: 0.83rem; color: #6366f1;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 6px;
+      transition: color 0.15s;
+    }
+    .left-back:hover { color: #a855f7; }
+
+    /* ── RIGHT PANEL ── */
+    .right-panel {
+      flex: 1; background: #13152a;
+      display: flex; align-items: center; justify-content: center;
+      padding: 40px 32px;
+    }
+    .form-box { width: 100%; max-width: 420px; }
+
+    .form-logo { display: flex; align-items: center; gap: 8px; margin-bottom: 28px; }
+    .form-logo-wise { font-size: 0.95rem; font-weight: 700; color: #fff; }
+    .form-logo-ai {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
+      background: linear-gradient(90deg, #6366f1, #a855f7);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    .form-box h2 { font-size: 1.55rem; font-weight: 800; color: #fff; margin-bottom: 6px; }
+    .form-box .form-sub { font-size: 0.88rem; color: #c8d6e8; margin-bottom: 26px; }
+
+    /* plan pill */
+    .plan-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.25);
+      border-radius: 20px; padding: 5px 14px; margin-bottom: 22px;
+      font-size: 0.8rem; font-weight: 600; color: #10b981;
+    }
+
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 0.82rem; font-weight: 600; color: #c8d6e8; margin-bottom: 7px; }
+    .input-wrap { position: relative; }
+    .input-icon {
+      position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      width: 18px; height: 18px; opacity: 0.5; pointer-events: none;
+    }
+    .form-input {
+      width: 100%; padding: 11px 14px 11px 42px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px; color: #fff; font-size: 0.93rem;
+      font-family: inherit; outline: none; transition: border-color 0.2s;
+    }
+    .form-input::placeholder { color: rgba(255,255,255,0.3); }
+    .form-input:focus { border-color: #6366f1; background: rgba(99,102,241,0.08); }
+
+    /* password toggle */
+    .pw-toggle {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; padding: 4px;
+      color: rgba(255,255,255,0.4); transition: color 0.15s;
+    }
+    .pw-toggle:hover { color: #6366f1; }
+
+    /* two-col row */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .form-terms {
+      font-size: 0.78rem; color: #94a3b8; margin-bottom: 18px; line-height: 1.5;
+    }
+    .form-terms a { color: #6366f1; text-decoration: none; }
+    .form-terms a:hover { text-decoration: underline; }
+
+    .btn-register {
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+      border: none; border-radius: 10px;
+      color: #fff; font-size: 0.97rem; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      transition: opacity 0.2s, transform 0.15s;
+      margin-bottom: 18px;
+    }
+    .btn-register:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-register:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .divider { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .divider-line { flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
+    .divider-text { font-size: 0.78rem; color: #94a3b8; }
+
+    .login-link {
+      text-align: center; font-size: 0.85rem; color: #94a3b8;
+    }
+    .login-link a { color: #6366f1; font-weight: 600; text-decoration: none; }
+    .login-link a:hover { color: #a855f7; }
+
+    .error-msg {
+      background: rgba(248,113,113,0.12); border: 1px solid rgba(248,113,113,0.25);
+      border-radius: 9px; padding: 11px 14px;
+      color: #f87171; font-size: 0.84rem; margin-bottom: 16px; display: none;
+    }
+    .success-msg {
+      background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.25);
+      border-radius: 9px; padding: 11px 14px;
+      color: #10b981; font-size: 0.84rem; margin-bottom: 16px; display: none;
+    }
+
+    /* strength bar */
+    .pw-strength { margin-top: 6px; display: none; }
+    .pw-strength-bar {
+      height: 3px; border-radius: 3px; background: rgba(255,255,255,0.08);
+      overflow: hidden; margin-bottom: 4px;
+    }
+    .pw-strength-fill { height: 100%; border-radius: 3px; transition: width 0.3s, background 0.3s; }
+    .pw-strength-label { font-size: 0.72rem; color: #94a3b8; }
+
+    @media (max-width: 768px) {
+      .left-panel { display: none; }
+      .right-panel { padding: 32px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── LEFT PANEL ── -->
+<div class="left-panel">
+  <div class="left-logo">
+    <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
+      <defs>
+        <linearGradient id="lg" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#6366f1"/>
+          <stop offset="100%" stop-color="#a855f7"/>
+        </linearGradient>
+      </defs>
+      <rect width="36" height="36" rx="9" fill="url(#lg)"/>
+      <path d="M18 10 C13 10 10 13 10 16.5 C10 19.5 12 21.5 14.5 22 L14.5 25 L18 25 L18 10 Z" fill="white" opacity="0.92"/>
+      <path d="M18 10 C23 10 26 13 26 16.5 C26 19.5 24 21.5 21.5 22 L21.5 25 L18 25 L18 10 Z" fill="white" opacity="0.75"/>
+      <rect x="17.25" y="10" width="1.5" height="15" rx="0.75" fill="white" opacity="0.6"/>
+      <circle cx="13" cy="15" r="1.4" fill="white"/>
+      <circle cx="23" cy="15" r="1.4" fill="white"/>
+    </svg>
+    <div class="left-logo-text">
+      <span class="left-logo-wise">WISE</span>
+      <span class="left-logo-ai">AI PLATFORM</span>
+    </div>
+  </div>
+
+  <div class="left-hero">
+    <h1>Start your wellness<br><span>journey for free</span></h1>
+    <p>Join 2,000+ DIU students using AI to track their mental wellness, prevent burnout, and get 24/7 support — in Bangla or English.</p>
+    <div class="benefit-cards">
+      <div class="benefit-card">
+        <div class="bc-icon bc-indigo">🧠</div>
+        <span>AI Burnout Detection with 94% accuracy</span>
+      </div>
+      <div class="benefit-card">
+        <div class="bc-icon bc-emerald">🎙️</div>
+        <span>Voice Journal in Bangla &amp; English</span>
+      </div>
+      <div class="benefit-card">
+        <div class="bc-icon bc-sky">📅</div>
+        <span>Academic Stress Calendar &amp; 30-Day Forecast</span>
+      </div>
+    </div>
+  </div>
+
+  <a href="/landing" class="left-back">← Back to home</a>
+</div>
+
+<!-- ── RIGHT PANEL ── -->
+<div class="right-panel">
+  <div class="form-box">
+
+    <div class="form-logo">
+      <svg width="26" height="26" viewBox="0 0 36 36" fill="none">
+        <defs><linearGradient id="lg2" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#a855f7"/>
+        </linearGradient></defs>
+        <rect width="36" height="36" rx="9" fill="url(#lg2)"/>
+        <path d="M18 10 C13 10 10 13 10 16.5 C10 19.5 12 21.5 14.5 22 L14.5 25 L18 25 L18 10 Z" fill="white" opacity="0.92"/>
+        <path d="M18 10 C23 10 26 13 26 16.5 C26 19.5 24 21.5 21.5 22 L21.5 25 L18 25 L18 10 Z" fill="white" opacity="0.75"/>
+        <rect x="17.25" y="10" width="1.5" height="15" rx="0.75" fill="white" opacity="0.6"/>
+      </svg>
+      <span class="form-logo-wise">WISE</span>
+      <span class="form-logo-ai">AI PLATFORM</span>
+    </div>
+
+    <div class="plan-pill">✓ Free Plan — No credit card required</div>
+
+    <h2>Create your account</h2>
+    <p class="form-sub">Get started in under 60 seconds.</p>
+
+    <div class="error-msg" id="errorMsg"></div>
+    <div class="success-msg" id="successMsg"></div>
+
+    <form id="registerForm" autocomplete="off">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <div class="input-wrap">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+          <input type="text" class="form-input" id="fullName" placeholder="Your full name" required autocomplete="name"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">University Email</label>
+        <div class="input-wrap">
+          <svg class="input-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          <input type="email" class="form-input" id="email" placeholder="you@diu.edu.bd" required autocomplete="email"/>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="input-wrap">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.8-2.2-5-5-5S7 3.2 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.7 1.4-3.1 3.1-3.1 1.7 0 3.1 1.4 3.1 3.1v2z"/></svg>
+            <input type="password" class="form-input" id="password" placeholder="Min 8 characters" required autocomplete="new-password"/>
+            <button type="button" class="pw-toggle" id="pwToggle" aria-label="Show or hide password">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.7 7.6 1 12c1.7 4.4 6 7.5 11 7.5s9.3-3.1 11-7.5C21.3 7.6 17 4.5 12 4.5zm0 12.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/></svg>
+            </button>
+          </div>
+          <div class="pw-strength" id="pwStrength">
+            <div class="pw-strength-bar"><div class="pw-strength-fill" id="pwFill"></div></div>
+            <div class="pw-strength-label" id="pwLabel"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <div class="input-wrap">
+            <svg class="input-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.8-2.2-5-5-5S7 3.2 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.7 1.4-3.1 3.1-3.1 1.7 0 3.1 1.4 3.1 3.1v2z"/></svg>
+            <input type="password" class="form-input" id="confirmPassword" placeholder="Repeat password" required autocomplete="new-password"/>
+            <button type="button" class="pw-toggle" id="pwToggle2" aria-label="Show or hide password">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.7 7.6 1 12c1.7 4.4 6 7.5 11 7.5s9.3-3.1 11-7.5C21.3 7.6 17 4.5 12 4.5zm0 12.5c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm0-8c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <p class="form-terms">
+        By creating an account you agree to our
+        <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+        Your mental health data is encrypted and never shared without your consent.
+      </p>
+
+      <button type="submit" class="btn-register" id="submitBtn">Create Free Account</button>
+    </form>
+
+    <div class="divider"><div class="divider-line"></div><span class="divider-text">already have an account?</span><div class="divider-line"></div></div>
+    <p class="login-link"><a href="/login">Sign in to your account →</a></p>
+
+  </div>
+</div>
+
+<script>
+  const form      = document.getElementById('registerForm');
+  const errorMsg  = document.getElementById('errorMsg');
+  const successMsg= document.getElementById('successMsg');
+  const submitBtn = document.getElementById('submitBtn');
+  const pwInput   = document.getElementById('password');
+  const pwStrength= document.getElementById('pwStrength');
+  const pwFill    = document.getElementById('pwFill');
+  const pwLabel   = document.getElementById('pwLabel');
+
+  // Password strength
+  pwInput.addEventListener('input', () => {
+    const v = pwInput.value;
+    pwStrength.style.display = v ? 'block' : 'none';
+    let score = 0;
+    if (v.length >= 8) score++;
+    if (/[A-Z]/.test(v)) score++;
+    if (/[0-9]/.test(v)) score++;
+    if (/[^A-Za-z0-9]/.test(v)) score++;
+    const colors = ['#f87171','#fbbf24','#10b981','#10b981'];
+    const labels = ['Weak','Fair','Good','Strong'];
+    pwFill.style.width = (score * 25) + '%';
+    pwFill.style.background = colors[score - 1] || '#f87171';
+    pwLabel.textContent = labels[score - 1] || '';
+    pwLabel.style.color = colors[score - 1] || '#f87171';
+  });
+
+  // Show/hide password
+  document.getElementById('pwToggle').addEventListener('click', () => {
+    pwInput.type = pwInput.type === 'password' ? 'text' : 'password';
+  });
+  document.getElementById('pwToggle2').addEventListener('click', () => {
+    const c = document.getElementById('confirmPassword');
+    c.type = c.type === 'password' ? 'text' : 'password';
+  });
+
+  function showError(msg) {
+    errorMsg.textContent = msg;
+    errorMsg.style.display = 'block';
+    successMsg.style.display = 'none';
+  }
+  function showSuccess(msg) {
+    successMsg.textContent = msg;
+    successMsg.style.display = 'block';
+    errorMsg.style.display = 'none';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorMsg.style.display = 'none';
+
+    const full_name = document.getElementById('fullName').value.trim();
+    const email     = document.getElementById('email').value.trim();
+    const password  = pwInput.value;
+    const confirm   = document.getElementById('confirmPassword').value;
+
+    if (password !== confirm) { showError('Passwords do not match.'); return; }
+    if (password.length < 8)  { showError('Password must be at least 8 characters.'); return; }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Creating account…';
+
+    try {
+      const res  = await fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ full_name, email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) { showError(data.error || 'Registration failed.'); return; }
+
+      showSuccess('Account created! Redirecting to your dashboard…');
+      setTimeout(() => { window.location.href = '/'; }, 1200);
+    } catch (err) {
+      showError('Could not connect to server. Please try again.');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Create Free Account';
+    }
+  });
+</script>
+</body>
+</html>

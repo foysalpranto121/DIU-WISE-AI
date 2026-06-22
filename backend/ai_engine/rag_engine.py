@@ -1,7 +1,7 @@
 import os
 import json
 
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 
@@ -86,7 +86,11 @@ class RAGEngine:
 
         try:
             from openai import OpenAI
-            client = OpenAI(api_key=key, timeout=30)  # 30-second hard timeout
+            base_url = os.getenv("OPENAI_BASE_URL")
+            client_kwargs = {"api_key": key, "timeout": 30}
+            if base_url:
+                client_kwargs["base_url"] = base_url
+            client = OpenAI(**client_kwargs)
 
             sys_prompt = f"""You are DIU WISE AI — a compassionate academic and mental-wellness assistant built for Daffodil International University students.
 

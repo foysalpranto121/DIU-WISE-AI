@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, current_app, jsonify, request
+from flask import Blueprint, render_template, current_app, jsonify, request, session
 from flask_login import login_required, current_user
 import random
 import json
@@ -502,8 +502,18 @@ def counselors():
 
     # Fetch user's scheduled/completed appointments
     user_appointments = Appointment.query.filter_by(user_id=current_user.id).order_by(Appointment.id.desc()).all()
-    
-    return render_template('counselors.html', counselors=counselors_list, appointments=user_appointments)
+
+    # Last burnout result from session (set by /predict)
+    last_burnout_status = session.get("last_burnout_status", None)
+    last_burnout_confidence = session.get("last_burnout_confidence", 0)
+
+    return render_template(
+        'counselors.html',
+        counselors=counselors_list,
+        appointments=user_appointments,
+        last_burnout_status=last_burnout_status,
+        last_burnout_confidence=last_burnout_confidence,
+    )
 
 
 @pages_bp.route('/appointments/create', methods=['POST'])

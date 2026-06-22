@@ -17,24 +17,193 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/clinical.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/crisis.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/features.css') }}" />
+    <style>
+      /* ── Brand logo ── */
+      .sidebar-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 20px 16px 18px;
+        text-decoration: none;
+        flex-shrink: 0;
+      }
+      .sidebar-brand:hover { opacity: 0.9; }
+
+      .brand-logo-svg {
+        flex-shrink: 0;
+        width: 36px;
+        height: 36px;
+        display: block;
+      }
+
+      .brand-text-group {
+        display: flex;
+        flex-direction: column;
+        line-height: 1;
+        gap: 2px;
+      }
+      .brand-wise {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: 0.02em;
+      }
+      .brand-ai {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* ── Nav section labels ── */
+      .nav-section-label {
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 0.67rem;
+        font-weight: 600;
+        padding: 0 16px 4px;
+        opacity: 0.45;
+      }
+      .nav-section-label--spaced { margin-top: 12px; }
+
+      /* ── Active nav glow ── */
+      .nav-link.active {
+        box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.30), inset 0 0 12px rgba(99, 102, 241, 0.10);
+      }
+
+      /* ── Subscription badge & upgrade link ── */
+      .sidebar-plan-badge {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 600;
+        padding: 2px 8px;
+        border-radius: 10px;
+        line-height: 1.4;
+        margin-top: 2px;
+        letter-spacing: 0.04em;
+      }
+      .sidebar-plan-badge--campus {
+        background: rgba(168,85,247,0.2);
+        color: #c084fc;
+        border: 1px solid rgba(168,85,247,0.3);
+      }
+      .sidebar-plan-badge--basic {
+        background: rgba(148, 163, 184, 0.12);
+        color: #94a3b8;
+        border: 1px solid rgba(148, 163, 184, 0.18);
+      }
+      .sidebar-upgrade-link {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 600;
+        color: #a855f7;
+        text-decoration: none;
+        margin-top: 3px;
+        letter-spacing: 0.02em;
+        transition: color 0.15s;
+      }
+      .sidebar-upgrade-link:hover { color: #ec4899; }
+
+      .sidebar-user-info {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        min-width: 0;
+      }
+
+      /* ── Wellness tip card — gradient left border ── */
+      .sidebar-tip-card {
+        border-left: 3px solid transparent;
+        border-image: linear-gradient(to bottom, #6366f1, #a855f7) 1;
+        /* fallback for browsers that don't support border-image with radius */
+        box-shadow: -3px 0 0 0 #6366f1;
+        border-left: none;
+        position: relative;
+      }
+      .sidebar-tip-card::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: linear-gradient(to bottom, #6366f1, #a855f7, #ec4899);
+        border-radius: 3px 0 0 3px;
+      }
+
+      /* ── Breadcrumb enhancements ── */
+      .breadcrumb-root {
+        font-weight: 600;
+        font-size: 0.8rem;
+        opacity: 0.65;
+      }
+      .breadcrumb-current {
+        font-weight: 700;
+        font-size: 0.92rem;
+        color: var(--text-primary, #f1f5f9);
+      }
+
+      /* ── Notification badge — orange dot ── */
+      .notif-badge {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 8px;
+        height: 8px;
+        background: #f97316;
+        border-radius: 50%;
+        border: 2px solid var(--bg-secondary, #1e293b);
+        display: block;
+      }
+      /* Ensure the bell button has relative positioning for badge */
+      .header-action-btn {
+        position: relative;
+      }
+    </style>
   </head>
   <body>
     <div class="app-container">
 
       <!-- ══ SIDEBAR ══ -->
       <nav class="sidebar">
-        <div class="sidebar-brand">
-          <div class="sidebar-logo-mark">
-            <svg viewBox="0 0 24 24" fill="white">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" opacity="0.4"/>
-              <path d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 9H9v-6h2v6zm4 0h-2v-6h2v6z"/>
-            </svg>
+
+        <!-- Brand / Logo -->
+        <a href="{{ url_for('index') }}" class="sidebar-brand">
+          <!-- Rounded square with gradient fill + brain/neural icon -->
+          <svg class="brand-logo-svg" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="brandGrad" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#6366f1"/>
+                <stop offset="100%" stop-color="#a855f7"/>
+              </linearGradient>
+            </defs>
+            <!-- Rounded square background -->
+            <rect width="36" height="36" rx="8" fill="url(#brandGrad)"/>
+            <!-- Brain / neural icon — two arcs forming lobes -->
+            <!-- Left lobe -->
+            <path d="M18 10 C13 10 10 13 10 16.5 C10 19.5 12 21.5 14.5 22 L14.5 25 L18 25 L18 10 Z"
+                  fill="white" opacity="0.92"/>
+            <!-- Right lobe -->
+            <path d="M18 10 C23 10 26 13 26 16.5 C26 19.5 24 21.5 21.5 22 L21.5 25 L18 25 L18 10 Z"
+                  fill="white" opacity="0.75"/>
+            <!-- Center stem line -->
+            <rect x="17.25" y="10" width="1.5" height="15" rx="0.75" fill="white" opacity="0.6"/>
+            <!-- Neuron dots -->
+            <circle cx="13" cy="15" r="1.5" fill="white" opacity="0.9"/>
+            <circle cx="23" cy="15" r="1.5" fill="white" opacity="0.9"/>
+            <circle cx="14" cy="20" r="1.2" fill="white" opacity="0.8"/>
+            <circle cx="22" cy="20" r="1.2" fill="white" opacity="0.8"/>
+          </svg>
+
+          <div class="brand-text-group">
+            <span class="brand-wise">WISE</span>
+            <span class="brand-ai">AI PLATFORM</span>
           </div>
-          <div class="sidebar-brand-text">
-            <span class="sidebar-brand-name">DIU WISE</span>
-            <span class="sidebar-brand-tag">AI Platform</span>
-          </div>
-        </div>
+        </a>
 
         {% if current_user.is_authenticated %}
         <nav class="nav-body">
@@ -69,6 +238,28 @@
             </li>
           </ul>
 
+          <div class="nav-section-label nav-section-label--spaced">AI Tools</div>
+          <ul class="nav-links">
+            <li>
+              <a href="/voice-journal" class="nav-link {% if request.path == '/voice-journal' %}active{% endif %}">
+                <span class="nav-icon">
+                  <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                </span>
+                <span class="nav-text">Voice Journal</span>
+                {% if request.path == '/voice-journal' %}<span class="nav-active-dot"></span>{% endif %}
+              </a>
+            </li>
+            <li>
+              <a href="/stress-calendar" class="nav-link {% if request.path == '/stress-calendar' %}active{% endif %}">
+                <span class="nav-icon">
+                  <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+                </span>
+                <span class="nav-text">Stress Calendar</span>
+                {% if request.path == '/stress-calendar' %}<span class="nav-active-dot"></span>{% endif %}
+              </a>
+            </li>
+          </ul>
+
           <div class="nav-section-label nav-section-label--spaced">Support</div>
           <ul class="nav-links">
             <li>
@@ -87,6 +278,16 @@
                 </span>
                 <span class="nav-text">Counselors</span>
                 {% if request.path == '/counselors' %}<span class="nav-active-dot"></span>{% endif %}
+              </a>
+            </li>
+            <li>
+              <a href="/pricing" class="nav-link {% if request.path == '/pricing' %}active{% endif %}">
+                <span class="nav-icon">
+                  <!-- Star / pricing icon -->
+                  <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                </span>
+                <span class="nav-text">Pricing</span>
+                {% if request.path == '/pricing' %}<span class="nav-active-dot"></span>{% endif %}
               </a>
             </li>
             <li>
@@ -139,7 +340,12 @@
             </div>
             <div class="sidebar-user-info">
               <span class="sidebar-user-name">{{ current_user.full_name }}</span>
-              <span class="sidebar-user-role">{{ current_user.role | capitalize }}</span>
+              {% if 'admin' in current_user.email %}
+              <span class="sidebar-plan-badge sidebar-plan-badge--campus">Campus Plan</span>
+              {% else %}
+              <span class="sidebar-plan-badge sidebar-plan-badge--basic">Basic Plan</span>
+              <a href="/pricing" class="sidebar-upgrade-link" onclick="event.stopPropagation();">Upgrade &rarr;</a>
+              {% endif %}
             </div>
             <button type="button" id="logout-btn" class="sidebar-logout-btn" title="Logout" onclick="event.preventDefault(); event.stopPropagation();">
               <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>

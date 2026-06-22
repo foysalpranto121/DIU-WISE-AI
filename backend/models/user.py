@@ -40,6 +40,11 @@ class User(UserMixin, db.Model):
     achievements = db.Column(db.JSON, nullable=True, default=lambda: [])
     goals = db.Column(db.JSON, nullable=True, default=lambda: {"study_hours": 0, "assignments": 0})
 
+    # Faculty Advisor Alert System
+    faculty_advisor_email = db.Column(db.String(160), nullable=True)
+    advisor_alert_consent = db.Column(db.Boolean, nullable=False, default=False)
+    advisor_alert_sent_at = db.Column(db.DateTime, nullable=True)
+
     def set_password(self, password: str):
         self.password_hash = generate_password_hash(password)
 
@@ -73,4 +78,6 @@ class User(UserMixin, db.Model):
             "goals": self.goals,
             "is_active_account": self.is_active_account,
             "created_at": self.created_at.isoformat() if self.created_at else None,
+            "faculty_advisor_email": self.faculty_advisor_email,
+            "advisor_alert_consent": self.advisor_alert_consent,
         }

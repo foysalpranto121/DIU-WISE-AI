@@ -1,0 +1,1306 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pricing | DIU WISE AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+Bengali:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ground:     #0d0f18;
+      --ground-2:   #10131f;
+      --ground-3:   #13152a;
+      --text:       #e8eaf6;
+      --text-dim:   #8892b0;
+      --text-faint: #4a5270;
+      --accent:     #6366f1;
+      --accent-2:   #a855f7;
+      --accent-3:   #10b981;
+      --success:    #10b981;
+      --warning:    #f59e0b;
+      --grad:       linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+      --glass-bg:   rgba(255,255,255,0.04);
+      --glass-bd:   rgba(255,255,255,0.08);
+      --r-xl:       24px;
+      --r-lg:       20px;
+      --r-md:       14px;
+      --r-sm:       10px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', 'Noto Sans Bengali', sans-serif;
+      background-color: var(--ground);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── NAVBAR ── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 900;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 68px;
+      background: rgba(11,13,20,0.85);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--glass-bd);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .nav-logo-mark {
+      width: 38px; height: 38px;
+      border-radius: 11px;
+      background: var(--grad);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(99,102,241,0.4);
+      flex-shrink: 0;
+    }
+
+    .nav-wordmark {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.3px;
+    }
+
+    .nav-wordmark span {
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      padding: 8px 16px;
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-radius: var(--r-sm);
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); background: var(--glass-bg); }
+
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+
+    .btn-ghost {
+      padding: 9px 20px;
+      background: transparent;
+      border: 1px solid var(--glass-bd);
+      border-radius: var(--r-md);
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(99,102,241,0.5);
+      background: rgba(99,102,241,0.08);
+      color: var(--text);
+    }
+
+    .btn-primary {
+      padding: 9px 20px;
+      background: var(--grad);
+      border: none;
+      border-radius: var(--r-md);
+      color: white;
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      box-shadow: 0 4px 16px rgba(99,102,241,0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-block;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(99,102,241,0.5);
+    }
+
+    /* ── PAGE WRAPPER ── */
+    .page-wrap {
+      padding-top: 68px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      text-align: center;
+      padding: 80px 24px 60px;
+      position: relative;
+    }
+
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      width: 700px; height: 400px;
+      background: radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .page-header h1 {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      color: var(--text);
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .page-header h1 .grad-text {
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .page-header .subtitle {
+      font-size: 1.1rem;
+      color: var(--text-dim);
+      margin-bottom: 36px;
+    }
+
+    /* ── BILLING TOGGLE ── */
+    .billing-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-bd);
+      border-radius: 12px;
+      padding: 4px;
+      position: relative;
+    }
+
+    .toggle-btn {
+      padding: 9px 22px;
+      border: none;
+      border-radius: 9px;
+      background: transparent;
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.22s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toggle-btn.active {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 2px 12px rgba(99,102,241,0.4);
+    }
+
+    .save-badge {
+      display: inline-block;
+      background: rgba(16,185,129,0.15);
+      border: 1px solid rgba(16,185,129,0.3);
+      color: var(--success);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+      letter-spacing: 0.3px;
+    }
+
+    /* ── PRICING CARDS ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      padding: 0 24px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+      align-items: start;
+    }
+
+    .price-card {
+      background: var(--ground-3);
+      border: 1px solid var(--glass-bd);
+      border-radius: var(--r-xl);
+      padding: 36px 32px;
+      position: relative;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+
+    .price-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+
+    .price-card.featured {
+      border-color: rgba(99,102,241,0.6);
+      box-shadow: 0 0 0 1px rgba(99,102,241,0.25), 0 20px 60px rgba(99,102,241,0.15);
+      background: linear-gradient(160deg, rgba(99,102,241,0.07) 0%, var(--ground-3) 60%);
+    }
+
+    .price-card.featured:hover {
+      box-shadow: 0 0 0 1px rgba(99,102,241,0.4), 0 28px 80px rgba(99,102,241,0.22);
+    }
+
+    .popular-badge {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--grad);
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 5px 16px;
+      border-radius: 20px;
+      white-space: nowrap;
+      box-shadow: 0 4px 16px rgba(99,102,241,0.5);
+    }
+
+    .card-plan-name {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+    }
+
+    .featured .card-plan-name { color: var(--accent); }
+
+    .card-price-wrap {
+      margin-bottom: 6px;
+    }
+
+    .card-price {
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: var(--text);
+      letter-spacing: -2px;
+      line-height: 1;
+    }
+
+    .card-price .currency {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0;
+      vertical-align: top;
+      margin-top: 6px;
+      display: inline-block;
+    }
+
+    .card-price .period {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-dim);
+      letter-spacing: 0;
+    }
+
+    .card-price-alt {
+      font-size: 0.82rem;
+      color: var(--success);
+      font-weight: 600;
+      margin-bottom: 4px;
+      min-height: 20px;
+    }
+
+    .card-subtitle {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin-bottom: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      line-height: 1.4;
+    }
+
+    .feature-list li.yes { color: var(--text); }
+
+    .feat-icon {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 800;
+      margin-top: 1px;
+    }
+
+    .feat-icon.yes { background: rgba(16,185,129,0.15); color: var(--success); }
+    .feat-icon.no  { background: rgba(255,255,255,0.04); color: var(--text-faint); }
+
+    .card-divider {
+      height: 1px;
+      background: var(--glass-bd);
+      margin-bottom: 28px;
+    }
+
+    .btn-card-primary {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      text-align: center;
+      border-radius: var(--r-md);
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-decoration: none;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      border: none;
+    }
+
+    .btn-card-indigo {
+      background: var(--grad);
+      color: white;
+      box-shadow: 0 4px 20px rgba(99,102,241,0.35);
+    }
+
+    .btn-card-indigo:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(99,102,241,0.5);
+    }
+
+    .btn-card-ghost-indigo {
+      background: transparent;
+      color: var(--accent);
+      border: 1.5px solid rgba(99,102,241,0.45);
+    }
+
+    .btn-card-ghost-indigo:hover {
+      background: rgba(99,102,241,0.08);
+      border-color: var(--accent);
+    }
+
+    .btn-card-ghost-purple {
+      background: transparent;
+      color: var(--accent-2);
+      border: 1.5px solid rgba(168,85,247,0.4);
+    }
+
+    .btn-card-ghost-purple:hover {
+      background: rgba(168,85,247,0.08);
+      border-color: var(--accent-2);
+    }
+
+    .card-note {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--text-faint);
+      margin-top: 12px;
+    }
+
+    /* ── COMPARISON TABLE ── */
+    .compare-section {
+      padding: 80px 0;
+      background: var(--ground-2);
+      border-top: 1px solid var(--glass-bd);
+      border-bottom: 1px solid var(--glass-bd);
+    }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      color: var(--text);
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: var(--r-lg);
+      border: 1px solid var(--glass-bd);
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+      font-size: 0.88rem;
+    }
+
+    .compare-table thead th {
+      position: sticky;
+      top: 0;
+      background: var(--ground-3);
+      padding: 18px 20px;
+      text-align: center;
+      font-weight: 700;
+      color: var(--text);
+      border-bottom: 1px solid var(--glass-bd);
+      z-index: 2;
+    }
+
+    .compare-table thead th:first-child {
+      text-align: left;
+    }
+
+    .compare-table thead th.col-featured {
+      color: var(--accent);
+      border-bottom-color: rgba(99,102,241,0.4);
+      background: linear-gradient(180deg, rgba(99,102,241,0.08) 0%, var(--ground-3) 100%);
+    }
+
+    .compare-table .group-row td {
+      padding: 12px 20px 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-faint);
+      background: var(--ground);
+      border-top: 1px solid var(--glass-bd);
+    }
+
+    .compare-table tbody tr:not(.group-row) td {
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: var(--text-dim);
+    }
+
+    .compare-table tbody tr:not(.group-row):nth-child(even) td {
+      background: rgba(255,255,255,0.018);
+    }
+
+    .compare-table tbody tr:not(.group-row) td:first-child {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .compare-table tbody td:not(:first-child) {
+      text-align: center;
+    }
+
+    .compare-table td.col-featured {
+      background: rgba(99,102,241,0.04);
+    }
+
+    .tbl-yes {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: rgba(16,185,129,0.15);
+      color: var(--success);
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+
+    .tbl-no {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+      color: var(--text-faint);
+      font-size: 0.85rem;
+    }
+
+    .tbl-val {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-dim);
+    }
+
+    /* ── FAQ ── */
+    .faq-section {
+      padding: 80px 0;
+    }
+
+    .faq-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      background: var(--ground-3);
+      border: 1px solid var(--glass-bd);
+      border-radius: var(--r-md);
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      text-align: left;
+      gap: 16px;
+      transition: background 0.2s;
+    }
+
+    .faq-question:hover { background: var(--glass-bg); }
+
+    .faq-chevron {
+      flex-shrink: 0;
+      width: 20px; height: 20px;
+      fill: var(--text-dim);
+      transition: transform 0.25s ease;
+    }
+
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.25s ease;
+    }
+
+    .faq-item.open .faq-answer {
+      max-height: 200px;
+    }
+
+    .faq-answer-inner {
+      padding: 0 24px 20px;
+      font-size: 0.9rem;
+      color: var(--text-dim);
+      line-height: 1.7;
+      border-top: 1px solid var(--glass-bd);
+      padding-top: 16px;
+    }
+
+    /* ── BOTTOM CTA ── */
+    .bottom-cta {
+      padding: 0 24px 80px;
+    }
+
+    .cta-banner {
+      max-width: 900px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, rgba(99,102,241,0.25) 0%, rgba(168,85,247,0.2) 50%, rgba(236,72,153,0.15) 100%);
+      border: 1px solid rgba(99,102,241,0.3);
+      border-radius: var(--r-xl);
+      padding: 64px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 600px 400px at 50% 50%, rgba(99,102,241,0.15), transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-banner h2 {
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 900;
+      letter-spacing: -1px;
+      color: white;
+      margin-bottom: 14px;
+      position: relative;
+    }
+
+    .cta-banner p {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 36px;
+      position: relative;
+    }
+
+    .cta-btns {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+    }
+
+    .btn-cta-white {
+      padding: 14px 32px;
+      background: white;
+      color: #1a1a2e;
+      border: none;
+      border-radius: var(--r-md);
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-decoration: none;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.25s;
+      cursor: pointer;
+    }
+
+    .btn-cta-white:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+
+    .btn-cta-outline {
+      padding: 14px 32px;
+      background: transparent;
+      color: white;
+      border: 1.5px solid rgba(255,255,255,0.4);
+      border-radius: var(--r-md);
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-decoration: none;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.25s;
+      cursor: pointer;
+    }
+
+    .btn-cta-outline:hover {
+      border-color: white;
+      background: rgba(255,255,255,0.08);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ground-3);
+      border-top: 1px solid var(--glass-bd);
+      padding: 64px 48px 32px;
+    }
+
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+
+    .footer-brand { display: flex; flex-direction: column; gap: 16px; }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .footer-logo-mark {
+      width: 32px; height: 32px;
+      border-radius: 9px;
+      background: var(--grad);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .footer-logo-mark svg { width: 18px; height: 18px; }
+
+    .footer-logo-text {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .footer-tagline {
+      font-size: 0.875rem;
+      color: var(--text-dim);
+      line-height: 1.7;
+      max-width: 280px;
+    }
+
+    .footer-col-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-faint);
+      margin-bottom: 16px;
+    }
+
+    .footer-links { display: flex; flex-direction: column; gap: 10px; }
+
+    .footer-links a {
+      font-size: 0.875rem;
+      color: var(--text-faint);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--text); }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 24px;
+      border-top: 1px solid var(--glass-bd);
+    }
+
+    .footer-copy {
+      font-size: 0.8rem;
+      color: var(--text-faint);
+    }
+
+    .footer-pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.78rem;
+      color: var(--text-faint);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-bd);
+      padding: 5px 12px;
+      border-radius: 20px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      .nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      .pricing-grid { grid-template-columns: 1fr; max-width: 480px; }
+      footer { padding: 48px 24px 24px; }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .footer-top { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+      .cta-banner { padding: 48px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ NAVBAR ══ -->
+  <nav class="nav">
+    <a href="/landing" class="nav-brand">
+      <div class="nav-logo-mark">
+        <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
+          <defs>
+            <linearGradient id="g1nav" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#6366f1"/>
+              <stop offset="100%" stop-color="#a855f7"/>
+            </linearGradient>
+          </defs>
+          <circle cx="12" cy="15" r="5" fill="none" stroke="white" stroke-width="1.8"/>
+          <circle cx="24" cy="15" r="5" fill="none" stroke="white" stroke-width="1.8"/>
+          <path d="M17 15 Q18 12 19 15" fill="none" stroke="white" stroke-width="1.5"/>
+          <path d="M12 20 Q18 28 24 20" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="12" cy="13" r="1.2" fill="white" opacity="0.8"/>
+          <circle cx="24" cy="13" r="1.2" fill="white" opacity="0.8"/>
+          <circle cx="18" cy="17" r="1.2" fill="white"/>
+        </svg>
+      </div>
+      <span class="nav-wordmark">WISE <span>AI</span></span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="/landing#features">Features</a></li>
+      <li><a href="/landing#how">How It Works</a></li>
+      <li><a href="/pricing">Pricing</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="/login" class="btn-ghost">Sign In</a>
+      <a href="/register" class="btn-primary">Get Started Free</a>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+
+    <!-- ══ HEADER ══ -->
+    <section class="page-header">
+      <h1>Simple, Transparent <span class="grad-text">Pricing</span></h1>
+      <p class="subtitle">Start free. Upgrade when you're ready. Cancel anytime.</p>
+
+      <div class="billing-toggle" id="billingToggle">
+        <button class="toggle-btn active" id="btn-monthly" onclick="setBilling('monthly')">Monthly</button>
+        <button class="toggle-btn" id="btn-yearly" onclick="setBilling('yearly')">
+          Yearly
+          <span class="save-badge" id="save-badge" style="display:none;">Save 20%</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ══ PRICING CARDS ══ -->
+    <div class="pricing-grid">
+
+      <!-- Basic -->
+      <div class="price-card">
+        <div class="card-plan-name">Basic</div>
+        <div class="card-price-wrap">
+          <div class="card-price">
+            <span class="currency">৳</span><span id="price-basic">0</span><span class="period"> /month</span>
+          </div>
+        </div>
+        <div class="card-price-alt" id="price-basic-alt"></div>
+        <div class="card-subtitle">Perfect for getting started</div>
+        <div class="card-divider"></div>
+        <ul class="feature-list">
+          <li class="yes"><span class="feat-icon yes">✓</span>Mood &amp; stress tracking</li>
+          <li class="yes"><span class="feat-icon yes">✓</span>Basic burnout prediction</li>
+          <li class="yes"><span class="feat-icon yes">✓</span>5 AI chat messages/day</li>
+          <li class="yes"><span class="feat-icon yes">✓</span>Resource library access</li>
+          <li class="yes"><span class="feat-icon yes">✓</span>Basic wellness reports</li>
+          <li><span class="feat-icon no">✗</span>Voice Journal (Bangla + English)</li>
+          <li><span class="feat-icon no">✗</span>Stress Calendar &amp; forecast</li>
+          <li><span class="feat-icon no">✗</span>Unlimited AI chat</li>
+          <li><span class="feat-icon no">✗</span>Priority counselor booking</li>
+          <li><span class="feat-icon no">✗</span>Emotion history &amp; trends</li>
+          <li><span class="feat-icon no">✗</span>Faculty advisor alerts</li>
+        </ul>
+        <a href="/register" class="btn-card-primary btn-card-ghost-indigo">Get Started Free</a>
+      </div>
+
+      <!-- Pro (Featured) -->
+      <div class="price-card featured">
+        <div class="popular-badge">Most Popular</div>
+        <div class="card-plan-name">Pro</div>
+        <div class="card-price-wrap">
+          <div class="card-price">
+            <span class="currency">৳</span><span id="price-pro">299</span><span class="period" id="period-pro"> /month</span>
+          </div>
+        </div>
+        <div class="card-price-alt" id="price-pro-alt"></div>
+        <div class="card-subtitle">For students who need full support</div>
+        <div class="card-divider"></div>
+        <ul class="feature-list">
+          <li class="yes"><span class="feat-icon yes">✓</span>Everything in Basic</li>
+          <li class="yes"><span class="feat-icon yes">✓</span>Unlimited AI chat (Bangla + English)</li>
+          <li class="yes"><span class="feat-icon yes">✓</span>Voice Journal with Whisper AI</li>
+          <li class="yes"><span class="feat-icon yes">✓</span>Stress Calendar &amp; 30-day forecast</li>
+          <li class="yes"><span class="feat-icon yes">✓</span>Priority counselor booking</li>
+          <li class="yes"><span class="feat-icon yes">✓</span>Emotion history &amp; trend analysis</li>
+          <li class="yes"><span class="feat-icon yes">✓</span>Weekly email wellness reports</li>
+          <li class="yes"><span class="feat-icon yes">✓</span>Mood export (CSV)</li>
+        </ul>
+        <a href="/register" class="btn-card-primary btn-card-indigo">Start Pro Trial</a>
+        <div class="card-note">7-day free trial, no credit card required</div>
+      </div>
+
+      <!-- Campus -->
+      <div class="price-card">
+        <div class="card-plan-name">Campus</div>
+        <div class="card-price-wrap">
+          <div class="card-price" style="font-size:2rem;letter-spacing:-1px;">Talk to us</div>
+        </div>
+        <div class="card-price-alt"></div>
+        <div class="card-subtitle">For universities &amp; institutions</div>
+        <div class="card-divider"></div>
+        <ul class="feature-list">
+          <li class="yes"><span class="feat-icon yes">✓</span>Everything in Pro</li>
+          <li class="yes"><span class="feat-icon yes">✓</span>Admin analytics dashboard</li>
+          <li class="yes"><span class="feat-icon yes">✓</span>Faculty advisor alert system</li>
+          <li class="yes"><span class="feat-icon yes">✓</span>Counselor management portal</li>
+          <li class="yes"><span class="feat-icon yes">✓</span>Bulk student license management</li>
+          <li class="yes"><span class="feat-icon yes">✓</span>REST API access</li>
+          <li class="yes"><span class="feat-icon yes">✓</span>Custom integrations</li>
+          <li class="yes"><span class="feat-icon yes">✓</span>Dedicated account manager</li>
+          <li class="yes"><span class="feat-icon yes">✓</span>SLA &amp; uptime guarantee</li>
+          <li class="yes"><span class="feat-icon yes">✓</span>Data residency options</li>
+        </ul>
+        <a href="mailto:contact@wise-ai.edu.bd" class="btn-card-primary btn-card-ghost-purple">Contact Sales</a>
+        <div class="card-note">Trusted by DIU and partner institutions</div>
+      </div>
+
+    </div>
+
+    <!-- ══ COMPARISON TABLE ══ -->
+    <section class="compare-section">
+      <div class="container">
+        <h2 class="section-title">Compare all features</h2>
+        <div class="table-wrap">
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th style="text-align:left;width:40%;">Feature</th>
+                <th>Basic</th>
+                <th class="col-featured">Pro</th>
+                <th>Campus</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="group-row"><td colspan="4">Wellness Tracking</td></tr>
+              <tr>
+                <td>Mood tracking</td>
+                <td><span class="tbl-yes">✓</span></td>
+                <td class="col-featured"><span class="tbl-yes">✓</span></td>
+                <td><span class="tbl-yes">✓</span></td>
+              </tr>
+              <tr>
+                <td>Burnout prediction</td>
+                <td><span class="tbl-yes">✓</span></td>
+                <td class="col-featured"><span class="tbl-yes">✓</span></td>
+                <td><span class="tbl-yes">✓</span></td>
+              </tr>
+              <tr>
+                <td>Stress calendar</td>
+                <td><span class="tbl-no">—</span></td>
+                <td class="col-featured"><span class="tbl-yes">✓</span></td>
+                <td><span class="tbl-yes">✓</span></td>
+              </tr>
+              <tr>
+                <td>Emotion history</td>
+                <td><span class="tbl-no">—</span></td>
+                <td class="col-featured"><span class="tbl-yes">✓</span></td>
+                <td><span class="tbl-yes">✓</span></td>
+              </tr>
+
+              <tr class="group-row"><td colspan="4">AI Features</td></tr>
+              <tr>
+                <td>AI chat (messages/day)</td>
+                <td><span class="tbl-val">5</span></td>
+                <td class="col-featured"><span class="tbl-val">Unlimited</span></td>
+                <td><span class="tbl-val">Unlimited</span></td>
+              </tr>
+              <tr>
+                <td>Voice Journal</td>
+                <td><span class="tbl-no">—</span></td>
+                <td class="col-featured"><span class="tbl-yes">✓</span></td>
+                <td><span class="tbl-yes">✓</span></td>
+              </tr>
+              <tr>
+                <td>Bilingual support</td>
+                <td><span class="tbl-yes">✓</span></td>
+                <td class="col-featured"><span class="tbl-yes">✓</span></td>
+                <td><span class="tbl-yes">✓</span></td>
+              </tr>
+
+              <tr class="group-row"><td colspan="4">Counseling</td></tr>
+              <tr>
+                <td>Standard booking</td>
+                <td><span class="tbl-yes">✓</span></td>
+                <td class="col-featured"><span class="tbl-yes">✓</span></td>
+                <td><span class="tbl-yes">✓</span></td>
+              </tr>
+              <tr>
+                <td>Priority booking</td>
+                <td><span class="tbl-no">—</span></td>
+                <td class="col-featured"><span class="tbl-yes">✓</span></td>
+                <td><span class="tbl-yes">✓</span></td>
+              </tr>
+              <tr>
+                <td>Smart triage</td>
+                <td><span class="tbl-no">—</span></td>
+                <td class="col-featured"><span class="tbl-yes">✓</span></td>
+                <td><span class="tbl-yes">✓</span></td>
+              </tr>
+
+              <tr class="group-row"><td colspan="4">Reporting</td></tr>
+              <tr>
+                <td>Basic reports</td>
+                <td><span class="tbl-yes">✓</span></td>
+                <td class="col-featured"><span class="tbl-yes">✓</span></td>
+                <td><span class="tbl-yes">✓</span></td>
+              </tr>
+              <tr>
+                <td>Weekly email reports</td>
+                <td><span class="tbl-no">—</span></td>
+                <td class="col-featured"><span class="tbl-yes">✓</span></td>
+                <td><span class="tbl-yes">✓</span></td>
+              </tr>
+              <tr>
+                <td>Data export (CSV)</td>
+                <td><span class="tbl-no">—</span></td>
+                <td class="col-featured"><span class="tbl-yes">✓</span></td>
+                <td><span class="tbl-yes">✓</span></td>
+              </tr>
+
+              <tr class="group-row"><td colspan="4">Admin</td></tr>
+              <tr>
+                <td>Admin dashboard</td>
+                <td><span class="tbl-no">—</span></td>
+                <td class="col-featured"><span class="tbl-no">—</span></td>
+                <td><span class="tbl-yes">✓</span></td>
+              </tr>
+              <tr>
+                <td>Faculty alerts</td>
+                <td><span class="tbl-no">—</span></td>
+                <td class="col-featured"><span class="tbl-no">—</span></td>
+                <td><span class="tbl-yes">✓</span></td>
+              </tr>
+              <tr>
+                <td>Bulk licenses</td>
+                <td><span class="tbl-no">—</span></td>
+                <td class="col-featured"><span class="tbl-no">—</span></td>
+                <td><span class="tbl-yes">✓</span></td>
+              </tr>
+              <tr>
+                <td>API access</td>
+                <td><span class="tbl-no">—</span></td>
+                <td class="col-featured"><span class="tbl-no">—</span></td>
+                <td><span class="tbl-yes">✓</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ FAQ ══ -->
+    <section class="faq-section">
+      <div class="container">
+        <h2 class="section-title">Frequently asked questions</h2>
+        <div class="faq-grid">
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              Can I really use it in Bangla?
+              <svg class="faq-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">Yes, our AI natively understands and responds in Bangla and English. You can switch languages mid-conversation and the AI adapts in real time.</div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              Is my mental health data private?
+              <svg class="faq-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">Yes. All data is encrypted at rest and in transit using industry-standard protocols. We never share individual data with your university without your explicit consent.</div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              Can I cancel anytime?
+              <svg class="faq-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">Yes. Cancel with one click from your account settings. No hidden fees, no cancellation penalties, no contracts. Your data is yours to export before you leave.</div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              What payment methods do you accept?
+              <svg class="faq-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">We accept bKash, Nagad, DBBL Nexus, and major credit/debit cards. All transactions are processed securely through our payment partners.</div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              Is there a student discount?
+              <svg class="faq-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">The Pro plan is already priced specifically for students at ৳299/month — well below comparable platforms. Campus plans offer additional volume discounts for institutions.</div>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="toggleFaq(this)">
+              Do you offer a free trial for Pro?
+              <svg class="faq-chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5"/></svg>
+            </button>
+            <div class="faq-answer">
+              <div class="faq-answer-inner">Yes — 7 days free, no credit card required. Sign up and explore every Pro feature. If it's not for you, just don't upgrade and you'll stay on the free Basic plan.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ BOTTOM CTA ══ -->
+    <div class="bottom-cta">
+      <div class="cta-banner">
+        <h2>Start your wellness journey today</h2>
+        <p>Join thousands of students who track, manage, and improve their mental health with WISE AI.</p>
+        <div class="cta-btns">
+          <a href="/register" class="btn-cta-white">Get Started Free</a>
+          <a href="mailto:contact@wise-ai.edu.bd" class="btn-cta-outline">Talk to Sales</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ FOOTER ══ -->
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-top">
+          <div class="footer-brand">
+            <a href="/landing" class="footer-logo">
+              <div class="footer-logo-mark">
+                <svg viewBox="0 0 32 32" fill="none">
+                  <circle cx="16" cy="8" r="3" fill="white" opacity="0.9"/>
+                  <circle cx="8" cy="20" r="3" fill="white" opacity="0.9"/>
+                  <circle cx="24" cy="20" r="3" fill="white" opacity="0.9"/>
+                  <circle cx="16" cy="26" r="2.5" fill="white" opacity="0.7"/>
+                  <line x1="16" y1="11" x2="8" y2="17" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+                  <line x1="16" y1="11" x2="24" y2="17" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+                  <line x1="8" y1="23" x2="16" y2="24" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+                  <line x1="24" y1="23" x2="16" y2="24" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+                </svg>
+              </div>
+              <span class="footer-logo-text">DIU WISE AI</span>
+            </a>
+            <p class="footer-tagline">AI-powered mental wellness for Daffodil International University students. Available in Bangla and English, 24/7.</p>
+          </div>
+
+          <div>
+            <div class="footer-col-title">Product</div>
+            <div class="footer-links">
+              <a href="/landing#features">Features</a>
+              <a href="/pricing">Pricing</a>
+              <a href="/register">Get Started</a>
+              <a href="/login">Sign In</a>
+            </div>
+          </div>
+
+          <div>
+            <div class="footer-col-title">Support</div>
+            <div class="footer-links">
+              <a href="#">Documentation</a>
+              <a href="#">Crisis Resources</a>
+              <a href="mailto:hello@diu-wise.ai">Contact Us</a>
+              <a href="#">Status Page</a>
+            </div>
+          </div>
+
+          <div>
+            <div class="footer-col-title">Legal</div>
+            <div class="footer-links">
+              <a href="#">Privacy Policy</a>
+              <a href="#">Terms of Service</a>
+              <a href="#">Data Security</a>
+              <a href="#">Accessibility</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <span class="footer-copy">© 2025 DIU WISE AI. All rights reserved. Built at Daffodil International University.</span>
+          <div class="footer-pill">
+            <span style="width:7px;height:7px;border-radius:50%;background:var(--success);flex-shrink:0;"></span>
+            All systems operational
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </div><!-- /page-wrap -->
+
+  <script>
+    // ── BILLING TOGGLE ──
+    var billing = 'monthly';
+
+    function setBilling(mode) {
+      billing = mode;
+      var btnM = document.getElementById('btn-monthly');
+      var btnY = document.getElementById('btn-yearly');
+      var badge = document.getElementById('save-badge');
+
+      if (mode === 'yearly') {
+        btnM.classList.remove('active');
+        btnY.classList.add('active');
+        badge.style.display = 'inline-block';
+        // Basic stays ৳0
+        document.getElementById('price-basic').textContent = '0';
+        document.getElementById('price-basic-alt').textContent = '';
+        // Pro: monthly × 10 = ৳2,990 (saves ৳598 vs 12× monthly)
+        document.getElementById('price-pro').textContent = '2,990';
+        document.getElementById('period-pro').textContent = ' /year';
+        document.getElementById('price-pro-alt').textContent = 'Save ৳598 vs monthly — ৳249/mo equivalent';
+      } else {
+        btnY.classList.remove('active');
+        btnM.classList.add('active');
+        badge.style.display = 'none';
+        document.getElementById('price-basic').textContent = '0';
+        document.getElementById('price-basic-alt').textContent = '';
+        document.getElementById('price-pro').textContent = '299';
+        document.getElementById('period-pro').textContent = ' /month';
+        document.getElementById('price-pro-alt').textContent = '';
+      }
+    }
+
+    // ── FAQ ACCORDION ──
+    function toggleFaq(btn) {
+      var item = btn.closest('.faq-item');
+      var isOpen = item.classList.contains('open');
+      // Close all
+      document.querySelectorAll('.faq-item').forEach(function(el) {
+        el.classList.remove('open');
+      });
+      // Toggle clicked
+      if (!isOpen) {
+        item.classList.add('open');
+      }
+    }
+  </script>
+
+</body>
+</html>

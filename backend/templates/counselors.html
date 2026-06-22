@@ -42,6 +42,28 @@
         {% endif %}
     </div>
 
+    <!-- Smart Triage Banner: shown when burnout risk is elevated -->
+    {% if last_burnout_status == 'Needs Support' %}
+    <div class="glass-card triage-alert-banner mb-4" id="triageBanner">
+        <div class="triage-alert-icon">⚠️</div>
+        <div class="triage-alert-body">
+            <strong>Your wellbeing check-in flagged elevated distress</strong>
+            <p>AI confidence: {{ (last_burnout_confidence * 100)|int }}% · Status: <span style="color:#ff6b6b;font-weight:600">{{ last_burnout_status }}</span></p>
+            <p style="font-size:0.88rem;color:var(--text-secondary);margin-top:4px;">We recommend booking a session with a counselor soon. Your reason has been pre-filled below.</p>
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" onclick="openUrgentBooking()">Book Urgent Session</button>
+        <button type="button" class="triage-dismiss-btn" onclick="document.getElementById('triageBanner').style.display='none'">✕</button>
+    </div>
+    {% elif last_burnout_status == 'Balanced' %}
+    <div class="glass-card triage-info-banner mb-4">
+        <div class="triage-alert-icon">💛</div>
+        <div class="triage-alert-body">
+            <strong>You're managing — but watch your load</strong>
+            <p>AI Status: <span style="color:#ffa94d;font-weight:600">{{ last_burnout_status }}</span> · A check-in with a counselor can help you stay balanced.</p>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Counselors Directory Header -->
     <div class="directory-header mb-4">
         <h3>👩‍⚕️ DIU Wellness Counseling Directory</h3>
@@ -136,6 +158,32 @@
 </div>
 
 <style>
+/* Triage banners */
+.triage-alert-banner,
+.triage-info-banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+    position: relative;
+    border-left: 4px solid #ff6b6b;
+}
+.triage-info-banner { border-left-color: #ffa94d; }
+.triage-alert-icon { font-size: 1.8rem; flex-shrink: 0; }
+.triage-alert-body { flex: 1; }
+.triage-alert-body strong { display: block; margin-bottom: 4px; color: var(--text-primary); }
+.triage-alert-body p { margin: 0; font-size: 0.88rem; color: var(--text-secondary); }
+.triage-urgency-label { color: #ff6b6b; font-weight: 600; }
+.triage-balanced-label { color: #ffa94d; font-weight: 600; }
+.triage-dismiss-btn {
+    background: none; border: none; font-size: 1.2rem;
+    color: var(--text-muted); cursor: pointer; padding: 4px 8px;
+    position: absolute; top: 10px; right: 10px;
+}
+.triage-dismiss-btn:hover { color: var(--text-primary); }
+.btn-sm { padding: 6px 14px; font-size: 0.85rem; white-space: nowrap; }
+.mb-4 { margin-bottom: 24px; }
+
 .counselors-container {
     max-width: 1100px;
     margin: 0 auto;
@@ -343,6 +391,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const today = new Date().toISOString().split("T")[0];
     document.getElementById("appointmentDate").setAttribute("min", today);
 });
+
+// Pre-fill urgent booking when triage banner button is clicked
+function openUrgentBooking() {
+    const firstBook = document.querySelector(".btn-book");
+    if (firstBook) {
+        openBookingModal(firstBook);
+        document.getElementById("bookingReason").value =
+            "I am experiencing elevated stress and would like urgent support.";
+    }
+}
 
 function openBookingModal(button) {
     const id = button.getAttribute("data-id");

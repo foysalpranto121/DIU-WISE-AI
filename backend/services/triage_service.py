@@ -9,7 +9,11 @@ class TriageService:
         if not self.openai_client:
             key = os.getenv("OPENAI_API_KEY")
             if key and key != "your_openai_api_key_here":
-                self.openai_client = OpenAI(api_key=key)
+                base_url = os.getenv("OPENAI_BASE_URL")
+                kwargs = {"api_key": key}
+                if base_url:
+                    kwargs["base_url"] = base_url
+                self.openai_client = OpenAI(**kwargs)
         return self.openai_client
 
     def route(self, distress_level: str, wellbeing_status: str, emotion: str, text: str = ""):

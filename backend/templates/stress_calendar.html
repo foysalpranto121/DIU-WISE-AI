@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+{% block page_title %}Stress Calendar{% endblock %}
+{% block page_subtitle %}Predict when academic pressure peaks — plan ahead, stay ahead{% endblock %}
+
+{% block content %}
+<div class="sc-container">
+
+  <!-- Spike Alert Banner (populated by JS) -->
+  <div class="sc-spike-banner" id="scSpikeBanner" style="display:none;">
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+    <span id="scSpikeText">High stress detected in the next 7 days.</span>
+  </div>
+
+  <div class="sc-layout">
+
+    <!-- LEFT: Calendar + Chart -->
+    <div class="sc-left">
+
+      <!-- Month nav -->
+      <div class="glass-card sc-month-card">
+        <div class="sc-month-nav">
+          <button class="sc-nav-btn" id="scPrevMonth">&#8592;</button>
+          <h3 class="sc-month-label" id="scMonthLabel"></h3>
+          <button class="sc-nav-btn" id="scNextMonth">&#8594;</button>
+        </div>
+
+        <div class="sc-weekdays">
+          <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+        </div>
+        <div class="sc-grid" id="scGrid"></div>
+
+        <!-- Legend -->
+        <div class="sc-legend">
+          <span class="sc-legend-dot sc-low"></span> Low &nbsp;
+          <span class="sc-legend-dot sc-medium"></span> Medium &nbsp;
+          <span class="sc-legend-dot sc-high"></span> High
+        </div>
+      </div>
+
+      <!-- 30-day stress chart -->
+      <div class="glass-card sc-chart-card">
+        <h4>30-Day Stress Forecast</h4>
+        <canvas id="scForecastChart" height="120"></canvas>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Events + Add Form -->
+    <div class="sc-right">
+
+      <!-- Add Event -->
+      <div class="glass-card sc-add-card">
+        <h4>Add Academic Event</h4>
+        <div class="form-group">
+          <label>Event Name</label>
+          <input type="text" id="scEventTitle" class="form-input" placeholder="e.g. Data Structures Final Exam">
+        </div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>Type</label>
+            <select id="scEventType" class="form-input">
+              <option value="exam">Exam</option>
+              <option value="assignment">Assignment</option>
+              <option value="presentation">Presentation</option>
+              <option value="quiz">Quiz</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="scEventDate" class="form-input">
+          </div>
+        </div>
+        <button class="btn btn-primary sc-add-btn" id="scAddBtn">Add Event</button>
+        <div class="sc-add-status" id="scAddStatus"></div>
+      </div>
+
+      <!-- Upcoming Events list -->
+      <div class="glass-card sc-events-card">
+        <h4>Upcoming Events</h4>
+        <div class="sc-events-list" id="scEventsList">
+          <div class="sc-events-empty" id="scEventsEmpty">
+            No events added yet. Add exams and deadlines to see your stress forecast.
+          </div>
+        </div>
+      </div>
+
+      <!-- Day Detail panel -->
+      <div class="glass-card sc-day-detail" id="scDayDetail" style="display:none;">
+        <h4 id="scDayDetailTitle">Events on this day</h4>
+        <div id="scDayDetailBody"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/stress_calendar.js') }}"></script>
+{% endblock %}

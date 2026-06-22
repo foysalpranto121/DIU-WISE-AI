@@ -1,0 +1,118 @@
+{% extends "layout.html" %}
+{% block page_title %}Voice Journal{% endblock %}
+{% block page_subtitle %}Speak your mind in Bangla or English — transcribes instantly in real-time{% endblock %}
+
+{% block content %}
+<div class="vj-container">
+
+  <!-- ── RECORDER CARD ────────────────────────────────────────────── -->
+  <div class="glass-card vj-recorder-card">
+    <div class="vj-recorder-header">
+      <h3>New Voice Entry</h3>
+      <div class="vj-lang-pills">
+        <button type="button" class="vj-lang-pill active" data-lang="en-US">English</button>
+        <button type="button" class="vj-lang-pill" data-lang="bn-BD">বাংলা</button>
+        <button type="button" class="vj-lang-pill" data-lang="bn-IN">Bengali</button>
+      </div>
+    </div>
+
+    <!-- Real-time waveform canvas -->
+    <div class="vj-canvas-wrap">
+      <canvas id="vjCanvas" width="500" height="80"></canvas>
+    </div>
+
+    <!-- Timer -->
+    <div class="vj-timer" id="vjTimer">00:00</div>
+
+    <!-- Record button -->
+    <div class="vj-controls">
+      <button type="button" class="vj-btn-record" id="vjRecordBtn">
+        <span class="vj-rec-icon" id="vjRecIcon">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="currentColor"/></svg>
+        </span>
+        <span id="vjRecLabel">Start Recording</span>
+      </button>
+    </div>
+
+    <!-- Transcribing spinner -->
+    <div class="vj-loading hidden" id="vjLoading">
+      <div class="vj-spinner"></div>
+      <span>Transcribing with Whisper AI…</span>
+    </div>
+
+    <!-- Transcript / manual input area (shown after stop) -->
+    <div class="vj-transcript-wrap hidden" id="vjTranscriptWrap">
+      <div class="vj-transcript-label">
+        <span>Transcript <em>(edit if needed)</em></span>
+        <span class="vj-lang-tag" id="vjLangDetected"></span>
+      </div>
+      <textarea id="vjTranscriptArea" class="vj-textarea form-input"
+                rows="5"
+                placeholder="Your transcript will appear here, or type manually…"></textarea>
+    </div>
+
+    <!-- Save / discard -->
+    <div class="vj-save-bar hidden" id="vjSaveBar">
+      <button type="button" class="btn btn-primary" id="vjSaveBtn">Save &amp; Analyze Emotion</button>
+      <button type="button" class="btn btn-chat-send" id="vjSendChatBtn" title="Send transcript to AI chatbot">
+        <svg class="vj-btn-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+        Send to AI Chat
+      </button>
+      <button type="button" class="btn btn-ghost" id="vjClearBtn">Discard</button>
+    </div>
+
+    <!-- Result after save -->
+    <div class="vj-result-panel hidden" id="vjResultPanel">
+      <div id="vjResultEmotion"></div>
+      <div class="vj-result-actions">
+        <button type="button" class="btn btn-chat-send" id="vjChatAfterSave">
+          <svg class="vj-btn-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+          Chat with AI about this
+        </button>
+        <button type="button" class="btn btn-secondary vj-new-btn" id="vjNewBtn">New Entry</button>
+      </div>
+    </div>
+
+    <!-- Status message -->
+    <div class="vj-status" id="vjStatus"></div>
+  </div>
+
+  <!-- ── HISTORY CARD ──────────────────────────────────────────────── -->
+  <div class="glass-card vj-history-card">
+    <div class="vj-history-header">
+      <h3>Journal History</h3>
+      <span class="vj-entry-count" id="vjEntryCount">{{ entries|length }} entries</span>
+    </div>
+
+    <div class="vj-entries" id="vjEntries">
+      {% if entries %}
+        {% for entry in entries %}
+        <div class="vj-entry-item" data-id="{{ entry.id }}">
+          <div class="vj-entry-top">
+            <span class="vj-emotion-badge vj-emotion-{{ entry.emotion }}">
+              {{ (entry.emotion or 'neutral') | capitalize }}
+            </span>
+            <span class="vj-entry-lang">{{ entry.language_detected or '—' }}</span>
+            <span class="vj-entry-time">
+              {{ entry.created_at[:16].replace('T', ' ') if entry.created_at else '' }}
+            </span>
+            <button type="button" class="vj-delete-btn" data-id="{{ entry.id }}" title="Delete">✕</button>
+          </div>
+          <p class="vj-entry-text">{{ entry.transcript }}</p>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="vj-empty-history" id="vjEmptyHistory">
+          <svg viewBox="0 0 48 48"><path d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4zm2 30h-4V22h4v12zm0-16h-4v-4h4v4z" fill="var(--text-muted)"/></svg>
+          <p>No entries yet. Press <strong>Start Recording</strong> to add your first voice journal.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/voice_journal.js') }}"></script>
+{% endblock %}

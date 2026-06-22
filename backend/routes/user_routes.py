@@ -39,7 +39,11 @@ def update_profile():
         "study_hours": float(data.get('goal_study_hours', 0)),
         "assignments": int(data.get('goal_assignments', 0))
     }
-    
+
+    # Faculty Advisor Alert fields
+    current_user.faculty_advisor_email = data.get('faculty_advisor_email', current_user.faculty_advisor_email)
+    current_user.advisor_alert_consent = data.get('advisor_alert_consent') == 'on'
+
     try:
         db.session.commit()
         flash('Profile and academic settings updated!', 'success')

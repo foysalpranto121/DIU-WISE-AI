@@ -1,516 +1,915 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <script>
-      (function() {
-        const theme = localStorage.getItem('theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', theme);
-      })();
-    </script>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sign In | DIU WISE AI</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
-    <style>
-      * { box-sizing: border-box; margin: 0; padding: 0; }
+<head>
+  <meta charset="UTF-8" />
+  <script>
+    (function() {
+      const theme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In | DIU WISE AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-      .login-page {
-        display: flex;
+    :root {
+      --ground:     #0d0f18;
+      --ground-2:   #10131f;
+      --ground-3:   #13152a;
+      --text:       #e8eaf6;
+      --text-dim:   #8892b0;
+      --text-faint: #4a5270;
+      --accent:     #6366f1;
+      --accent-2:   #a855f7;
+      --accent-3:   #10b981;
+      --success:    #10b981;
+      --grad:       linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+      --glass-bg:   rgba(255,255,255,0.04);
+      --glass-bd:   rgba(255,255,255,0.08);
+      --input-bg:   rgba(255,255,255,0.05);
+      --font-family: 'Inter', 'Noto Sans Bengali', sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font-family);
+      background: var(--ground);
+      color: var(--text);
+      line-height: 1.6;
+      overflow: hidden;
+    }
+
+    @media (max-width: 900px) {
+      html, body { overflow: auto; }
+    }
+
+    /* ══ LAYOUT ══ */
+    .login-page {
+      display: flex;
+      height: 100vh;
+      min-height: 600px;
+    }
+
+    /* ── LEFT PANEL ── */
+    .left-panel {
+      flex: 0 0 50%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 40px 52px 44px;
+      overflow: hidden;
+      background: radial-gradient(ellipse 900px 700px at 30% 50%, rgba(99,102,241,0.22) 0%, rgba(11,13,20,0.95) 65%),
+                  radial-gradient(ellipse 500px 400px at 80% 10%, rgba(168,85,247,0.15) 0%, transparent 60%),
+                  linear-gradient(160deg, #0d0f18 0%, #0e1020 50%, #0d0f18 100%);
+    }
+
+    /* Decorative orbs */
+    .left-orb {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .left-orb-1 {
+      width: 500px; height: 500px;
+      background: rgba(99,102,241,0.1);
+      filter: blur(100px);
+      top: -180px; left: -180px;
+      animation: orbDrift 12s ease-in-out infinite alternate;
+    }
+
+    .left-orb-2 {
+      width: 350px; height: 350px;
+      background: rgba(168,85,247,0.1);
+      filter: blur(80px);
+      bottom: -100px; right: -80px;
+      animation: orbDrift 16s ease-in-out infinite alternate-reverse;
+    }
+
+    @keyframes orbDrift {
+      from { transform: translate(0,0) scale(1); }
+      to   { transform: translate(30px, 25px) scale(1.06); }
+    }
+
+    /* Left panel top: logo */
+    .lp-top {
+      position: relative;
+      z-index: 2;
+    }
+
+    .lp-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .lp-logo-mark {
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      background: var(--grad);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 20px rgba(99,102,241,0.45);
+      flex-shrink: 0;
+    }
+
+    .lp-wordmark {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.3px;
+    }
+
+    .lp-wordmark span {
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Left panel center: hero */
+    .lp-center {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 48px 0;
+    }
+
+    .lp-hero-text {
+      font-size: clamp(1.8rem, 2.8vw, 2.6rem);
+      font-weight: 900;
+      color: white;
+      letter-spacing: -1.5px;
+      line-height: 1.15;
+      margin-bottom: 18px;
+    }
+
+    .lp-hero-text .grad-text {
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .lp-hero-sub {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.52);
+      line-height: 1.65;
+      max-width: 380px;
+      margin-bottom: 40px;
+    }
+
+    /* Floating benefit cards */
+    .benefit-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 360px;
+    }
+
+    .benefit-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      animation: cardFloat 0.6s ease both;
+    }
+
+    .benefit-card:nth-child(1) { animation-delay: 0.1s; }
+    .benefit-card:nth-child(2) { animation-delay: 0.2s; }
+    .benefit-card:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes cardFloat {
+      from { opacity: 0; transform: translateX(-16px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .benefit-emoji {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+      width: 36px; height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.07);
+      border-radius: 10px;
+    }
+
+    .benefit-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .benefit-sub {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.38);
+      margin-top: 1px;
+    }
+
+    /* Left panel bottom */
+    .lp-bottom {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .lp-back-link {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.38);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+
+    .lp-back-link:hover { color: rgba(255,255,255,0.7); }
+
+    .lp-copy {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.22);
+    }
+
+    /* ── RIGHT PANEL ── */
+    .right-panel {
+      flex: 0 0 50%;
+      background: var(--ground-3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 32px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    /* Small logo at top of right panel */
+    .rp-top-logo {
+      position: absolute;
+      top: 28px;
+      left: 32px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      text-decoration: none;
+    }
+
+    .rp-logo-mark {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: var(--grad);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .rp-wordmark {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.2px;
+    }
+
+    .rp-wordmark span {
+      background: var(--grad);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Form card */
+    .form-card {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    /* Tabs */
+    .form-tabs {
+      display: flex;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--glass-bd);
+      border-radius: 14px;
+      padding: 4px;
+      margin-bottom: 32px;
+    }
+
+    .form-tab {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text-dim);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.22s ease;
+      font-family: var(--font-family);
+    }
+
+    .form-tab.active {
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      color: white;
+      box-shadow: 0 3px 12px rgba(99,102,241,0.35);
+    }
+
+    /* Section visibility */
+    .form-section { display: none; animation: fadeUp 0.3s ease; }
+    .form-section.active { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Section heading */
+    .section-heading {
+      margin-bottom: 28px;
+    }
+
+    .section-heading h2 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+      color: var(--text);
+      margin-bottom: 5px;
+    }
+
+    .section-heading p {
+      font-size: 0.9rem;
+      color: var(--text-dim);
+    }
+
+    /* Input fields */
+    .field {
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      margin-bottom: 7px;
+      letter-spacing: 0.3px;
+    }
+
+    .field-inner {
+      position: relative;
+    }
+
+    .field-inner input {
+      width: 100%;
+      padding: 13px 44px 13px 44px;
+      background: var(--input-bg);
+      border: 1.5px solid var(--glass-bd);
+      border-radius: 12px;
+      color: var(--text);
+      font-family: var(--font-family);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .field-inner input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.14);
+    }
+
+    .field-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px; height: 18px;
+      fill: var(--text-faint);
+      pointer-events: none;
+      flex-shrink: 0;
+    }
+
+    .field-btn {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .field-btn svg {
+      width: 18px; height: 18px;
+      fill: var(--text-faint);
+      transition: fill 0.2s;
+    }
+
+    .field-btn:hover svg { fill: var(--text-dim); }
+
+    /* No right button → no right padding */
+    .field-inner.no-right input { padding-right: 14px; }
+
+    /* Flash messages */
+    .flash-messages {
+      margin-bottom: 16px;
+    }
+
+    .flash-msg {
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .flash-msg.error   { background: rgba(244,63,94,0.1); color: #f43f5e; border: 1px solid rgba(244,63,94,0.2); }
+    .flash-msg.success { background: rgba(16,185,129,0.1); color: #10b981; border: 1px solid rgba(16,185,129,0.2); }
+    .flash-msg.info    { background: rgba(99,102,241,0.1); color: #a855f7; border: 1px solid rgba(99,102,241,0.2); }
+    .flash-msg.warning { background: rgba(245,158,11,0.1); color: #fbbf24; border: 1px solid rgba(245,158,11,0.2); }
+
+    /* Auth message (JS-injected) */
+    .auth-message {
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .auth-message.error   { background: rgba(244,63,94,0.1); color: #f43f5e; border: 1px solid rgba(244,63,94,0.2); display: block; }
+    .auth-message.success { background: rgba(16,185,129,0.1); color: #10b981; border: 1px solid rgba(16,185,129,0.2); display: block; }
+
+    /* Remember + Forgot row */
+    .form-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      margin-top: 4px;
+    }
+
+    .remember-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.84rem;
+      color: var(--text-dim);
+      cursor: pointer;
+    }
+
+    .remember-label input[type="checkbox"] {
+      accent-color: var(--accent);
+      width: 15px; height: 15px;
+      cursor: pointer;
+    }
+
+    .forgot-link {
+      font-size: 0.84rem;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .forgot-link:hover { color: var(--accent-2); }
+
+    /* Submit button */
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: var(--font-family);
+      cursor: pointer;
+      transition: transform 0.25s, box-shadow 0.25s;
+      box-shadow: 0 4px 20px rgba(99,102,241,0.35);
+      letter-spacing: 0.3px;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(99,102,241,0.5);
+    }
+
+    .btn-submit:active { transform: translateY(0); }
+
+    /* Divider */
+    .or-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+      color: var(--text-faint);
+      font-size: 0.8rem;
+    }
+
+    .or-divider::before,
+    .or-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--glass-bd);
+    }
+
+    /* Google button */
+    .btn-google {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-family: var(--font-family);
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .btn-google:hover {
+      background: rgba(255,255,255,0.09);
+      border-color: rgba(255,255,255,0.22);
+    }
+
+    /* Sign up link */
+    .signup-prompt {
+      text-align: center;
+      font-size: 0.87rem;
+      color: var(--text-dim);
+      margin-top: 20px;
+    }
+
+    .signup-prompt a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .signup-prompt a:hover { color: var(--accent-2); }
+
+    /* Demo hint */
+    .demo-hint {
+      margin-top: 18px;
+      padding: 11px 14px;
+      background: rgba(99,102,241,0.06);
+      border: 1px solid rgba(99,102,241,0.14);
+      border-radius: 10px;
+      font-size: 0.77rem;
+      color: var(--text-dim);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .demo-hint-icon { font-size: 1rem; flex-shrink: 0; }
+
+    /* Register-only: ghost submit */
+    .btn-submit-ghost {
+      width: 100%;
+      padding: 14px;
+      background: transparent;
+      border: 1.5px solid rgba(99,102,241,0.4);
+      border-radius: 12px;
+      color: var(--accent);
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-family: var(--font-family);
+      cursor: pointer;
+      transition: all 0.22s ease;
+      margin-top: 4px;
+    }
+
+    .btn-submit-ghost:hover {
+      background: rgba(99,102,241,0.08);
+      border-color: var(--accent);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .login-page { flex-direction: column; height: auto; }
+      .left-panel  { display: none; }
+      .right-panel {
+        flex: unset;
         min-height: 100vh;
-        background: var(--bg-color);
+        padding: 80px 24px 48px;
+        justify-content: flex-start;
+        padding-top: 80px;
       }
+      .rp-top-logo { left: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-page">
 
-      /* ── LEFT BRAND PANEL ── */
-      .brand-panel {
-        flex: 0 0 480px;
-        background: linear-gradient(145deg, #0f0e1a 0%, #1a1040 40%, #0d1f3c 100%);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        padding: 48px 48px 40px;
-        position: relative;
-        overflow: hidden;
-      }
+    <!-- ══ LEFT PANEL ══ -->
+    <div class="left-panel" aria-hidden="true">
+      <div class="left-orb left-orb-1"></div>
+      <div class="left-orb left-orb-2"></div>
 
-      .brand-panel::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background:
-          radial-gradient(ellipse 600px 500px at -10% 50%, rgba(99,102,241,0.25) 0%, transparent 70%),
-          radial-gradient(ellipse 400px 400px at 110% 20%, rgba(168,85,247,0.2) 0%, transparent 70%),
-          radial-gradient(ellipse 300px 300px at 50% 110%, rgba(236,72,153,0.15) 0%, transparent 70%);
-        pointer-events: none;
-      }
-
-      .brand-orb {
-        position: absolute;
-        border-radius: 50%;
-        filter: blur(60px);
-        pointer-events: none;
-        animation: orbFloat 8s ease-in-out infinite alternate;
-      }
-      .brand-orb-1 { width: 300px; height: 300px; background: rgba(99,102,241,0.15); top: -100px; left: -100px; }
-      .brand-orb-2 { width: 200px; height: 200px; background: rgba(168,85,247,0.12); bottom: 100px; right: -50px; animation-delay: -3s; }
-      @keyframes orbFloat {
-        from { transform: translateY(0px) scale(1); }
-        to   { transform: translateY(30px) scale(1.08); }
-      }
-
-      .brand-top { position: relative; z-index: 2; }
-
-      .brand-logo {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        margin-bottom: 64px;
-      }
-
-      .brand-logo-mark {
-        width: 44px;
-        height: 44px;
-        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 8px 24px rgba(99,102,241,0.4);
-        flex-shrink: 0;
-      }
-
-      .brand-logo-mark svg {
-        width: 26px;
-        height: 26px;
-        fill: white;
-      }
-
-      .brand-logo-text {
-        font-size: 1.4rem;
-        font-weight: 800;
-        color: white;
-        letter-spacing: -0.5px;
-      }
-
-      .brand-logo-text span {
-        background: linear-gradient(135deg, #a5b4fc, #e879f9);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-
-      .brand-headline {
-        color: white;
-        font-size: 2.4rem;
-        font-weight: 800;
-        line-height: 1.2;
-        letter-spacing: -1px;
-        margin-bottom: 20px;
-      }
-
-      .brand-headline em {
-        font-style: normal;
-        background: linear-gradient(135deg, #a5b4fc 0%, #e879f9 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-
-      .brand-desc {
-        color: rgba(255,255,255,0.55);
-        font-size: 1rem;
-        line-height: 1.7;
-        max-width: 340px;
-      }
-
-      .brand-features {
-        position: relative;
-        z-index: 2;
-        display: flex;
-        flex-direction: column;
-        gap: 18px;
-      }
-
-      .brand-feature {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-      }
-
-      .brand-feature-icon {
-        width: 38px;
-        height: 38px;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        font-size: 1.1rem;
-      }
-
-      .fi-green  { background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.25); }
-      .fi-indigo { background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.25); }
-      .fi-purple { background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.25); }
-      .fi-pink   { background: rgba(236,72,153,0.15); border: 1px solid rgba(236,72,153,0.25); }
-
-      .brand-feature-text { display: flex; flex-direction: column; }
-      .brand-feature-title { font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.9); }
-      .brand-feature-desc  { font-size: 0.78rem; color: rgba(255,255,255,0.45); margin-top: 1px; }
-
-      .brand-bottom {
-        position: relative;
-        z-index: 2;
-        font-size: 0.78rem;
-        color: rgba(255,255,255,0.3);
-      }
-
-      /* ── RIGHT FORM PANEL ── */
-      .form-panel {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 40px 24px;
-        position: relative;
-      }
-
-      .theme-toggle-corner {
-        position: absolute;
-        top: 24px;
-        right: 24px;
-        z-index: 10;
-      }
-
-      .form-card {
-        width: 100%;
-        max-width: 420px;
-      }
-
-      .form-tabs {
-        display: flex;
-        background: var(--glass-bg);
-        border: 1px solid var(--glass-border);
-        border-radius: 14px;
-        padding: 4px;
-        margin-bottom: 28px;
-        -webkit-backdrop-filter: blur(12px);
-        backdrop-filter: blur(12px);
-      }
-
-      .form-tab {
-        flex: 1;
-        padding: 10px;
-        border: none;
-        border-radius: 10px;
-        background: transparent;
-        color: var(--text-secondary);
-        font-size: 0.9rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.25s ease;
-        font-family: var(--font-family);
-      }
-
-      .form-tab.active {
-        background: var(--accent-gradient);
-        color: white;
-        box-shadow: 0 4px 12px rgba(99,102,241,0.3);
-      }
-
-      .form-section {
-        display: none;
-        animation: fadeSlideIn 0.3s ease;
-      }
-      .form-section.active { display: block; }
-
-      @keyframes fadeSlideIn {
-        from { opacity: 0; transform: translateY(8px); }
-        to   { opacity: 1; transform: translateY(0); }
-      }
-
-      .form-section-title {
-        font-size: 1.6rem;
-        font-weight: 800;
-        color: var(--text-primary);
-        letter-spacing: -0.5px;
-        margin-bottom: 6px;
-      }
-
-      .form-section-subtitle {
-        font-size: 0.9rem;
-        color: var(--text-secondary);
-        margin-bottom: 28px;
-        line-height: 1.5;
-      }
-
-      .input-field {
-        position: relative;
-        margin-bottom: 16px;
-      }
-
-      .input-field label {
-        display: block;
-        font-size: 0.82rem;
-        font-weight: 600;
-        color: var(--text-secondary);
-        margin-bottom: 6px;
-        letter-spacing: 0.3px;
-      }
-
-      .input-field input {
-        width: 100%;
-        padding: 13px 16px 13px 44px;
-        background: var(--input-bg);
-        border: 1.5px solid var(--glass-border);
-        border-radius: 12px;
-        color: var(--text-primary);
-        font-family: var(--font-family);
-        font-size: 0.95rem;
-        transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
-      }
-
-      .input-field input:focus {
-        outline: none;
-        border-color: var(--accent-primary);
-        box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
-      }
-
-      .input-icon {
-        position: absolute;
-        left: 14px;
-        bottom: 13px;
-        width: 18px;
-        height: 18px;
-        fill: var(--text-secondary);
-        pointer-events: none;
-      }
-
-      .btn-login {
-        width: 100%;
-        padding: 14px;
-        background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
-        border: none;
-        border-radius: 12px;
-        color: white;
-        font-size: 0.95rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-family: var(--font-family);
-        letter-spacing: 0.3px;
-        box-shadow: 0 4px 20px rgba(99,102,241,0.3);
-        margin-top: 8px;
-      }
-
-      .btn-login:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 28px rgba(99,102,241,0.45);
-      }
-
-      .btn-login:active { transform: translateY(0); }
-
-      .btn-register {
-        width: 100%;
-        padding: 14px;
-        background: transparent;
-        border: 1.5px solid var(--glass-border);
-        border-radius: 12px;
-        color: var(--text-primary);
-        font-size: 0.95rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.25s ease;
-        font-family: var(--font-family);
-        margin-top: 8px;
-      }
-
-      .btn-register:hover {
-        border-color: var(--accent-primary);
-        color: var(--accent-primary);
-        background: rgba(99,102,241,0.05);
-      }
-
-      .auth-message {
-        margin-top: 14px;
-        padding: 10px 14px;
-        border-radius: 10px;
-        font-size: 0.85rem;
-        font-weight: 500;
-        display: none;
-      }
-      .auth-message.error { background: rgba(244,63,94,0.1); color: #f43f5e; border: 1px solid rgba(244,63,94,0.2); display: block; }
-      .auth-message.success { background: rgba(16,185,129,0.1); color: #10b981; border: 1px solid rgba(16,185,129,0.2); display: block; }
-
-      .demo-hint {
-        margin-top: 20px;
-        padding: 12px 14px;
-        background: rgba(99,102,241,0.06);
-        border: 1px solid rgba(99,102,241,0.15);
-        border-radius: 10px;
-        font-size: 0.78rem;
-        color: var(--text-secondary);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .demo-hint-icon { font-size: 1rem; }
-
-      /* Responsive */
-      @media (max-width: 900px) {
-        .brand-panel { display: none; }
-        .login-page { justify-content: center; }
-        .form-panel { padding: 24px 16px; }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="login-page">
-
-      <!-- LEFT: Brand Panel -->
-      <div class="brand-panel">
-        <div class="brand-orb brand-orb-1"></div>
-        <div class="brand-orb brand-orb-2"></div>
-
-        <div class="brand-top">
-          <div class="brand-logo">
-            <div class="brand-logo-mark">
-              <svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 1 1 0 10A5 5 0 0 1 12 2zm0 12c5.33 0 8 2.67 8 4v2H4v-2c0-1.33 2.67-4 8-4z" opacity="0.3"/><path d="M12 14c-2.67 0-8 1.34-8 4v1h16v-1c0-2.66-5.33-4-8-4zm0-12C9.79 2 8 3.79 8 6s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/></svg>
-            </div>
-            <span class="brand-logo-text">DIU <span>WISE AI</span></span>
+      <!-- Top logo -->
+      <div class="lp-top">
+        <a href="/landing" class="lp-logo">
+          <div class="lp-logo-mark">
+            <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
+              <circle cx="12" cy="15" r="5" fill="none" stroke="white" stroke-width="1.8"/>
+              <circle cx="24" cy="15" r="5" fill="none" stroke="white" stroke-width="1.8"/>
+              <path d="M17 15 Q18 12 19 15" fill="none" stroke="white" stroke-width="1.5"/>
+              <path d="M12 20 Q18 28 24 20" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="12" cy="13" r="1.2" fill="white" opacity="0.8"/>
+              <circle cx="24" cy="13" r="1.2" fill="white" opacity="0.8"/>
+              <circle cx="18" cy="17" r="1.2" fill="white"/>
+            </svg>
           </div>
+          <span class="lp-wordmark">WISE <span>AI</span></span>
+        </a>
+      </div>
 
-          <h1 class="brand-headline">Your <em>wellness</em><br>starts here.</h1>
-          <p class="brand-desc">An AI-powered platform built for DIU students — tracking burnout, managing stress, and connecting you with the right support.</p>
-        </div>
+      <!-- Center: hero -->
+      <div class="lp-center">
+        <h1 class="lp-hero-text">
+          Your mental wellness,<br>
+          <span class="grad-text">understood.</span>
+        </h1>
+        <p class="lp-hero-sub">
+          AI-powered support. Available 24/7. In Bangla and English.
+        </p>
 
-        <div class="brand-features">
-          <div class="brand-feature">
-            <div class="brand-feature-icon fi-green">🧠</div>
-            <div class="brand-feature-text">
-              <span class="brand-feature-title">AI Burnout Detection</span>
-              <span class="brand-feature-desc">Random forest model with 11 wellness dimensions</span>
+        <div class="benefit-cards">
+          <div class="benefit-card">
+            <div class="benefit-emoji">🧠</div>
+            <div>
+              <div class="benefit-label">94% Burnout Accuracy</div>
+              <div class="benefit-sub">Random forest model with 11 wellness dimensions</div>
             </div>
           </div>
-          <div class="brand-feature">
-            <div class="brand-feature-icon fi-indigo">💬</div>
-            <div class="brand-feature-text">
-              <span class="brand-feature-title">RAG-Powered Assistant</span>
-              <span class="brand-feature-desc">Context-aware responses grounded in wellness research</span>
+          <div class="benefit-card">
+            <div class="benefit-emoji">🎙️</div>
+            <div>
+              <div class="benefit-label">Bilingual AI Journal</div>
+              <div class="benefit-sub">Voice journaling in Bangla &amp; English with Whisper AI</div>
             </div>
           </div>
-          <div class="brand-feature">
-            <div class="brand-feature-icon fi-purple">🎯</div>
-            <div class="brand-feature-text">
-              <span class="brand-feature-title">Smart Triage Routing</span>
-              <span class="brand-feature-desc">Connects you to the right resource at the right time</span>
+          <div class="benefit-card">
+            <div class="benefit-emoji">📅</div>
+            <div>
+              <div class="benefit-label">Stress Forecasting</div>
+              <div class="benefit-sub">30-day academic stress calendar with smart alerts</div>
             </div>
           </div>
-          <div class="brand-feature">
-            <div class="brand-feature-icon fi-pink">🔒</div>
-            <div class="brand-feature-text">
-              <span class="brand-feature-title">Privacy First</span>
-              <span class="brand-feature-desc">Your data is encrypted and under your control</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="brand-bottom">
-          © 2025 DIU WISE AI · Daffodil International University
         </div>
       </div>
 
-      <!-- RIGHT: Form Panel -->
-      <div class="form-panel">
-        <div class="theme-toggle-corner">
-          <button type="button" class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle Theme">
-            <svg class="theme-icon-moon" viewBox="0 0 24 24"><path d="M12.3 22h-.1c-5.5 0-10-4.5-10-10 0-4.8 3.5-8.9 8.2-9.8.5-.1 1 .2 1.2.7.2.5 0 1.1-.4 1.4-1.9 1.4-3 3.6-3 6 0 4.1 3.4 7.5 7.5 7.5 2.4 0 4.6-1.1 6-3 .3-.4.9-.6 1.4-.4.5.2.8.7.7 1.2-.9 4.7-5 8.2-9.8 8.2z"/></svg>
-            <svg class="theme-icon-sun" viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.01c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/></svg>
-          </button>
+      <!-- Bottom -->
+      <div class="lp-bottom">
+        <a href="/landing" class="lp-back-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back to home
+        </a>
+        <span class="lp-copy">© 2025 DIU WISE AI</span>
+      </div>
+    </div>
+
+    <!-- ══ RIGHT PANEL ══ -->
+    <div class="right-panel">
+
+      <!-- Small logo top of right panel -->
+      <a href="/landing" class="rp-top-logo">
+        <div class="rp-logo-mark">
+          <svg width="18" height="18" viewBox="0 0 36 36" fill="none">
+            <circle cx="12" cy="15" r="5" fill="none" stroke="white" stroke-width="2"/>
+            <circle cx="24" cy="15" r="5" fill="none" stroke="white" stroke-width="2"/>
+            <path d="M17 15 Q18 12 19 15" fill="none" stroke="white" stroke-width="1.6"/>
+            <path d="M12 20 Q18 28 24 20" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+            <circle cx="12" cy="13" r="1.2" fill="white" opacity="0.8"/>
+            <circle cx="24" cy="13" r="1.2" fill="white" opacity="0.8"/>
+            <circle cx="18" cy="17" r="1.2" fill="white"/>
+          </svg>
+        </div>
+        <span class="rp-wordmark">WISE <span>AI</span></span>
+      </a>
+
+      <div class="form-card">
+
+        <!-- Tabs -->
+        <div class="form-tabs">
+          <button type="button" class="form-tab active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+          <button type="button" class="form-tab" id="tab-register" onclick="switchTab('register')">Create Account</button>
         </div>
 
-        <div class="form-card">
-          <!-- Tabs -->
-          <div class="form-tabs">
-            <button type="button" class="form-tab active" id="tab-login" onclick="switchTab('login')">Sign In</button>
-            <button type="button" class="form-tab" id="tab-register" onclick="switchTab('register')">Create Account</button>
+        <!-- Flash messages (Jinja2) -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages">
+              {% for category, message in messages %}
+                <div class="flash-msg {{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <!-- ── SIGN IN SECTION ── -->
+        <div class="form-section active" id="section-login">
+          <div class="section-heading">
+            <h2>Welcome back</h2>
+            <p>Sign in to your wellness dashboard</p>
           </div>
 
-          <!-- Sign In -->
-          <div class="form-section active" id="section-login">
-            <h2 class="form-section-title">Welcome back</h2>
-            <p class="form-section-subtitle">Sign in to access your wellness dashboard.</p>
-
-            <div class="input-field">
-              <label for="login-email">Email Address</label>
-              <svg class="input-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-              <input id="login-email" type="email" placeholder="you@example.com" />
+          <!-- Email -->
+          <div class="field">
+            <label for="login-email">Email Address</label>
+            <div class="field-inner no-right">
+              <svg class="field-icon" viewBox="0 0 24 24">
+                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+              </svg>
+              <input id="login-email" name="email" type="email" placeholder="you@example.com" autocomplete="email" />
             </div>
-
-            <div class="input-field">
-              <label for="login-password">Password</label>
-              <svg class="input-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-              <input id="login-password" type="password" placeholder="Enter your password" />
-            </div>
-
-            <button type="button" id="login-btn" class="btn-login">Sign In →</button>
           </div>
 
-          <!-- Register -->
-          <div class="form-section" id="section-register">
-            <h2 class="form-section-title">Join DIU WISE</h2>
-            <p class="form-section-subtitle">Create your free account to get started.</p>
-
-            <div class="input-field">
-              <label for="reg-name">Full Name</label>
-              <svg class="input-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-              <input id="reg-name" type="text" placeholder="Your full name" />
+          <!-- Password -->
+          <div class="field">
+            <label for="login-password">Password</label>
+            <div class="field-inner">
+              <svg class="field-icon" viewBox="0 0 24 24">
+                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+              </svg>
+              <input id="login-password" name="password" type="password" placeholder="Enter your password" autocomplete="current-password" />
+              <button type="button" class="field-btn" onclick="togglePwd('login-password', this)" tabindex="-1" aria-label="Show or hide password">
+                <svg viewBox="0 0 24 24" id="eye-login">
+                  <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                </svg>
+              </button>
             </div>
-
-            <div class="input-field">
-              <label for="reg-email">Email Address</label>
-              <svg class="input-icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-              <input id="reg-email" type="email" placeholder="you@example.com" />
-            </div>
-
-            <div class="input-field">
-              <label for="reg-password">Password</label>
-              <svg class="input-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-              <input id="reg-password" type="password" placeholder="Min. 8 characters" />
-            </div>
-
-            <button type="button" id="register-btn" class="btn-register">Create Account</button>
           </div>
+
+          <!-- Remember + Forgot -->
+          <div class="form-meta">
+            <label class="remember-label">
+              <input type="checkbox" id="remember-me" />
+              Remember me
+            </label>
+            <a href="#" class="forgot-link">Forgot password?</a>
+          </div>
+
+          <button type="button" id="login-btn" class="btn-submit">Sign In</button>
 
           <p id="auth-message" class="auth-message"></p>
 
+          <!-- Divider -->
+          <div class="or-divider">or</div>
+
+          <!-- Google -->
+          <a href="#" class="btn-google">
+            <!-- Google "G" SVG -->
+            <svg width="18" height="18" viewBox="0 0 48 48">
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+            </svg>
+            Continue with Google
+          </a>
+
+          <!-- Register prompt -->
+          <div class="signup-prompt">
+            Don't have an account? <a href="/register" onclick="switchTab('register');return false;">Sign up free</a>
+          </div>
+
+          <!-- Demo hint -->
           <div class="demo-hint">
             <span class="demo-hint-icon">💡</span>
             <span>Admin demo: <strong>admin@diu-wise.ai</strong> / <strong>Admin@12345</strong></span>
           </div>
         </div>
-      </div>
-    </div>
 
-    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
-    <script>
-      function switchTab(tab) {
-        document.querySelectorAll('.form-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
-        document.getElementById('tab-' + tab).classList.add('active');
-        document.getElementById('section-' + tab).classList.add('active');
-      }
+        <!-- ── REGISTER SECTION ── -->
+        <div class="form-section" id="section-register">
+          <div class="section-heading">
+            <h2>Join DIU WISE</h2>
+            <p>Create your free account to get started</p>
+          </div>
 
-      // Theme toggle
-      const themeBtn = document.getElementById('theme-toggle-btn');
-      if (themeBtn) {
-        themeBtn.addEventListener('click', () => {
-          const current = document.documentElement.getAttribute('data-theme');
-          const next = current === 'dark' ? 'light' : 'dark';
-          document.documentElement.setAttribute('data-theme', next);
-          localStorage.setItem('theme', next);
-        });
+          <!-- Name -->
+          <div class="field">
+            <label for="reg-name">Full Name</label>
+            <div class="field-inner no-right">
+              <svg class="field-icon" viewBox="0 0 24 24">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+              </svg>
+              <input id="reg-name" name="full_name" type="text" placeholder="Your full name" autocomplete="name" />
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="field">
+            <label for="reg-email">Email Address</label>
+            <div class="field-inner no-right">
+              <svg class="field-icon" viewBox="0 0 24 24">
+                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+              </svg>
+              <input id="reg-email" name="email" type="email" placeholder="you@example.com" autocomplete="email" />
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="field">
+            <label for="reg-password">Password</label>
+            <div class="field-inner">
+              <svg class="field-icon" viewBox="0 0 24 24">
+                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+              </svg>
+              <input id="reg-password" name="password" type="password" placeholder="Min. 8 characters" autocomplete="new-password" />
+              <button type="button" class="field-btn" onclick="togglePwd('reg-password', this)" tabindex="-1" aria-label="Show or hide password">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <button type="button" id="register-btn" class="btn-submit-ghost">Create Account</button>
+
+          <p id="reg-message" class="auth-message"></p>
+
+          <!-- Divider -->
+          <div class="or-divider">or</div>
+
+          <!-- Google -->
+          <a href="#" class="btn-google">
+            <svg width="18" height="18" viewBox="0 0 48 48">
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+            </svg>
+            Sign up with Google
+          </a>
+
+          <div class="signup-prompt">
+            Already have an account? <a href="/login" onclick="switchTab('login');return false;">Sign in</a>
+          </div>
+        </div>
+
+      </div><!-- /form-card -->
+    </div><!-- /right-panel -->
+
+  </div><!-- /login-page -->
+
+  <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+  <script>
+    // Tab switcher
+    function switchTab(tab) {
+      document.querySelectorAll('.form-tab').forEach(function(t) { t.classList.remove('active'); });
+      document.querySelectorAll('.form-section').forEach(function(s) { s.classList.remove('active'); });
+      document.getElementById('tab-' + tab).classList.add('active');
+      document.getElementById('section-' + tab).classList.add('active');
+    }
+
+    // Password show/hide toggle
+    function togglePwd(inputId, btn) {
+      var input = document.getElementById(inputId);
+      var isHidden = input.type === 'password';
+      input.type = isHidden ? 'text' : 'password';
+      var svg = btn.querySelector('svg');
+      if (isHidden) {
+        svg.innerHTML = '<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>';
+      } else {
+        svg.innerHTML = '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>';
       }
-    </script>
-  </body>
+    }
+  </script>
+</body>
 </html>

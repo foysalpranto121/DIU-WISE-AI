@@ -38,16 +38,22 @@ def login():
     return jsonify({"message": "Logged in", "user": user.to_dict()})
 
 
-@auth_bp.route("/register", methods=["POST"])
+@auth_bp.route("/register", methods=["GET", "POST"])
 def register():
+    if request.method == "GET":
+        if current_user.is_authenticated:
+            return redirect(url_for("index"))
+        return render_template("register.html")
+
+    # JSON API path (used by the register form via fetch)
     payload = request.get_json(force=True)
     full_name = payload.get("full_name", "").strip()
     email = payload.get("email", "").strip().lower()
     password = payload.get("password", "")
     if not full_name or not email or len(password) < 8:
-        return jsonify({"error": "full_name, email and min 8-char password required"}), 400
+        return jsonify({"error": "Full name, email and a password of at least 8 characters are required"}), 400
     if User.query.filter_by(email=email).first():
-        return jsonify({"error": "Email already registered"}), 409
+        return jsonify({"error": "That email is already registered. Try logging in instead."}), 409
 
     user = User(full_name=full_name, email=email, role="student")
     user.set_password(password)

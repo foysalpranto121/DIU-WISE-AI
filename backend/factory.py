@@ -11,7 +11,7 @@ from ai_engine.rag_engine import RAGEngine
 from ai_engine.agent_router import AgentRouter
 from config import Config
 from models import User, db, Appointment
-from routes import ai_bp, auth_bp, chat_bp, dashboard_bp, user_bp, pages_bp
+from routes import ai_bp, auth_bp, calendar_bp, chat_bp, dashboard_bp, pages_bp, user_bp, voice_bp, va_bp, sub_bp
 from services.data_service import DataService
 from services.triage_service import TriageService
 from services.notification_service import NotificationService
@@ -50,7 +50,10 @@ def create_app():
 
     @login_manager.unauthorized_handler
     def unauthorized():
-        if request.path.startswith("/dashboard-data") or request.path.startswith("/predict") or request.path.startswith("/emotion"):
+        api_prefixes = ("/api/", "/dashboard-data", "/predict", "/emotion",
+                        "/chat", "/generate-plan", "/voice-journal/transcribe",
+                        "/voice-journal/save", "/voice-journal/entries")
+        if request.path.startswith(api_prefixes):
             return jsonify({"error": "authentication required"}), 401
         if request.headers.get("Accept", "").find("application/json") >= 0:
             return jsonify({"error": "authentication required"}), 401
@@ -94,12 +97,16 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(pages_bp)
+    app.register_blueprint(voice_bp)
+    app.register_blueprint(va_bp)
+    app.register_blueprint(calendar_bp)
+    app.register_blueprint(sub_bp)
 
     # Core Routes
     @app.route("/", methods=["GET"])
     def index():
         if not current_user.is_authenticated:
-            return redirect(url_for("auth.login"))
+            return redirect(url_for("subscription.landing"))
         return render_template("index.html")
 
     @app.route("/health", methods=["GET"])

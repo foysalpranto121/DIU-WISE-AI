@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 48" fill="none">
+  <defs>
+    <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Icon box: rounded rectangle with gradient background -->
+  <rect x="0" y="0" width="48" height="48" rx="12" fill="url(#brandGrad)"/>
+
+  <!-- Brain icon: left lobe outline -->
+  <path d="M14 24 C14 18 18 14 22 15 C22 13 25 12 27 14 C27 14 29 13 30 15 C33 15 35 18 35 22 C36 24 35 27 33 28 C33 30 31 32 29 32 C28 34 25 34 24 32 C22 34 19 34 18 32 C16 31 14 28 14 24 Z"
+        fill="none" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/>
+
+  <!-- Brain center dividing line -->
+  <path d="M24.5 15 C24 18 24 22 24.5 28 C25 31 25 32 24.5 32"
+        fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/>
+
+  <!-- Left lobe detail curve -->
+  <path d="M16 22 C17 20 19 20 20 22"
+        fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/>
+
+  <!-- Right lobe detail curve -->
+  <path d="M28 22 C29 20 31 20 32 22"
+        fill="none" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/>
+
+  <!-- Neural connection dots -->
+  <circle cx="18" cy="26" r="1.5" fill="#fff" opacity="0.85"/>
+  <circle cx="22" cy="20" r="1.5" fill="#fff" opacity="0.85"/>
+  <circle cx="27" cy="20" r="1.5" fill="#fff" opacity="0.85"/>
+  <circle cx="31" cy="26" r="1.5" fill="#fff" opacity="0.85"/>
+  <circle cx="24.5" cy="30" r="1.5" fill="#fff" opacity="0.85"/>
+
+  <!-- Neural connection lines -->
+  <line x1="18" y1="26" x2="22" y2="20" stroke="#fff" stroke-width="0.8" opacity="0.5"/>
+  <line x1="22" y1="20" x2="27" y2="20" stroke="#fff" stroke-width="0.8" opacity="0.5"/>
+  <line x1="27" y1="20" x2="31" y2="26" stroke="#fff" stroke-width="0.8" opacity="0.5"/>
+  <line x1="18" y1="26" x2="24.5" y2="30" stroke="#fff" stroke-width="0.8" opacity="0.5"/>
+  <line x1="31" y1="26" x2="24.5" y2="30" stroke="#fff" stroke-width="0.8" opacity="0.5"/>
+  <line x1="22" y1="20" x2="24.5" y2="30" stroke="#fff" stroke-width="0.8" opacity="0.3"/>
+  <line x1="27" y1="20" x2="24.5" y2="30" stroke="#fff" stroke-width="0.8" opacity="0.3"/>
+
+  <!-- Wordmark: "WISE" in bold white -->
+  <text x="58" y="31"
+        font-family="Inter, sans-serif"
+        font-size="22"
+        font-weight="700"
+        letter-spacing="-0.5"
+        fill="#ffffff">WISE</text>
+
+  <!-- Wordmark: "AI" in gradient -->
+  <text x="131" y="31"
+        font-family="Inter, sans-serif"
+        font-size="22"
+        font-weight="700"
+        letter-spacing="-0.5"
+        fill="url(#textGrad)">AI</text>
+</svg>
