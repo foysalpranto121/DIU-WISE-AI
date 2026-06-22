@@ -366,7 +366,8 @@
 
     setPhase('speaking');
     setStatus('AI is speaking…', 'speaking');
-    await speakText(data.tts_text || '');
+    // English via OpenAI TTS, Bangla via SpeechSynthesis — never mix them
+    await speakBilingual(data.tts_en || '', data.tts_bn || '');
 
     afterTurn(true);
   }
@@ -387,13 +388,44 @@
   }
 
   /* ════════════════════════════════════════════════════════════════════
-     TTS: OpenAI → SpeechSynthesis fallback
+     TTS: bilingual sequential pipeline
+     English  → OpenAI TTS (/voice-assistant/speak) — high quality
+     Bangla   → browser SpeechSynthesis bn-BD       — only correct option
      ════════════════════════════════════════════════════════════════════ */
 
-  async function speakText(text) {
-    if (!text) return;
-    const voice = voiceSel ? voiceSel.value : 'nova';
+  let bnVoice = null;   // cached Bengali SpeechSynthesis voice
 
+  function findBengaliVoice() {
+    if (!window.speechSynthesis) return null;
+    const voices = window.speechSynthesis.getVoices();
+    // Prefer bn-BD, then bn-IN, then any Bengali voice
+    return voices.find(v => v.lang === 'bn-BD')
+        || voices.find(v => v.lang === 'bn-IN')
+        || voices.find(v => v.lang.startsWith('bn'))
+        || null;
+  }
+
+  function initBengaliVoice() {
+    bnVoice = findBengaliVoice();
+    if (!bnVoice && phaseBadge) {
+      // Soft warning — doesn't block usage
+      console.info('[VA] No Bengali TTS voice found. Bangla will be displayed but not spoken.');
+    }
+  }
+
+  async function speakBilingual(enText, bnText) {
+    // 1. English → OpenAI TTS (clean, never send Bangla here)
+    if (enText && enText.trim()) {
+      await speakEnglish(enText.trim());
+    }
+    // 2. Bangla → browser SpeechSynthesis with bn-BD voice
+    if (bnText && bnText.trim()) {
+      await speakBangla(bnText.trim());
+    }
+  }
+
+  async function speakEnglish(text) {
+    const voice = voiceSel ? voiceSel.value : 'nova';
     try {
       const res = await fetch('/voice-assistant/speak', {
         method:  'POST',
@@ -414,40 +446,41 @@
         playingAudio = null;
         return;
       }
-      await browserSpeak(text);
+      // Fallback: browser English voice
+      await browserSpeakLang(text, 'en-US');
     } catch (err) {
-      console.warn('[VA] TTS error, falling back:', err);
-      await browserSpeak(text);
+      console.warn('[VA] English TTS error:', err);
+      await browserSpeakLang(text, 'en-US');
     }
   }
 
-  function browserSpeak(text) {
-    return new Promise(resolve => {
-      if (!window.speechSynthesis) { resolve(); return; }
-      window.speechSynthesis.cancel();
-      const parts = splitBilingual(text);
-      let idx = 0;
-      function next() {
-        if (idx >= parts.length) { resolve(); return; }
-        const { t, lang } = parts[idx++];
-        const utt  = new SpeechSynthesisUtterance(t);
-        utt.lang   = lang;
-        utt.rate   = 0.95;
-        const vs   = window.speechSynthesis.getVoices();
-        const match = vs.find(v => v.lang.startsWith(lang.split('-')[0]));
-        if (match) utt.voice = match;
-        utt.onend   = next;
-        utt.onerror = next;
-        window.speechSynthesis.speak(utt);
-      }
-      next();
-    });
+  function speakBangla(text) {
+    if (!bnVoice) {
+      // No Bengali voice installed — skip audio, text is visible in the bubble
+      return Promise.resolve();
+    }
+    return browserSpeakLang(text, 'bn-BD', bnVoice);
   }
 
-  function splitBilingual(text) {
-    const BN = /[ঀ-৿]/;
-    return text.split(/(?<=[।.!?])\s+/).filter(s => s.trim())
-      .map(s => ({ t: s.trim(), lang: BN.test(s) ? 'bn-BD' : 'en-US' }));
+  function browserSpeakLang(text, lang, forceVoice) {
+    return new Promise(resolve => {
+      if (!window.speechSynthesis || !text) { resolve(); return; }
+      window.speechSynthesis.cancel();
+      const utt  = new SpeechSynthesisUtterance(text);
+      utt.lang   = lang;
+      utt.rate   = lang.startsWith('bn') ? 0.88 : 0.95;  // slightly slower for Bangla
+      utt.pitch  = 1.0;
+      if (forceVoice) {
+        utt.voice = forceVoice;
+      } else {
+        const vs    = window.speechSynthesis.getVoices();
+        const match = vs.find(v => v.lang.startsWith(lang.split('-')[0]));
+        if (match) utt.voice = match;
+      }
+      utt.onend   = resolve;
+      utt.onerror = resolve;
+      window.speechSynthesis.speak(utt);
+    });
   }
 
   /* ════════════════════════════════════════════════════════════════════
@@ -493,10 +526,32 @@
   hideThinking();
   setPhase('idle');
   drawIdle();
+
   if (window.speechSynthesis) {
-    window.speechSynthesis.getVoices();
-    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    // Voices load async in Chrome — initialise once list is ready
+    if (window.speechSynthesis.getVoices().length > 0) {
+      initBengaliVoice();
+    }
+    window.speechSynthesis.onvoiceschanged = () => {
+      initBengaliVoice();
+      updateBnVoiceHint();
+    };
+    // Trigger early for Firefox/Safari which don't fire onvoiceschanged
+    setTimeout(() => { initBengaliVoice(); updateBnVoiceHint(); }, 800);
   }
+
+  function updateBnVoiceHint() {
+    const hint = document.getElementById('va-bn-voice-hint');
+    if (!hint) return;
+    if (bnVoice) {
+      hint.textContent = `Bengali voice: ${bnVoice.name}`;
+      hint.className = 'va-bn-hint va-bn-ok';
+    } else {
+      hint.textContent = 'No Bengali voice installed — Bangla shown as text only';
+      hint.className = 'va-bn-hint va-bn-warn';
+    }
+  }
+
   if (!navigator.mediaDevices || !window.MediaRecorder) {
     if (micBtn) micBtn.disabled = true;
     if (liveBtn) liveBtn.disabled = true;

@@ -123,22 +123,35 @@ def voice_chat():
     )
 
     structured = ai_result.get("structured_response", {})
-    summary_en = structured.get("summary", "")
-    summary_bn = structured.get("summary_bn", "")
-    advice_en  = structured.get("advice", [])
-    advice_bn  = structured.get("advice_bn", [])
-    action_en  = structured.get("action_required", "")
-    action_bn  = structured.get("action_required_bn", "")
+    summary_en  = structured.get("summary", "")
+    summary_bn  = structured.get("summary_bn", "")
+    spoken_bn   = structured.get("spoken_bn", "")   # TTS-optimised Bangla from prompt
+    advice_en   = structured.get("advice", [])
+    advice_bn   = structured.get("advice_bn", [])
+    action_en   = structured.get("action_required", "")
+    action_bn   = structured.get("action_required_bn", "")
 
-    # ── Step 3: Build TTS text ───────────────────────────────────────────
+    # ── Step 3: Separate English and Bangla TTS texts ───────────────────
+    # English → goes to OpenAI TTS (great quality)
+    tts_en = " ".join(filter(None, [summary_en, action_en] + advice_en[:1]))
+
+    # Bangla → goes to browser SpeechSynthesis with bn-BD voice
+    # Prefer the spoken_bn field (TTS-optimised) if present, else compose from parts
+    if spoken_bn:
+        tts_bn = spoken_bn
+    else:
+        tts_bn = " ".join(filter(None, [summary_bn, action_bn] + advice_bn[:1]))
+
+    # Clean Bangla for TTS: remove non-Bangla/non-space punctuation that confuse synth
+    import re
+    tts_bn = re.sub(r'["""\'()\[\]{}:;,\-—–]', ' ', tts_bn)
+    tts_bn = re.sub(r'\s+', ' ', tts_bn).strip()
+
+    # lang_mode filtering
     if lang_mode == "en":
-        tts_text = " ".join(filter(None, [summary_en, action_en] + advice_en[:2]))
+        tts_bn = ""
     elif lang_mode == "bn":
-        tts_text = " ".join(filter(None, [summary_bn, action_bn] + advice_bn[:2]))
-    else:   # "both" — English first, Bangla second
-        en_part = " ".join(filter(None, [summary_en, action_en]))
-        bn_part = " ".join(filter(None, [summary_bn, action_bn]))
-        tts_text = f"{en_part}. {bn_part}" if en_part and bn_part else (en_part or bn_part)
+        tts_en = ""
 
     urgency    = routing.get("urgency", "low")
     model_risk = structured.get("risk_level", "low")
@@ -147,7 +160,8 @@ def voice_chat():
         "transcript":          transcript,
         "detected_lang":       detected_lang,
         "structured_response": structured,
-        "tts_text":            tts_text,
+        "tts_en":              tts_en,
+        "tts_bn":              tts_bn,
         "urgency":             urgency,
         "crisis":              bool(urgency == "high" or model_risk == "high"),
     }), 200
