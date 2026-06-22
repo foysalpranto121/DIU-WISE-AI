@@ -1,0 +1,493 @@
+{% extends "layout.html" %}
+
+{% block title %}Voice Assistant — DIU WISE AI{% endblock %}
+{% block page_title %}Voice Assistant{% endblock %}
+{% block page_subtitle %}Speak in Bangla or English — your AI wellness companion listens and replies{% endblock %}
+
+{% block content %}
+<style>
+/* ── Layout ───────────────────────────────────────────────────────────── */
+.va-root {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+  height: calc(100vh - 130px);
+  min-height: 520px;
+}
+@media (max-width: 900px) {
+  .va-root { grid-template-columns: 1fr; height: auto; }
+}
+
+/* ── Left panel ───────────────────────────────────────────────────────── */
+.va-left {
+  background: var(--glass-bg, rgba(30,41,59,0.7));
+  border: 1px solid var(--border-color, rgba(255,255,255,0.08));
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 24px 24px;
+  gap: 20px;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+/* ── Orb + rings ──────────────────────────────────────────────────────── */
+.va-orb-wrap {
+  position: relative;
+  width: 170px;
+  height: 170px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.va-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid rgba(99,102,241,0.25);
+  pointer-events: none;
+}
+.va-ring-1 { width: 130px; height: 130px; }
+.va-ring-2 { width: 160px; height: 160px; border-color: rgba(168,85,247,0.15); }
+
+@keyframes va-pulse {
+  0%   { transform: scale(1);    opacity: 0.9; }
+  50%  { transform: scale(1.12); opacity: 0.4; }
+  100% { transform: scale(1);    opacity: 0.9; }
+}
+@keyframes va-pulse-slow {
+  0%   { transform: scale(1);   opacity: 0.6; }
+  50%  { transform: scale(1.18);opacity: 0.15; }
+  100% { transform: scale(1);   opacity: 0.6; }
+}
+.va-ring-1.va-pulse      { animation: va-pulse      1s ease-in-out infinite; }
+.va-ring-2.va-pulse-slow { animation: va-pulse-slow 1.4s ease-in-out infinite; }
+
+/* ── Mic button ───────────────────────────────────────────────────────── */
+.va-mic-btn {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 32px rgba(99,102,241,0.45);
+  transition: transform 0.15s, box-shadow 0.15s;
+  position: relative;
+  z-index: 1;
+}
+.va-mic-btn:hover  { transform: scale(1.06); box-shadow: 0 12px 40px rgba(99,102,241,0.6); }
+.va-mic-btn:active { transform: scale(0.97); }
+.va-mic-btn.va-recording {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  box-shadow: 0 8px 32px rgba(239,68,68,0.5);
+}
+.va-mic-btn svg { width: 40px; height: 40px; fill: currentColor; }
+
+/* ── Status text ──────────────────────────────────────────────────────── */
+.va-status-text {
+  font-size: 0.88rem;
+  color: var(--text-secondary, #94a3b8);
+  text-align: center;
+  min-height: 20px;
+  transition: color 0.2s;
+}
+.va-status-text.va-listening { color: #6366f1; }
+.va-status-text.va-speaking  { color: #a855f7; }
+.va-status-text.va-error     { color: #ef4444; }
+
+/* ── Language pill row ────────────────────────────────────────────────── */
+.va-lang-section { width: 100%; }
+.va-section-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary, #64748b);
+  margin-bottom: 8px;
+}
+.va-lang-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.va-lang-pill {
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(99,102,241,0.3);
+  background: transparent;
+  color: var(--text-secondary, #94a3b8);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.va-lang-pill:hover,
+.va-lang-pill.va-active {
+  background: rgba(99,102,241,0.18);
+  border-color: #6366f1;
+  color: #818cf8;
+}
+
+/* ── Voice selector ───────────────────────────────────────────────────── */
+.va-voice-select {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+  background: var(--bg-tertiary, rgba(15,23,42,0.6));
+  color: var(--text-primary, #f1f5f9);
+  font-size: 0.83rem;
+  cursor: pointer;
+  appearance: none;
+}
+
+/* ── Canvas waveform ──────────────────────────────────────────────────── */
+.va-canvas {
+  width: 100%;
+  height: 54px;
+  border-radius: 10px;
+  background: var(--bg-tertiary, rgba(15,23,42,0.4));
+  border: 1px solid var(--border-color, rgba(255,255,255,0.06));
+}
+
+/* ── Hint strip ───────────────────────────────────────────────────────── */
+.va-hint-strip {
+  width: 100%;
+  background: rgba(99,102,241,0.08);
+  border: 1px solid rgba(99,102,241,0.15);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.78rem;
+  color: var(--text-secondary, #94a3b8);
+  line-height: 1.5;
+}
+.va-hint-strip strong { color: #818cf8; }
+
+/* ── Right panel: conversation ────────────────────────────────────────── */
+.va-right {
+  background: var(--glass-bg, rgba(30,41,59,0.7));
+  border: 1px solid var(--border-color, rgba(255,255,255,0.08));
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.va-convo-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border-color, rgba(255,255,255,0.06));
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.va-convo-header img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+.va-convo-header h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0;
+}
+.va-convo-header p {
+  font-size: 0.75rem;
+  color: var(--text-secondary, #94a3b8);
+  margin: 0;
+}
+.va-online-dot {
+  width: 8px; height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.va-online-dot--right { margin-left: auto; }
+
+.va-convo-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scroll-behavior: smooth;
+}
+.va-convo-body::-webkit-scrollbar { width: 4px; }
+.va-convo-body::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 4px; }
+
+/* ── Welcome state ────────────────────────────────────────────────────── */
+.va-welcome {
+  text-align: center;
+  padding: 40px 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.va-welcome-icon { font-size: 3rem; }
+.va-welcome h3 { font-size: 1.2rem; font-weight: 700; margin: 0; }
+.va-welcome p  { color: var(--text-secondary, #94a3b8); margin: 0; font-size: 0.88rem; line-height: 1.6; }
+.va-welcome-bn { font-size: 0.85rem !important; color: rgba(129,140,248,0.8) !important; }
+
+/* ── Bubbles ──────────────────────────────────────────────────────────── */
+.va-bubble { display: flex; flex-direction: column; gap: 6px; max-width: 88%; animation: va-fade-in 0.25s ease; }
+@keyframes va-fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.va-bubble-user { align-self: flex-end; }
+.va-bubble-ai   { align-self: flex-start; }
+
+.va-bubble-meta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.72rem;
+  color: var(--text-secondary, #64748b);
+}
+.va-bot-avatar { width: 20px; height: 20px; border-radius: 50%; }
+.va-lang-tag {
+  background: rgba(99,102,241,0.15);
+  border: 1px solid rgba(99,102,241,0.2);
+  border-radius: 8px;
+  padding: 1px 7px;
+  font-size: 0.68rem;
+  color: #818cf8;
+}
+.va-risk-badge {
+  border-radius: 8px;
+  padding: 1px 8px;
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+.va-risk-medium { background: rgba(249,115,22,0.15); color: #fb923c; border: 1px solid rgba(249,115,22,0.25); }
+.va-risk-high   { background: rgba(239,68,68,0.15);  color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+
+.va-bubble-text {
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+.va-bubble-user .va-bubble-text {
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.va-bubble-ai .va-bubble-text {
+  background: var(--bg-tertiary, rgba(15,23,42,0.5));
+  border: 1px solid var(--border-color, rgba(255,255,255,0.07));
+  color: var(--text-primary, #f1f5f9);
+  border-bottom-left-radius: 4px;
+}
+.va-bubble-bn {
+  font-family: 'Noto Sans Bengali', sans-serif !important;
+  background: rgba(168,85,247,0.08) !important;
+  border-color: rgba(168,85,247,0.15) !important;
+  color: rgba(216,180,254,0.9) !important;
+  margin-top: 4px;
+}
+
+/* ── Thinking indicator ───────────────────────────────────────────────── */
+.va-thinking {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 24px;
+  border-top: 1px solid var(--border-color, rgba(255,255,255,0.05));
+  font-size: 0.8rem;
+  color: var(--text-secondary, #64748b);
+  flex-shrink: 0;
+  min-height: 42px;
+}
+.va-thinking.va-hidden { visibility: hidden; }
+.va-thinking-dots { display: flex; gap: 4px; }
+.va-thinking-dots span {
+  width: 6px; height: 6px;
+  background: #6366f1;
+  border-radius: 50%;
+  animation: va-dot-bounce 1.2s ease-in-out infinite;
+}
+.va-thinking-dots span:nth-child(2) { animation-delay: 0.15s; }
+.va-thinking-dots span:nth-child(3) { animation-delay: 0.30s; }
+@keyframes va-dot-bounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+  40%            { transform: translateY(-6px); opacity: 1; }
+}
+
+/* ── Live conversation button ─────────────────────────────────────────── */
+.va-live-btn {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 2px solid #6366f1;
+  background: rgba(99,102,241,0.1);
+  color: #818cf8;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+.va-live-btn:hover {
+  background: rgba(99,102,241,0.2);
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+}
+.va-live-btn.va-live-active {
+  background: rgba(239,68,68,0.12);
+  border-color: #ef4444;
+  color: #f87171;
+}
+.va-live-btn.va-live-active:hover {
+  background: rgba(239,68,68,0.2);
+}
+
+/* ── Phase badge ──────────────────────────────────────────────────────── */
+.va-phase-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+.badge-idle       { background: rgba(100,116,139,0.12); color: #64748b; border-color: rgba(100,116,139,0.2); }
+.badge-listening  { background: rgba(99,102,241,0.12);  color: #818cf8; border-color: rgba(99,102,241,0.25); animation: va-badge-pulse 2s ease-in-out infinite; }
+.badge-recording  { background: rgba(239,68,68,0.12);   color: #f87171; border-color: rgba(239,68,68,0.25);  animation: va-badge-pulse 0.8s ease-in-out infinite; }
+.badge-processing { background: rgba(249,115,22,0.12);  color: #fb923c; border-color: rgba(249,115,22,0.25); }
+.badge-speaking   { background: rgba(168,85,247,0.12);  color: #c084fc; border-color: rgba(168,85,247,0.25); animation: va-badge-pulse 1.5s ease-in-out infinite; }
+
+@keyframes va-badge-pulse {
+  0%, 100% { opacity: 1; } 50% { opacity: 0.55; }
+}
+
+/* ── Divider ──────────────────────────────────────────────────────────── */
+.va-divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.7rem;
+  color: var(--text-secondary, #475569);
+  opacity: 0.5;
+}
+.va-divider::before, .va-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+}
+
+/* ── Utilities ────────────────────────────────────────────────────────── */
+.va-hidden { display: none !important; }
+</style>
+
+<div class="va-root">
+
+  <!-- ══ LEFT: Controls ══ -->
+  <div class="va-left">
+
+    <!-- Animated orb + mic button -->
+    <div class="va-orb-wrap">
+      <div class="va-ring va-ring-1" id="va-ring-1"></div>
+      <div class="va-ring va-ring-2" id="va-ring-2"></div>
+      <button type="button" class="va-mic-btn" id="va-mic-btn" title="Click to speak / stop">
+        <svg id="va-mic-icon" viewBox="0 0 24 24">
+          <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+        </svg>
+        <svg id="va-stop-icon" class="va-hidden" viewBox="0 0 24 24">
+          <rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Phase badge -->
+    <span class="va-phase-badge badge-idle" id="va-phase-badge">Idle</span>
+
+    <p class="va-status-text" id="va-status-text">Tap the mic to speak</p>
+
+    <!-- Live conversation button -->
+    <button type="button" class="va-live-btn" id="va-live-btn">
+      ▶ Start Live Conversation
+    </button>
+
+    <div class="va-divider">or tap mic once to speak manually</div>
+
+    <!-- Language mode -->
+    <div class="va-lang-section">
+      <p class="va-section-label">Response language</p>
+      <div class="va-lang-pills">
+        <button type="button" class="va-lang-pill" data-mode="en">English</button>
+        <button type="button" class="va-lang-pill va-active" data-mode="both">Both</button>
+        <button type="button" class="va-lang-pill" data-mode="bn">বাংলা</button>
+      </div>
+    </div>
+
+    <!-- AI voice -->
+    <div class="va-lang-section">
+      <p class="va-section-label">AI voice</p>
+      <select id="va-voice-select" class="va-voice-select">
+        <option value="nova">Nova (Female)</option>
+        <option value="alloy">Alloy (Neutral)</option>
+        <option value="echo">Echo (Male)</option>
+        <option value="shimmer">Shimmer (Soft)</option>
+        <option value="fable">Fable (Expressive)</option>
+      </select>
+    </div>
+
+    <!-- Waveform -->
+    <canvas id="va-canvas" class="va-canvas" width="260" height="54"></canvas>
+
+    <!-- Hint -->
+    <div class="va-hint-strip">
+      <strong>Tip:</strong> Speak naturally in <strong>Bangla</strong> or <strong>English</strong>.
+      WISE AI will understand and reply in both languages.<br>
+      <span style="opacity:.75">বাংলায় বা ইংরেজিতে স্বাভাবিকভাবে কথা বলুন।</span>
+    </div>
+  </div>
+
+  <!-- ══ RIGHT: Conversation ══ -->
+  <div class="va-right">
+    <div class="va-convo-header">
+      <img src="/static/images/wellness_bot.png" alt="AI">
+      <div>
+        <h3>WISE Voice Assistant</h3>
+        <p>Bilingual · Bangla + English</p>
+      </div>
+      <span class="va-online-dot va-online-dot--right" title="Online"></span>
+    </div>
+
+    <div class="va-convo-body" id="va-convo">
+      <div class="va-welcome" id="va-welcome">
+        <div class="va-welcome-icon">🎙️</div>
+        <h3>Hello, {{ current_user.full_name }}!</h3>
+        <p>I'm your AI wellness companion. Speak to me about stress, studies, sleep, anxiety — anything on your mind.</p>
+        <p class="va-welcome-bn">আমার সাথে যেকোনো বিষয়ে কথা বলুন। আমি বাংলায় ও ইংরেজিতে উত্তর দেব।</p>
+      </div>
+    </div>
+
+    <div class="va-thinking va-hidden" id="va-thinking">
+      <div class="va-thinking-dots"><span></span><span></span><span></span></div>
+      <span id="va-thinking-label">Processing…</span>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/voice_assistant.js') }}"></script>
+{% endblock %}

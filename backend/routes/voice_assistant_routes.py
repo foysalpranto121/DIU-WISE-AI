@@ -28,17 +28,15 @@ def speak():
     if not text:
         return jsonify({"error": "text is required"}), 400
 
-    api_key = os.getenv("OPENAI_API_KEY", "")
-    if not api_key or api_key == "your_openai_api_key_here":
+    # TTS must go to OpenAI directly — proxy providers don't support it.
+    # Prefer WHISPER_API_KEY (real sk-... key) over the proxy OPENAI_API_KEY.
+    api_key = os.getenv("WHISPER_API_KEY") or os.getenv("OPENAI_API_KEY", "")
+    if not api_key or api_key.startswith("euri-") or api_key == "your_openai_api_key_here":
         return jsonify({"fallback": True}), 200
 
     try:
         from openai import OpenAI
-        base_url = os.getenv("OPENAI_BASE_URL")
-        client_kwargs = {"api_key": api_key, "timeout": 30}
-        if base_url:
-            client_kwargs["base_url"] = base_url
-        client = OpenAI(**client_kwargs)
+        client = OpenAI(api_key=api_key, base_url="https://api.openai.com/v1", timeout=30)
 
         response = client.audio.speech.create(
             model="tts-1",
