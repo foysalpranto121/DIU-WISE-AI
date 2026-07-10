@@ -397,6 +397,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  const emergencyBtn = document.getElementById('emergency-btn');
+  if (emergencyBtn && window.CrisisSafetyNet) {
+    emergencyBtn.addEventListener('click', () => {
+      window.CrisisSafetyNet.trigger();
+    });
+  }
+
 
 
   // Placeholder Links
