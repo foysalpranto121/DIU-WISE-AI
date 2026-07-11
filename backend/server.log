@@ -1,6 +1,62 @@
-[00:22:39] Python OK
-[00:22:39] Pre-loading numpy + sklearn (may take 1-2 min on first run)...
-[00:22:42] numpy/sklearn ready
-[00:22:42] Importing factory (loads Flask + all AI models)...
-[00:22:53] Creating app...
-[00:23:06] >>> Server ready! Open http://127.0.0.1:5000 <<<
+C:\Users\moonp\AppData\Roaming\Python\Python313\site-packages\sklearn\base.py:463: InconsistentVersionWarning: Trying to unpickle estimator DecisionTreeClassifier from version 1.9.0 when using version 1.8.0. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+C:\Users\moonp\AppData\Roaming\Python\Python313\site-packages\sklearn\base.py:463: InconsistentVersionWarning: Trying to unpickle estimator RandomForestClassifier from version 1.9.0 when using version 1.8.0. This might lead to breaking code or invalid results. Use at your own risk. For more info please refer to:
+https://scikit-learn.org/stable/model_persistence.html#security-maintainability-limitations
+  warnings.warn(
+Traceback (most recent call last):
+  File "M:\DIU-WISE-AI\backend\app.py", line 3, in <module>
+    app = create_app()
+  File "M:\DIU-WISE-AI\backend\factory.py", line 73, in create_app
+    rag_engine = RAGEngine(
+        knowledge_file=app.config["KNOWLEDGE_FILE"], model_dir=app.config["MODEL_DIR"]
+    )
+  File "M:\DIU-WISE-AI\backend\ai_engine\rag_engine.py", line 14, in __init__
+    self.embedding_model = HuggingFaceEmbeddings(
+                           ~~~~~~~~~~~~~~~~~~~~~^
+        model_name="sentence-transformers/all-MiniLM-L6-v2"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\moonp\AppData\Roaming\Python\Python313\site-packages\langchain_huggingface\embeddings\huggingface.py", line 59, in __init__
+    self._client = sentence_transformers.SentenceTransformer(
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.model_name, cache_folder=self.cache_folder, **self.model_kwargs
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\moonp\AppData\Roaming\Python\Python313\site-packages\sentence_transformers\SentenceTransformer.py", line 309, in __init__
+    modules, self.module_kwargs = self._load_sbert_model(
+                                  ~~~~~~~~~~~~~~~~~~~~~~^
+        model_name_or_path,
+        ^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+        config_kwargs=config_kwargs,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\moonp\AppData\Roaming\Python\Python313\site-packages\sentence_transformers\SentenceTransformer.py", line 1808, in _load_sbert_model
+    module = module_class(model_name_or_path, cache_dir=cache_folder, backend=self.backend, **kwargs)
+  File "C:\Users\moonp\AppData\Roaming\Python\Python313\site-packages\sentence_transformers\models\Transformer.py", line 81, in __init__
+    self._load_model(model_name_or_path, config, cache_dir, backend, is_peft_model, **model_args)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\moonp\AppData\Roaming\Python\Python313\site-packages\sentence_transformers\models\Transformer.py", line 181, in _load_model
+    self.auto_model = AutoModel.from_pretrained(
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        model_name_or_path, config=config, cache_dir=cache_dir, **model_args
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\moonp\AppData\Roaming\Python\Python313\site-packages\transformers\models\auto\auto_factory.py", line 571, in from_pretrained
+    return model_class.from_pretrained(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        pretrained_model_name_or_path, *model_args, config=config, **hub_kwargs, **kwargs
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\moonp\AppData\Roaming\Python\Python313\site-packages\transformers\modeling_utils.py", line 309, in _wrapper
+    return func(*args, **kwargs)
+  File "C:\Users\moonp\AppData\Roaming\Python\Python313\site-packages\transformers\modeling_utils.py", line 4451, in from_pretrained
+    with safe_open(checkpoint_files[0], framework="pt") as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: The paging file is too small for this operation to complete. (os error 1455)

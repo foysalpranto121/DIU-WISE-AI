@@ -1,8 +1,6 @@
 import os
 import json
 
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 
 
@@ -11,34 +9,41 @@ class RAGEngine:
         self.knowledge_file = knowledge_file
         self.vector_path = os.path.join(model_dir, "faiss_index")
         os.makedirs(model_dir, exist_ok=True)
-        self.embedding_model = HuggingFaceEmbeddings(
-            model_name="sentence-transformers/all-MiniLM-L6-v2"
-        )
-        self.retriever = self._build_retriever()
+        # Skip embedding model due to memory constraints
+        # Use simple keyword-based retrieval instead
+        self.docs = self._load_documents()
 
     def _load_documents(self):
-        with open(self.knowledge_file, "r", encoding="utf-8") as fp:
-            chunks = [line.strip() for line in fp.readlines() if line.strip()]
-        return [Document(page_content=chunk) for chunk in chunks]
+        try:
+            with open(self.knowledge_file, "r", encoding="utf-8") as fp:
+                chunks = [line.strip() for line in fp.readlines() if line.strip()]
+            return chunks
+        except:
+            # Return empty list if no knowledge file
+            return []
+
+    def _retrieve_docs(self, query: str, k: int = 4):
+        """Simple keyword-based retrieval without embedding models."""
+        if not self.docs:
+            return []
+
+        query_words = set(query.lower().split())
+        scored_docs = []
+
+        for doc in self.docs:
+            # Score based on keyword overlap
+            doc_words = set(doc.lower().split())
+            overlap = len(query_words & doc_words)
+            if overlap > 0:
+                scored_docs.append((doc, overlap))
+
+        # Sort by score and return top k
+        scored_docs.sort(key=lambda x: x[1], reverse=True)
+        return [doc for doc, _ in scored_docs[:k]]
 
     def _build_retriever(self):
-        pkl_path = os.path.join(self.vector_path, "index.pkl")
-        faiss_path = os.path.join(self.vector_path, "index.faiss")
-        if (
-            os.path.exists(self.vector_path)
-            and os.path.exists(pkl_path)
-            and os.path.exists(faiss_path)
-        ):
-            store = FAISS.load_local(
-                self.vector_path,
-                self.embedding_model,
-                allow_dangerous_deserialization=True,
-            )
-            return store.as_retriever(search_kwargs={"k": 4})
-        docs = self._load_documents()
-        store = FAISS.from_documents(docs, self.embedding_model)
-        store.save_local(self.vector_path)
-        return store.as_retriever(search_kwargs={"k": 4})
+        # Return a simple lambda that wraps our retrieval function
+        return lambda query: self._retrieve_docs(query)
 
     # ------------------------------------------------------------------ #
     #  Public API                                                          #
@@ -51,15 +56,16 @@ class RAGEngine:
         intent: str = "general",
         urgency: str = "low",
         context_data: dict = None,
+        force_bengali: bool = False,
     ):
         if history is None:
             history = []
         if context_data is None:
             context_data = {}
 
-        # Retrieve relevant knowledge
-        docs = self.retriever.invoke(message)
-        context = "\n".join(d.page_content for d in docs[:4])
+        # Retrieve relevant knowledge using simplified retrieval
+        docs = self._retrieve_docs(message, k=4)
+        context = "\n".join(docs[:4])
 
         # Format last 5 conversation turns
         history_str = "\n".join(
@@ -67,19 +73,19 @@ class RAGEngine:
         )
 
         result = self._openai_answer(
-            message, context, history_str, intent, urgency, context_data
+            message, context, history_str, intent, urgency, context_data, force_bengali
         )
 
         return {
             "anonymous": bool(anonymous),
             "structured_response": result,
-            "sources": [d.page_content for d in docs[:3]],
+            "sources": docs[:3],  # Already strings from simplified retrieval
         }
 
     # ------------------------------------------------------------------ #
     #  OpenAI (primary)                                                    #
     # ------------------------------------------------------------------ #
-    def _openai_answer(self, message, context, history_str, intent, urgency, context_data):
+    def _openai_answer(self, message, context, history_str, intent, urgency, context_data, force_bengali=False):
         key = os.getenv("OPENAI_API_KEY", "")
         if not key or key == "your_openai_api_key_here":
             return self._fallback_response(message, urgency)
@@ -92,7 +98,12 @@ class RAGEngine:
                 client_kwargs["base_url"] = base_url
             client = OpenAI(**client_kwargs)
 
-            sys_prompt = f"""You are DIU WISE AI — a warm, caring AI wellness companion for Daffodil International University (DIU) students in Bangladesh.
+            # Adjust system prompt based on language preference
+            language_note = ""
+            if force_bengali:
+                language_note = "\n\n*** CRITICAL: Student is speaking BANGLA. ***\n- 'spoken_bn': Write PURE, 100% NATIVE BANGLA. No English words. No romanization. Short sentences.\n- 'summary_bn': Same — pure Bangla only.\n- 'advice_bn': Each item in pure Bangla with natural phrasing.\n- English fields are SECONDARY and can be skipped if needed.\n***\n"
+
+            sys_prompt = f"""You are DIU WISE AI — a warm, caring AI wellness companion for Daffodil International University (DIU) students in Bangladesh.{language_note}
 
 You MUST respond with a valid JSON object matching EXACTLY this schema:
 {{
@@ -109,13 +120,15 @@ You MUST respond with a valid JSON object matching EXACTLY this schema:
 }}
 
 BANGLA RULES (strictly follow):
-- Write natural, everyday Bangla that Bangladeshi university students actually say out loud
-- Like talking to a close friend — NOT a formal report or textbook
-- Max 12-15 words per sentence
-- English words students normally use are fine: stress, exam, deadline, counselor, schedule
-- GOOD example: "তুমি এখন অনেক চাপে আছো, এটা স্বাভাবিক। একটু rest নাও আর deep breath নাও।"
-- BAD example: "আপনার মানসিক চাপ নিরসনের জন্য নিম্নোক্ত পদক্ষেপসমূহ অনুসরণ করুন।"
-- 'spoken_bn' field: write exactly as you'd SAY it aloud — short, natural, zero punctuation except । — optimized for voice
+- Write PURE, NATIVE Bangla — NO romanization, NO English mixing
+- Like talking to a close Bangladeshi friend — casual, natural, warm
+- Max 10-12 words per sentence (shorter for speaking)
+- Use common Bangla words: চাপ (stress), পরীক্ষা (exam), শ্বাস (breath)
+- AVOID romanization: write শ্বাস not "breath nao"
+- AVOID English: write পড়াশোনা not "study", লেখাপড়া not "exam"
+- GOOD example: "তুমি এখন অনেক চিন্তায় আছো, এটা স্বাভাবিক। গভীর শ্বাস নাও। একটু বিশ্রাম নাও।"
+- BAD example: "তুমি stress এ আছো। deep breath নাও। counselor এর কাছে যাও।"
+- 'spoken_bn' field: 100% PURE BANGLA, short sentences, no English words, NO romanization
 
 ENGLISH RULES:
 - Warm, direct, 1-2 sentences per advice point
@@ -144,7 +157,9 @@ Intent: {intent} | Urgency: {urgency}"""
             return json.loads(raw)
 
         except Exception as e:
+            import traceback
             print(f"[RAGEngine] OpenAI error: {e}")
+            print(f"[RAGEngine] Full traceback: {traceback.format_exc()}")
             return self._fallback_response(message, urgency)
 
     # ------------------------------------------------------------------ #

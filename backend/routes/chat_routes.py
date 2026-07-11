@@ -1,7 +1,13 @@
 from flask import Blueprint, current_app, jsonify, request
 from flask_login import current_user
+import re
 
 chat_bp = Blueprint("chat", __name__)
+
+def detect_bengali(text):
+    """Detect if text contains Bengali characters."""
+    bengali_pattern = r'[ঀ-৿]'
+    return bool(re.search(bengali_pattern, text))
 
 
 @chat_bp.route("/chat", methods=["POST"])
@@ -23,19 +29,24 @@ def chat():
     # Context data from frontend
     context_data = payload.get("student_context", {})
     
+    # Detect if message is in Bangla
+    is_bengali = detect_bengali(message)
+
     # Get routing decision
     routing_decision = router.route_query(message)
     agent_name = routing_decision["agent_name"]
     route = routing_decision["route"]
-    
+
     # Pass to RAG Engine (always — no cache bypass)
+    # If Bangla is detected, force Bangla response
     result = rag.answer(
-        message, 
-        anonymous=anonymous, 
+        message,
+        anonymous=anonymous,
         history=history,
         intent=routing_decision["intent"],
         urgency=routing_decision["urgency"],
-        context_data=context_data
+        context_data=context_data,
+        force_bengali=is_bengali  # Force Bangla response if input is Bangla
     )
     result["agent_name"] = agent_name
     result["route"] = route
