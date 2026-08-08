@@ -121,7 +121,8 @@ pip install -r requirements.txt
 Create a `.env` file inside the `backend/` directory:
 
 ```env
-DATABASE_URL=sqlite:///diu_wise.db
+# Neon Postgres. Omit to fall back to the local SQLite file (demo only).
+DATABASE_URL=postgresql://USER:PASSWORD@ep-xxxx-pooler.REGION.aws.neon.tech/DBNAME?sslmode=require
 SECRET_KEY=your-secret-key-here
 OPENAI_API_KEY=your-openai-api-key-here
 MODEL_DIR=ai_engine/trained
@@ -130,7 +131,22 @@ HF_HUB_OFFLINE=0
 TRANSFORMERS_OFFLINE=0
 ```
 
-### 5. Start the Server
+See `backend/.env.example` for the full list with comments.
+
+### 5. Create the Database Schema
+
+The schema is managed by Alembic (Flask-Migrate). Run this once against a new
+database, and again after pulling any new migration:
+
+```bash
+cd backend
+flask --app manage db upgrade
+```
+
+The app no longer creates tables on startup, so this step is required before the
+first run. Demo data is seeded automatically once the tables exist.
+
+### 6. Start the Server
 
 **Option A — Windows (recommended):** Double-click `backend/START_SERVER.bat`
 
