@@ -2,6 +2,7 @@ flask
 flask-cors
 flask-sqlalchemy
 flask-login
+flask-migrate
 psycopg[binary]
 pandas
 numpy
