@@ -15,8 +15,26 @@ from routes import ai_bp, auth_bp, calendar_bp, chat_bp, dashboard_bp, pages_bp,
 from services.data_service import DataService
 from services.triage_service import TriageService
 from services.notification_service import NotificationService
-from extensions import cors, login_manager
+from extensions import cors, login_manager, migrate
 from services.registry import ServiceRegistry
+
+
+def _tables_ready(app) -> bool:
+    """True once `flask db upgrade` has created the schema.
+
+    Schema creation is owned by Alembic now, so booting against an empty
+    database is a setup mistake rather than something the app should paper over.
+    Seeding is skipped with a clear message instead of raising a driver error.
+    """
+    from sqlalchemy import inspect
+
+    if inspect(db.engine).has_table("users"):
+        return True
+    app.logger.warning(
+        "Database schema is missing. Run 'flask --app manage db upgrade' "
+        "before starting the app; skipping seed."
+    )
+    return False
 
 
 def create_app():
@@ -26,20 +44,25 @@ def create_app():
     # Initialize extensions
     cors.init_app(app)
     db.init_app(app)
+    # FIX: schema was created by db.create_all() on every boot, which silently
+    # diverges from the models over time and cannot express column changes.
+    # Alembic owns the schema now; render_as_batch keeps the SQLite fallback
+    # usable for ALTER TABLE style migrations.
+    migrate.init_app(app, db, render_as_batch=True)
 
-    # Seed Database & Create tables inside app context
+    # Seed Database inside app context (tables come from 'flask db upgrade')
     with app.app_context():
-        db.create_all()
-        if User.query.filter_by(email="admin@diu-wise.ai").first() is None:
-            admin = User(
-                full_name="Platform Admin",
-                email="admin@diu-wise.ai",
-                role="admin",
-                is_active_account=True,
-            )
-            admin.set_password("Admin@12345")
-            db.session.add(admin)
-            db.session.commit()
+        if _tables_ready(app):
+            if User.query.filter_by(email="admin@diu-wise.ai").first() is None:
+                admin = User(
+                    full_name="Platform Admin",
+                    email="admin@diu-wise.ai",
+                    role="admin",
+                    is_active_account=True,
+                )
+                admin.set_password("Admin@12345")
+                db.session.add(admin)
+                db.session.commit()
 
     # Configure Authentication
     login_manager.init_app(app)
@@ -88,7 +111,8 @@ def create_app():
     ServiceRegistry.register("data_service", data_service)
 
     with app.app_context():
-        data_service.seed_if_empty()
+        if _tables_ready(app):
+            data_service.seed_if_empty()
 
     # Register Blueprints
     app.register_blueprint(chat_bp)
