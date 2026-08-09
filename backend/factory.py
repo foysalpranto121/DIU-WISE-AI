@@ -1,3 +1,6 @@
+import os
+import secrets
+
 from flask import Flask, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user
 from dotenv import load_dotenv
@@ -15,8 +18,49 @@ from routes import ai_bp, auth_bp, calendar_bp, chat_bp, dashboard_bp, pages_bp,
 from services.data_service import DataService
 from services.triage_service import TriageService
 from services.notification_service import NotificationService
-from extensions import cors, login_manager, migrate
+from extensions import cors, limiter, login_manager, migrate
 from services.registry import ServiceRegistry
+
+
+def _seed_default_admin(app):
+    """Create the platform admin account, but only when asked to.
+
+    FIX: this used to run on every boot and always set the same password,
+    `Admin@12345`, on `admin@diu-wise.ai`. A deployed instance therefore shipped
+    with publicly known admin credentials. Seeding is now opt in via
+    SEED_ADMIN=true, and the password comes from SEED_ADMIN_PASSWORD. If that is
+    not supplied, a random one is generated and written to the log once, so
+    there is no fixed credential anywhere in the code or the database.
+    """
+    if not app.config["SEED_ADMIN"]:
+        return
+    if User.query.filter_by(email="admin@diu-wise.ai").first() is not None:
+        return
+
+    password = os.getenv("SEED_ADMIN_PASSWORD", "").strip()
+    generated = not password
+    if generated:
+        password = secrets.token_urlsafe(18)
+
+    admin = User(
+        full_name="Platform Admin",
+        email="admin@diu-wise.ai",
+        role="admin",
+        is_active_account=True,
+    )
+    admin.set_password(password)
+    db.session.add(admin)
+    db.session.commit()
+
+    if generated:
+        app.logger.warning(
+            "Seeded admin@diu-wise.ai with a generated password: %s\n"
+            "This is shown once and is not recoverable. Change it after first "
+            "login, and unset SEED_ADMIN.",
+            password,
+        )
+    else:
+        app.logger.info("Seeded admin@diu-wise.ai from SEED_ADMIN_PASSWORD.")
 
 
 def _tables_ready(app) -> bool:
@@ -42,7 +86,10 @@ def create_app():
     app.config.from_object(Config)
 
     # Initialize extensions
-    cors.init_app(app)
+    # FIX: cors.init_app(app) with no arguments allows every origin. This is a
+    # same-origin monolith, so nothing is allowed unless CORS_ORIGINS names it.
+    cors.init_app(app, origins=app.config["CORS_ORIGINS"], supports_credentials=True)
+    limiter.init_app(app)
     db.init_app(app)
     # FIX: schema was created by db.create_all() on every boot, which silently
     # diverges from the models over time and cannot express column changes.
@@ -53,23 +100,20 @@ def create_app():
     # Seed Database inside app context (tables come from 'flask db upgrade')
     with app.app_context():
         if _tables_ready(app):
-            if User.query.filter_by(email="admin@diu-wise.ai").first() is None:
-                admin = User(
-                    full_name="Platform Admin",
-                    email="admin@diu-wise.ai",
-                    role="admin",
-                    is_active_account=True,
-                )
-                admin.set_password("Admin@12345")
-                db.session.add(admin)
-                db.session.commit()
+            _seed_default_admin(app)
 
     # Configure Authentication
     login_manager.init_app(app)
 
     @login_manager.user_loader
     def load_user(user_id: str):
-        return User.query.get(int(user_id))
+        # FIX: User.query.get() is the legacy SQLAlchemy 1.x API and is
+        # deprecated in 2.x. A non-numeric cookie value also raised ValueError
+        # here instead of being treated as a failed lookup.
+        try:
+            return db.session.get(User, int(user_id))
+        except (TypeError, ValueError):
+            return None
 
     @login_manager.unauthorized_handler
     def unauthorized():

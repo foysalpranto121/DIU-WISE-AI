@@ -2,6 +2,8 @@ from flask import Blueprint, current_app, jsonify, request
 from flask_login import current_user
 import re
 
+from extensions import limiter
+
 chat_bp = Blueprint("chat", __name__)
 
 def detect_bengali(text):
@@ -11,6 +13,9 @@ def detect_bengali(text):
 
 
 @chat_bp.route("/chat", methods=["POST"])
+# This route accepts anonymous requests and every call can reach the OpenAI API,
+# so an unlimited endpoint is an open invitation to run up the bill.
+@limiter.limit(lambda: current_app.config["RATELIMIT_CHAT"])
 def chat():
     payload = request.get_json(force=True)
     message = payload.get("message", "").strip()

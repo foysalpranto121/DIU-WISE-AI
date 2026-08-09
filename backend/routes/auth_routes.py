@@ -1,8 +1,9 @@
 from functools import wraps
 
-from flask import Blueprint, jsonify, redirect, render_template, request, url_for
+from flask import Blueprint, current_app, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 
+from extensions import limiter
 from models import User, db
 
 auth_bp = Blueprint("auth", __name__)
@@ -20,6 +21,12 @@ def admin_required(func):
 
 
 @auth_bp.route("/login", methods=["GET", "POST"])
+# Password guessing was unrestricted. Only the POST path is limited, so
+# reloading the login page never trips the limit.
+@limiter.limit(
+    lambda: current_app.config["RATELIMIT_LOGIN"],
+    exempt_when=lambda: request.method == "GET",
+)
 def login():
     if request.method == "GET":
         if current_user.is_authenticated:
