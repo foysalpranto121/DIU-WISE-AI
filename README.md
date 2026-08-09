@@ -45,11 +45,11 @@ Monitor student wellbeing trends, flag at-risk students, and generate population
 | Layer | Technologies |
 | :--- | :--- |
 | **Backend** | Python 3.10+, Flask 3.0, SQLAlchemy |
-| **AI / NLP** | OpenAI GPT-4o, LangChain, FAISS, Sentence-Transformers |
-| **ML Models** | Scikit-learn (Random Forest), Joblib |
+| **AI / NLP** | OpenAI GPT-4o, LangChain |
+| **ML Models** | Scikit-learn (Random Forest, KMeans), Joblib |
 | **Frontend** | HTML5, CSS3 (Glassmorphism), Vanilla JavaScript, Chart.js |
-| **Database** | SQLite (development), PostgreSQL (production ready) |
-| **Embeddings** | `sentence-transformers/all-MiniLM-L6-v2` |
+| **Database** | PostgreSQL on Neon (SQLite fallback for local demo) |
+| **Retrieval and emotion** | Keyword matching, no embedding model. See the memory budget note under Deployment for why |
 
 ---
 
@@ -60,11 +60,11 @@ DIU-WISE-AI/
 ├── backend/
 │   ├── ai_engine/
 │   │   ├── burnout_model.py        # Random Forest burnout predictor
-│   │   ├── emotion_model.py        # Emotion classifier
-│   │   ├── rag_engine.py           # LangChain + FAISS RAG + GPT-4o chatbot
+│   │   ├── emotion_classifier.py   # Keyword based emotion classifier
+│   │   ├── agent_router.py         # Keyword based intent router
+│   │   ├── rag_engine.py           # Keyword retrieval + GPT-4o chatbot
 │   │   └── trained/
-│   │       ├── faiss_index/        # Vector store for wellness knowledge
-│   │       └── *.pkl               # Trained model files
+│   │       └── burnout_model.joblib  # Trained burnout model
 │   ├── data/
 │   │   └── wellness_knowledge.txt  # RAG knowledge base
 │   ├── models/                     # SQLAlchemy database models
@@ -127,8 +127,6 @@ SECRET_KEY=your-secret-key-here
 OPENAI_API_KEY=your-openai-api-key-here
 MODEL_DIR=ai_engine/trained
 KNOWLEDGE_FILE=data/wellness_knowledge.txt
-HF_HUB_OFFLINE=0
-TRANSFORMERS_OFFLINE=0
 ```
 
 See `backend/.env.example` for the full list with comments.
@@ -159,7 +157,7 @@ python app.py
 
 Open your browser at: **http://127.0.0.1:5000**
 
-> **First-run note:** On the very first startup, AI models (sentence-transformers, FAISS index, sklearn) need to load. This can take **2 to 10 minutes** depending on your machine. Do not close the terminal, wait for `Running on http://0.0.0.0:5000` to appear before opening the browser.
+> **First-run note:** The first startup trains the burnout model if `ai_engine/trained/burnout_model.joblib` is missing, which takes a few seconds. There is no embedding model to download any more, so startup is quick. Wait for `Running on http://0.0.0.0:5000` before opening the browser.
 
 ---
 
@@ -285,11 +283,57 @@ in that path any more, so it is much shorter than it used to be.
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| `POST` | `/api/chat` | Send message to AI wellness chatbot |
-| `POST` | `/api/predict-burnout` | Get burnout risk prediction |
-| `GET` | `/api/mood-history` | Retrieve mood trend data |
-| `POST` | `/api/log-mood` | Log a new mood entry |
-| `GET` | `/api/dashboard` | Get student dashboard data |
+These are the JSON endpoints. Page routes that render a template (`/`,
+`/profile`, `/resources`, `/counselors`, `/mood-history`, `/voice-journal`,
+`/stress-calendar`, `/pricing`, `/landing`, `/admin`) are not listed.
+
+### Wellbeing
+
+| Method | Endpoint | Auth | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/chat` | None | Send a message to the AI wellness chatbot. Rate limited. |
+| `POST` | `/predict` | Login | Burnout prediction, forecast, distress and triage for a metrics payload |
+| `POST` | `/emotion` | Login | Classify the emotion of a piece of text |
+| `POST` | `/generate-plan` | Login | Generate a personalised wellbeing plan |
+| `GET` | `/crisis-resources` | None | Verified Bangladesh crisis helplines |
+| `GET` | `/dashboard-data` | Admin | Population level wellbeing data and the at-risk watchlist |
+| `GET` | `/health` | None | Liveness check |
+
+### Accounts
+
+| Method | Endpoint | Auth | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/login` | None | Sign in. Rate limited. |
+| `POST` | `/register` | None | Create a student account |
+| `POST` | `/logout` | Login | Sign out |
+| `GET` | `/me` | None | Current session user, or `authenticated: false` |
+| `POST` | `/account/password` | Login | Change password |
+| `POST` | `/profile/update` | Login | Update profile and academic fields |
+| `POST` | `/profile/upload-avatar` | Login | Upload a profile picture |
+| `GET` `POST` | `/admin/users` | Admin | List or create users |
+| `PATCH` | `/admin/users/<id>` | Admin | Update a user's name, role or active flag |
+
+### Voice journal
+
+| Method | Endpoint | Auth | Description |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/voice-journal/transcribe` | Login | Transcribe recorded audio |
+| `POST` | `/voice-journal/save` | Login | Save an entry with its detected emotion |
+| `GET` | `/voice-journal/entries` | Login | List entries |
+| `DELETE` | `/voice-journal/entries/<id>` | Login | Delete an entry |
+| `POST` | `/voice-assistant/chat` | Login | Voice assistant conversation turn |
+| `POST` | `/voice-assistant/speak` | Login | Text to speech for a reply |
+
+### Calendar and subscription
+
+| Method | Endpoint | Auth | Description |
+| :--- | :--- | :--- | :--- |
+| `GET` `POST` | `/api/events` | Login | List or add an academic event |
+| `DELETE` | `/api/events/<id>` | Login | Delete an academic event |
+| `GET` | `/api/stress-forecast` | Login | Stress forecast derived from upcoming events |
+| `GET` | `/api/subscription/status` | Login | Current plan and status |
+| `POST` | `/api/subscription/upgrade` | Login | Change plan |
+| `POST` | `/appointments/create` | Login | Book a counsellor appointment |
 
 ---
 
