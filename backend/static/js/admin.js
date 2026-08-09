@@ -38,7 +38,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const container = document.getElementById('stats-cards');
     if (!container) return;
     
-    const totalRisk = data.burnout_summary['High'] || 0;
+    // FIX: read 'Needs Support'. The backend sends the supportive labels
+    // 'Doing Well', 'Balanced' and 'Needs Support', never 'High'/'Medium'/'Low',
+    // so this counter always showed 0.
+    const totalRisk = data.burnout_summary['Needs Support'] || 0;
     
     container.innerHTML = `
       <div class="stat-card">
@@ -111,7 +114,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       data: {
         labels: ['Low Risk', 'Medium Risk', 'High Risk'],
         datasets: [{
-          data: [summary['Low']||0, summary['Medium']||0, summary['High']||0],
+          // FIX: same key mismatch as the stats card. The slice order is
+          // unchanged, so each label keeps the colour it already had.
+          data: [summary['Doing Well']||0, summary['Balanced']||0, summary['Needs Support']||0],
           backgroundColor: [
             'rgba(16, 185, 129, 0.8)', // Success
             'rgba(245, 158, 11, 0.8)', // Warning
@@ -203,9 +208,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     tbody.innerHTML = '';
     students.forEach(st => {
       const tr = document.createElement('tr');
+      // FIX: burnout_risk carries 'Needs Support', not 'High', so every row
+      // rendered as badge-warning regardless of severity.
       tr.innerHTML = `
         <td><strong>${st.student_id}</strong></td>
-        <td><span class="badge badge-${st.burnout_risk === 'High' ? 'danger' : 'warning'}">${st.burnout_risk}</span></td>
+        <td><span class="badge badge-${st.burnout_risk === 'Needs Support' ? 'danger' : 'warning'}">${st.burnout_risk}</span></td>
         <td>${st.distress_level}</td>
         <td>${st.stress_label}</td>
         <td><button class="btn btn-sm btn-primary">Intervene</button></td>
