@@ -177,16 +177,99 @@ After adding exclusions, subsequent startups take under 30 seconds.
 
 ---
 
-## Default Credentials
+## Admin Account
 
-After the database is seeded on first run:
+There is no built in admin password. The app used to create
+`admin@diu-wise.ai` with a fixed password on every boot, which meant every
+deployment shipped with publicly known admin credentials.
 
-| Role | Email | Password |
-| :--- | :--- | :--- |
-| Admin | `admin@diu.edu.bd` | `admin123` |
-| Student | Register via `/register` | — |
+To create the admin account, set `SEED_ADMIN=true` for exactly one start, then
+set it back to `false`:
+
+* If `SEED_ADMIN_PASSWORD` is set, that password is used.
+* If it is empty, a random password is generated and written to the application
+  log once. Copy it from the log, sign in, and change it.
+
+Students register themselves at `/register`.
 
 ---
+
+## Deployment (Render + Neon)
+
+The app deploys as a **single** Render web service. Flask serves the Jinja
+templates and the API routes from one process, so there is no separate frontend
+to host anywhere else. The database is Neon Postgres, which lives outside
+Render and is reached over the `DATABASE_URL` connection string.
+
+`render.yaml` at the repo root is a Render Blueprint and holds the whole
+service definition. Render does not read a Procfile, which is why this repo
+does not have one.
+
+### 1. Create the service
+
+1. Push this branch to GitHub.
+2. In the Render dashboard choose **New > Blueprint** and point it at this repo.
+3. Render reads `render.yaml` and prompts for the secret values (see below).
+
+### 2. Environment variables
+
+Set these in Render's dashboard. Never commit them.
+
+| Variable | Required | Value |
+| :--- | :--- | :--- |
+| `DATABASE_URL` | Yes | Neon connection string. Both `postgres://` and `postgresql://` forms work; the app rewrites the scheme and adds `sslmode=require`. |
+| `SECRET_KEY` | Yes | Long random string. The app refuses to start without it outside development. Generate with `python -c "import secrets; print(secrets.token_hex(32))"`. |
+| `OPENAI_API_KEY` | Yes | Used by the chat and triage services. |
+| `FLASK_ENV` | Yes | `production`. Anything other than `development` disables debug and turns on secure cookies. |
+| `PYTHON_VERSION` | Yes | `3.10.11`. Render's current default is 3.14, which the pinned torch and faiss-cpu versions do not support. |
+| `SEED_ADMIN` | No | `false`. Set to `true` for one deploy to create the admin account, then set it back. See "Admin Account" above. |
+| `SEED_ADMIN_PASSWORD` | No | Password for that one time seed. Leave empty to have one generated and logged. |
+| `CORS_ORIGINS` | No | Empty. Only set this if something genuinely needs cross-origin access. |
+| `RATELIMIT_LOGIN` | No | Defaults to `10 per minute`. |
+| `RATELIMIT_CHAT` | No | Defaults to `20 per minute`. |
+| `WEB_CONCURRENCY` | No | Defaults to `1`. See `backend/gunicorn.conf.py` for why more than one worker does not fit. |
+
+`render.yaml` already declares the non secret values and marks the secrets
+`sync: false`, so Render asks for them once at Blueprint creation.
+
+### 3. Database migrations
+
+Schema changes are Alembic migrations, and the app no longer creates tables on
+startup. The migrations have to run against Neon before a new version serves
+traffic.
+
+`render.yaml` sets a pre-deploy command that does this automatically:
+
+```bash
+flask --app manage db upgrade
+```
+
+Pre-deploy commands are a **paid instance feature**. On a free instance the
+step is skipped, so run it yourself once, from the `backend/` directory, with
+`DATABASE_URL` pointing at Neon:
+
+```bash
+flask --app manage db upgrade
+```
+
+Neon is reachable from anywhere, so running this locally has the same effect as
+running it on Render.
+
+### 4. Instance size
+
+Free and Starter instances both have 512 MB of RAM. The dependency set
+(`torch`, `transformers`, `sentence-transformers`, `scikit-learn`, `faiss-cpu`)
+is about 1.2 GB installed, and the models are loaded into memory at boot. The
+Blueprint therefore requests the **Standard** instance (2 GB), which is the
+smallest type that can run this app.
+
+Two other consequences of the model loading:
+
+* First boot downloads the `all-MiniLM-L6-v2` sentence-transformers model.
+  Render's filesystem is ephemeral, so this repeats after every cold start.
+* Free instances spin down after 15 minutes of inactivity, which means paying
+  that download and model load cost on the next request. Another reason not to
+  use the free tier here.
 
 ## API Reference
 
