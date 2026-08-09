@@ -11,6 +11,25 @@ def allowed_file(filename):
 
 user_bp = Blueprint('user', __name__)
 
+
+class FieldError(ValueError):
+    """A submitted field could not be parsed as the number it should be."""
+
+
+def _as_number(data, field, caster, fallback):
+    """Parse one numeric form field, or say which field was wrong.
+
+    FIX: these were bare float()/int() calls on raw form input, so posting
+    "abc" as current_gpa raised ValueError and returned a 500.
+    """
+    raw = data.get(field)
+    if raw is None or str(raw).strip() == "":
+        return fallback
+    try:
+        return caster(raw)
+    except (TypeError, ValueError):
+        raise FieldError(field)
+
 @user_bp.route('/profile')
 @login_required
 def profile():
@@ -31,13 +50,24 @@ def update_profile():
     current_user.guardian_phone = data.get('guardian_phone', current_user.guardian_phone)
     current_user.semester = data.get('semester', current_user.semester)
     current_user.batch = data.get('batch', current_user.batch)
-    current_user.current_gpa = float(data.get('current_gpa', current_user.current_gpa or 0))
-    current_user.credit_load = int(data.get('credit_load', current_user.credit_load or 0))
-    
+    try:
+        current_gpa = _as_number(data, 'current_gpa', float, current_user.current_gpa or 0.0)
+        credit_load = _as_number(data, 'credit_load', int, current_user.credit_load or 0)
+        goal_study_hours = _as_number(data, 'goal_study_hours', float, 0.0)
+        goal_assignments = _as_number(data, 'goal_assignments', int, 0)
+    except FieldError as bad_field:
+        return jsonify({
+            "error": f"'{bad_field}' must be a number",
+            "field": str(bad_field),
+        }), 400
+
+    current_user.current_gpa = current_gpa
+    current_user.credit_load = credit_load
+
     # Update Goals
     current_user.goals = {
-        "study_hours": float(data.get('goal_study_hours', 0)),
-        "assignments": int(data.get('goal_assignments', 0))
+        "study_hours": goal_study_hours,
+        "assignments": goal_assignments,
     }
 
     # Faculty Advisor Alert fields
