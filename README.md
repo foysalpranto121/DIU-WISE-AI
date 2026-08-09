@@ -250,54 +250,36 @@ flask --app manage db upgrade
 Neon is reachable from anywhere, so running this locally has the same effect as
 running it on the host.
 
-### 4. Memory budget (currently unresolved)
+### 4. Memory budget
 
-`render.yaml` targets the **free** instance type, which has 512 MB of RAM. As
-the app stands today it does not fit. Measured on Python 3.10 with the pinned
-dependency set:
+`render.yaml` targets the **free** instance type, which has 512 MB of RAM. The
+app fits, with room to spare. Measured on Python 3.10 with the pinned
+dependency set, each layer in its own process:
 
 | Stage | Resident memory |
 | :--- | ---: |
 | Interpreter only | 15 MB |
 | plus Flask, SQLAlchemy, psycopg | 65 MB |
-| plus numpy, scipy, scikit-learn | 155 MB |
+| plus numpy, scipy, scikit-learn | 154 MB |
 | plus langchain, openai, faiss | 194 MB |
-| plus torch | 340 MB |
-| plus transformers, sentence-transformers | 438 MB |
-| plus the MiniLM model loaded | 506 MB |
-| **Running app after serving requests** | **543 MB** |
+| App booted through `create_app()` | 214 MB |
+| **Peak after serving chat, dashboard and emotion requests** | **233 MB** |
 
-The 543 MB figure is the whole app booted through `create_app()` and answering
-requests. It is already over budget by about 31 MB before gunicorn's own
-overhead is counted.
+That leaves about 279 MB of headroom under the 512 MB cap.
 
-The single largest contributor is the local embedding stack: `torch`,
-`transformers` and `sentence-transformers` together account for roughly 300 MB
-of that total, and they exist only to power `EmotionClassifier`. Everything
-else in the app fits in about 194 MB.
+Getting there required removing the local embedding stack. `torch`,
+`transformers` and `sentence-transformers` were pulled in by
+`EmotionClassifier` alone and cost 312 MB of resident memory, which put the app
+at 543 MB, over the cap. `EmotionClassifier` now classifies by keyword instead.
+That is less accurate than sentence embeddings on paraphrased text, and it is a
+deliberate, accepted tradeoff. `RAGEngine` already made the same one.
 
-Installing the CPU-only build of `torch` (which the build command already does)
-does not change this. It is a large saving on **download size**, not memory:
+Do not reintroduce those three packages without re-measuring, and do not switch
+`render.yaml` to a paid plan.
 
-| Package set (Linux x86_64, cp310) | Download size |
-| :--- | ---: |
-| Default PyPI `torch` wheel | 527 MB |
-| plus the CUDA and triton packages it requires on Linux | 1000 MB |
-| **Default total** | **1527 MB** |
-| **CPU-only `torch` wheel, no CUDA packages** | **192 MB** |
-
-So the CPU-only build is worth keeping for build time and disk, but it does not
-get the app under 512 MB.
-
-Two other consequences of the model loading, whichever host is used:
-
-* First boot downloads the `all-MiniLM-L6-v2` model. Render's filesystem is
-  ephemeral, so this repeats after every cold start.
-* Free instances spin down after 15 minutes of inactivity, so that download and
-  model load happen again on the next request.
-
-Resolving this is a team decision and is still open. Do not switch
-`render.yaml` to a paid plan to work around it.
+One consequence remains: free instances spin down after 15 minutes of
+inactivity, so the next request pays a cold start. There is no model download
+in that path any more, so it is much shorter than it used to be.
 
 ## API Reference
 

@@ -1,7 +1,11 @@
 # Pinned to the versions this branch was built and booted against.
-# The LangChain and embedding stack in particular has shipped breaking changes
-# between minor releases (HuggingFaceEmbeddings import path, FAISS.load_local
-# signature), so an unpinned install can fail on a fresh deploy.
+# The LangChain stack in particular has shipped breaking changes between minor
+# releases, so an unpinned install can fail on a fresh deploy.
+#
+# torch, transformers and sentence-transformers are deliberately absent. They
+# were pulled in only by EmotionClassifier, cost about 312 MB of resident
+# memory, and put the app over the 512 MB free tier limit. EmotionClassifier
+# now classifies by keyword. See ai_engine/emotion_classifier.py.
 
 flask==3.1.3
 gunicorn==23.0.0
@@ -17,8 +21,6 @@ scikit-learn==1.7.2
 joblib==1.5.3
 langchain==1.3.14
 langchain-community==0.4.2
-sentence-transformers==5.7.0
 faiss-cpu==1.15.0
-transformers==5.14.1
 openai==2.53.0
 python-dotenv==1.2.2
