@@ -1,17 +1,23 @@
-flask
-flask-cors
-flask-sqlalchemy
-flask-login
-flask-migrate
-psycopg[binary]
-pandas
-numpy
-scikit-learn
-joblib
-langchain
-langchain-community
-sentence-transformers
-faiss-cpu
-transformers
-openai
-python-dotenv
+# Pinned to the versions this branch was built and booted against.
+# The LangChain and embedding stack in particular has shipped breaking changes
+# between minor releases (HuggingFaceEmbeddings import path, FAISS.load_local
+# signature), so an unpinned install can fail on a fresh deploy.
+
+flask==3.1.3
+flask-cors==6.0.5
+flask-sqlalchemy==3.1.1
+flask-login==0.6.3
+flask-migrate==4.1.0
+flask-limiter==4.1.1
+psycopg[binary]==3.3.4
+pandas==2.3.3
+numpy==2.2.6
+scikit-learn==1.7.2
+joblib==1.5.3
+langchain==1.3.14
+langchain-community==0.4.2
+sentence-transformers==5.7.0
+faiss-cpu==1.15.0
+transformers==5.14.1
+openai==2.53.0
+python-dotenv==1.2.2
