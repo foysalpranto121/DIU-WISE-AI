@@ -24,8 +24,15 @@ class TriageService:
             return {
                 "route_to": "emergency services",
                 "priority": "critical",
-                "message": "EMERGENCY: Please contact the campus crisis line at 988 or 911 immediately. Support is available right now.",
-                "actions": ["Call 988 immediately", "Reach out to campus security", "Stay with a friend"]
+                # FIX: this emitted the US numbers 988 and 911, which do not
+                # work in Bangladesh. Numbers match CRISIS_RESOURCES in
+                # routes/chat_routes.py, which is the verified list.
+                "message": "EMERGENCY: Please call 999 (National Emergency Service) right now, or Kaan Pete Roi on 09612-119911 for immediate emotional support. Help is available right now.",
+                "actions": [
+                    "Call 999 immediately",
+                    "Call Kaan Pete Roi on 09612-119911",
+                    "Reach out to DIU campus security or stay with someone you trust",
+                ]
             }
 
         # Base routing decision

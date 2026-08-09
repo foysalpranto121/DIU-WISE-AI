@@ -32,7 +32,12 @@ class NotificationService:
             f"Trigger Event / Reason: {risk_reason}\n"
             f"Journal Excerpt:\n\"{journal_text}\"\n\n"
             f"We strongly recommend checking in on {student_name} immediately.\n"
-            f"If you are unable to contact them, please reach out to DIU Campus Security or the local crisis support hotline at 988.\n\n"
+            # FIX: this pointed guardians at 988, a US number that does not work
+            # in Bangladesh. Matches CRISIS_RESOURCES in routes/chat_routes.py.
+            f"If you are unable to contact them, please reach out to DIU Campus Security, "
+            f"or call the National Emergency Service on 999 (24 hours a day). "
+            f"For emotional support, Kaan Pete Roi can be reached on 09612-119911 "
+            f"(every day, 3:00 PM to 3:00 AM).\n\n"
             f"Sincerely,\n"
             f"DIU Student Wellness & Mental Support Team"
         )
