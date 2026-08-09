@@ -1,0 +1,61 @@
+# Render Blueprint for DIU WISE AI.
+#
+# This is a Flask monolith: one web service serves the Jinja templates and the
+# API routes from the same process. There is no second service to deploy.
+#
+# Render does not read a Procfile. The start command lives here (or in the
+# dashboard), which is why this repo has a render.yaml and no Procfile.
+#
+# Secrets are marked `sync: false`. Render prompts for them when the Blueprint
+# is first created and never stores them in this file or in git.
+
+services:
+  - type: web
+    name: diu-wise-ai
+    runtime: python
+    # Free and Starter are both 512 MB. This app loads torch, transformers,
+    # sentence-transformers and scikit-learn, which does not fit. Standard is
+    # 2 GB and is the smallest instance type that can run it.
+    plan: standard
+    # Closest region to Dhaka.
+    region: singapore
+    # The app lives in backend/, not at the repo root.
+    rootDir: backend
+    healthCheckPath: /health
+    buildCommand: pip install -r requirements.txt
+    # Applies Alembic migrations before the new version starts serving.
+    # Pre-deploy commands are a paid-instance feature. On a free instance this
+    # is skipped, and the migration has to be run by hand instead. See the
+    # deployment section of README.md.
+    preDeployCommand: flask --app manage db upgrade
+    startCommand: gunicorn --config gunicorn.conf.py wsgi:app
+    envVars:
+      # Render's current default is Python 3.14. This project is built and
+      # tested on 3.10, and the pinned torch and faiss-cpu versions do not
+      # publish wheels for every newer interpreter.
+      - key: PYTHON_VERSION
+        value: 3.10.11
+      - key: FLASK_ENV
+        value: production
+      # One worker. See gunicorn.conf.py for why.
+      - key: WEB_CONCURRENCY
+        value: "1"
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      # Leave false. Set to true for exactly one deploy to create the admin
+      # account, then set it back. See README.md.
+      - key: SEED_ADMIN
+        value: "false"
+      - key: SEED_ADMIN_PASSWORD
+        sync: false
+      # Empty means no cross-origin access, which is correct for a monolith.
+      - key: CORS_ORIGINS
+        value: ""
+      - key: RATELIMIT_LOGIN
+        value: 10 per minute
+      - key: RATELIMIT_CHAT
+        value: 20 per minute
