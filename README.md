@@ -1,4 +1,4 @@
-# DIU WISE AI — Student Wellness & Success Platform
+# DIU WISE AI: Student Wellness & Success Platform
 
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/flask-3.0-green)](https://flask.palletsprojects.com/)
@@ -13,7 +13,7 @@
 
 ### Bilingual AI Wellness Chatbot
 
-An intelligent assistant powered by OpenAI GPT-4o with Retrieval-Augmented Generation (RAG). Responds fluently in **both Bangla and English** in the same reply — students can ask in either language and receive context-aware wellness support.
+An intelligent assistant powered by OpenAI GPT-4o with Retrieval-Augmented Generation (RAG). Responds fluently in **both Bangla and English** in the same reply. Students can ask in either language and receive context-aware wellness support.
 
 ### Burnout Prediction
 
@@ -32,7 +32,7 @@ Real-time emotion classification from journal entries and self-reports. Visual m
 
 ### Crisis Safety Net
 
-When high distress is detected in a conversation, the platform surfaces verified Bangladesh emergency helplines — National Emergency (**999**), **Kaan Pete Roi**, **Moner Bondhu** — with an interactive breathing exercise overlay.
+When high distress is detected in a conversation, the platform surfaces verified Bangladesh emergency helplines, National Emergency (**999**), **Kaan Pete Roi** and **Moner Bondhu**, with an interactive breathing exercise overlay.
 
 ### Admin Dashboard
 
@@ -148,9 +148,9 @@ first run. Demo data is seeded automatically once the tables exist.
 
 ### 6. Start the Server
 
-**Option A — Windows (recommended):** Double-click `backend/START_SERVER.bat`
+**Option A, Windows (recommended):** Double-click `backend/START_SERVER.bat`
 
-**Option B — Command line:**
+**Option B, Command line:**
 
 ```bash
 cd backend
@@ -159,13 +159,13 @@ python app.py
 
 Open your browser at: **http://127.0.0.1:5000**
 
-> **First-run note:** On the very first startup, AI models (sentence-transformers, FAISS index, sklearn) need to load. This can take **2–10 minutes** depending on your machine. Do not close the terminal — wait for `Running on http://0.0.0.0:5000` to appear before opening the browser.
+> **First-run note:** On the very first startup, AI models (sentence-transformers, FAISS index, sklearn) need to load. This can take **2 to 10 minutes** depending on your machine. Do not close the terminal, wait for `Running on http://0.0.0.0:5000` to appear before opening the browser.
 
 ---
 
 ## Windows Performance Note
 
-If the project is stored on a virtual or network-mapped drive (e.g., `M:\`), Windows Defender may scan Python DLL files on first load, causing a **2–5 minute startup delay**.
+If the project is stored on a virtual or network-mapped drive (e.g., `M:\`), Windows Defender may scan Python DLL files on first load, causing a **2 to 5 minute startup delay**.
 
 **To fix this permanently:**
 
@@ -261,11 +261,11 @@ dependency set, each layer in its own process:
 | Interpreter only | 15 MB |
 | plus Flask, SQLAlchemy, psycopg | 65 MB |
 | plus numpy, scipy, scikit-learn | 154 MB |
-| plus langchain, openai, faiss | 194 MB |
+| plus langchain, openai | 183 MB |
 | App booted through `create_app()` | 214 MB |
-| **Peak after serving chat, dashboard and emotion requests** | **233 MB** |
+| **Peak after serving chat, dashboard and emotion requests** | **234 MB** |
 
-That leaves about 279 MB of headroom under the 512 MB cap.
+That leaves about 278 MB of headroom under the 512 MB cap.
 
 Getting there required removing the local embedding stack. `torch`,
 `transformers` and `sentence-transformers` were pulled in by
@@ -299,8 +299,8 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 ## License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License, see the [LICENSE](LICENSE) file for details.
 
 ---
 
-Developed for the DIU Student Community — Daffodil International University, Dhaka, Bangladesh
+Developed for the DIU Student Community, Daffodil International University, Dhaka, Bangladesh
