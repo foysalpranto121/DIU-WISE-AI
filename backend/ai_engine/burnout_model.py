@@ -1,9 +1,13 @@
+import logging
 import os
 
 import joblib
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
+
+
+logger = logging.getLogger(__name__)
 
 
 FEATURE_COLUMNS = [
@@ -19,6 +23,23 @@ FEATURE_COLUMNS = [
     "mood_score",
     "stress_level",
 ]
+
+# Used only when a caller genuinely omits a feature, which is the case for the
+# ad hoc /predict payload built in the browser. StudentMetric supplies all 11
+# columns, so nothing on the dashboard path should hit these.
+FEATURE_DEFAULTS = {
+    "attendance_rate": 85.0,
+    "submission_delay": 0.0,
+    "grades": 75.0,
+    "activity_score": 50.0,
+    "engagement_decline": 0.0,
+    "sleep_quality": 7.0,
+    "screen_time": 8.0,
+    "social_interaction": 5.0,
+    "break_frequency": 5.0,
+    "mood_score": 3.0,
+    "stress_level": 3.0,
+}
 
 
 class BurnoutModel:
@@ -92,27 +113,41 @@ class BurnoutModel:
             return
         self.train_on_synthetic()
 
+    def _vectorize(self, features: dict):
+        """Build the model input row, recording any feature that was not supplied.
+
+        FIX: this used to be a block of `features.get(name, <constant>)` calls.
+        The 6 wellness features did not exist on StudentMetric, so every
+        dashboard row silently fell back to the same constants and every student
+        scored identically. The columns exist now, and any remaining
+        substitution is logged instead of passing unnoticed.
+        """
+        values = []
+        substituted = []
+        for name in FEATURE_COLUMNS:
+            raw = features.get(name)
+            if raw is None or raw == "":
+                substituted.append(name)
+                values.append(FEATURE_DEFAULTS[name])
+                continue
+            try:
+                values.append(float(raw))
+            except (TypeError, ValueError):
+                substituted.append(name)
+                values.append(FEATURE_DEFAULTS[name])
+
+        if substituted:
+            logger.warning(
+                "Burnout prediction substituted defaults for: %s",
+                ", ".join(substituted),
+            )
+        return np.array([values])
+
     def predict(self, features: dict):
         if self.model is None:
             self.load_or_train()
 
-        payload = np.array(
-            [
-                [
-                    float(features.get("attendance_rate", 85)),
-                    float(features.get("submission_delay", 0)),
-                    float(features.get("grades", 75)),
-                    float(features.get("activity_score", 50)),
-                    float(features.get("engagement_decline", 0)),
-                    float(features.get("sleep_quality", 7)),
-                    float(features.get("screen_time", 8)),
-                    float(features.get("social_interaction", 5)),
-                    float(features.get("break_frequency", 5)),
-                    float(features.get("mood_score", 3)),
-                    float(features.get("stress_level", 3)),
-                ]
-            ]
-        )
+        payload = self._vectorize(features)
         pred = int(self.model.predict(payload)[0])
         probs = self.model.predict_proba(payload)[0].tolist()
         # Supportive Terminology

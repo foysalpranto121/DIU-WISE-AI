@@ -45,7 +45,10 @@ def predict():
             print(f"Failed to dispatch emergency alerts: {e}")
 
     # Trigger faculty advisor alert when student needs support
-    if burnout["status"] == "Needs Support" and burnout["confidence"] >= 0.55:
+    # FIX: this compared against 0.55 but predict() returns confidence as a
+    # percentage (max(probs) * 100), so the threshold was always true and an
+    # advisor email went out on every "Needs Support" result, however uncertain.
+    if burnout["status"] == "Needs Support" and burnout["confidence"] >= 55.0:
         try:
             from services.advisor_service import AdvisorAlertService
             from models import db
