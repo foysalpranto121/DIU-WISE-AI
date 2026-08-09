@@ -31,6 +31,19 @@
 
     <!-- Main Content Area -->
     <div class="hub-main">
+        <!-- FIX: this page flashed messages on save but never rendered them, so
+             a rejected profile update surfaced as raw JSON. Same markup as the
+             flash block in login.html. -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-messages">
+              {% for category, message in messages %}
+                <div class="flash-msg {{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
         <form action="{{ url_for('user.update_profile') }}" method="POST">
             <!-- Basic Information -->
             <section id="basic-info" class="hub-section active">
@@ -286,6 +299,32 @@
                         </div>
                     </div>
                     
+                    <!-- FIX: app.js has always bound #password-save and read
+                         #old-password, #new-password and #password-message, but
+                         no template ever rendered them, so the password change
+                         it implements was unreachable. These are the controls
+                         that handler needs, using the same form-group and
+                         button markup as the rest of this page.
+                         type="button" keeps the click from submitting the
+                         surrounding profile form, and the inputs deliberately
+                         have no name attribute so the passwords are never
+                         posted to /profile/update. -->
+                    <div class="settings-list mt-4">
+                        <h4>Change Password</h4>
+                        <div class="form-group">
+                            <label for="old-password">Current Password</label>
+                            <input type="password" id="old-password" class="form-input" autocomplete="current-password">
+                        </div>
+                        <div class="form-group">
+                            <label for="new-password">New Password</label>
+                            <input type="password" id="new-password" class="form-input" autocomplete="new-password">
+                        </div>
+                        <div class="btn-group-row">
+                            <button type="button" id="password-save" class="btn btn-primary">Update Password</button>
+                            <span id="password-message"></span>
+                        </div>
+                    </div>
+
                     <div class="danger-zone mt-4">
                         <h4>Danger Zone</h4>
                         <div class="btn-group-row">

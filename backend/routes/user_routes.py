@@ -56,10 +56,14 @@ def update_profile():
         goal_study_hours = _as_number(data, 'goal_study_hours', float, 0.0)
         goal_assignments = _as_number(data, 'goal_assignments', int, 0)
     except FieldError as bad_field:
-        return jsonify({
-            "error": f"'{bad_field}' must be a number",
-            "field": str(bad_field),
-        }), 400
+        # FIX: this returned a JSON 400, which the browser rendered as raw text
+        # because /profile/update is a plain form POST, not a fetch call.
+        # profile.html renders flashed messages now, so the error goes back the
+        # same way the success message already did. The rollback discards the
+        # field assignments made above, which were never committed.
+        db.session.rollback()
+        flash(f"'{bad_field}' must be a number.", 'danger')
+        return redirect(url_for('user.profile'))
 
     current_user.current_gpa = current_gpa
     current_user.credit_load = credit_load
