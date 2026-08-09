@@ -1,15 +1,19 @@
 from collections import Counter, defaultdict
 
 from flask import Blueprint, current_app, jsonify
-from flask_login import login_required
 import numpy as np
 from sklearn.cluster import KMeans
+
+from .auth_routes import admin_required
 
 dashboard_bp = Blueprint("dashboard", __name__)
 
 
 @dashboard_bp.route("/dashboard-data", methods=["GET"])
-@login_required
+# FIX: this was @login_required only, so any signed-in student could read the
+# whole at-risk watchlist: every student id, their wellbeing status and their
+# distress level. admin_required already wraps login_required.
+@admin_required
 def dashboard_data():
     from services.registry import ServiceRegistry
     data_service = ServiceRegistry.get("data_service")
