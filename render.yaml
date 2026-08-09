@@ -13,21 +13,22 @@ services:
   - type: web
     name: diu-wise-ai
     runtime: python
-    # Free and Starter are both 512 MB. This app loads torch, transformers,
-    # sentence-transformers and scikit-learn, which does not fit. Standard is
-    # 2 GB and is the smallest instance type that can run it.
-    plan: standard
+    # Free instance type, 512 MB. Measured resident memory for this app is
+    # currently about 543 MB, so it does not fit yet. See the deployment
+    # section of README.md for the measurements and the open decision. Do not
+    # change this to a paid plan without the team agreeing to pay for it.
+    plan: free
     # Closest region to Dhaka.
     region: singapore
     # The app lives in backend/, not at the repo root.
     rootDir: backend
     healthCheckPath: /health
-    buildCommand: pip install -r requirements.txt
-    # Applies Alembic migrations before the new version starts serving.
-    # Pre-deploy commands are a paid-instance feature. On a free instance this
-    # is skipped, and the migration has to be run by hand instead. See the
-    # deployment section of README.md.
-    preDeployCommand: flask --app manage db upgrade
+    # Installs the CPU-only build of torch. The default PyPI wheel pulls about
+    # 1.5 GB of CUDA libraries that a CPU instance cannot use.
+    buildCommand: pip install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
+    # No preDeployCommand here. Pre-deploy commands are a paid-instance
+    # feature, so on the free plan the Alembic migration is a manual step.
+    # README.md documents it.
     startCommand: gunicorn --config gunicorn.conf.py wsgi:app
     envVars:
       # Render's current default is Python 3.14. This project is built and

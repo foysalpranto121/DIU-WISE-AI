@@ -238,14 +238,9 @@ Schema changes are Alembic migrations, and the app no longer creates tables on
 startup. The migrations have to run against Neon before a new version serves
 traffic.
 
-`render.yaml` sets a pre-deploy command that does this automatically:
-
-```bash
-flask --app manage db upgrade
-```
-
-Pre-deploy commands are a **paid instance feature**. On a free instance the
-step is skipped, so run it yourself once, from the `backend/` directory, with
+Render's pre-deploy command would do this automatically, but it is a **paid
+instance feature**, so `render.yaml` does not use one. Run the migration
+yourself instead, once per schema change, from the `backend/` directory with
 `DATABASE_URL` pointing at Neon:
 
 ```bash
@@ -253,23 +248,56 @@ flask --app manage db upgrade
 ```
 
 Neon is reachable from anywhere, so running this locally has the same effect as
-running it on Render.
+running it on the host.
 
-### 4. Instance size
+### 4. Memory budget (currently unresolved)
 
-Free and Starter instances both have 512 MB of RAM. The dependency set
-(`torch`, `transformers`, `sentence-transformers`, `scikit-learn`, `faiss-cpu`)
-is about 1.2 GB installed, and the models are loaded into memory at boot. The
-Blueprint therefore requests the **Standard** instance (2 GB), which is the
-smallest type that can run this app.
+`render.yaml` targets the **free** instance type, which has 512 MB of RAM. As
+the app stands today it does not fit. Measured on Python 3.10 with the pinned
+dependency set:
 
-Two other consequences of the model loading:
+| Stage | Resident memory |
+| :--- | ---: |
+| Interpreter only | 15 MB |
+| plus Flask, SQLAlchemy, psycopg | 65 MB |
+| plus numpy, scipy, scikit-learn | 155 MB |
+| plus langchain, openai, faiss | 194 MB |
+| plus torch | 340 MB |
+| plus transformers, sentence-transformers | 438 MB |
+| plus the MiniLM model loaded | 506 MB |
+| **Running app after serving requests** | **543 MB** |
 
-* First boot downloads the `all-MiniLM-L6-v2` sentence-transformers model.
-  Render's filesystem is ephemeral, so this repeats after every cold start.
-* Free instances spin down after 15 minutes of inactivity, which means paying
-  that download and model load cost on the next request. Another reason not to
-  use the free tier here.
+The 543 MB figure is the whole app booted through `create_app()` and answering
+requests. It is already over budget by about 31 MB before gunicorn's own
+overhead is counted.
+
+The single largest contributor is the local embedding stack: `torch`,
+`transformers` and `sentence-transformers` together account for roughly 300 MB
+of that total, and they exist only to power `EmotionClassifier`. Everything
+else in the app fits in about 194 MB.
+
+Installing the CPU-only build of `torch` (which the build command already does)
+does not change this. It is a large saving on **download size**, not memory:
+
+| Package set (Linux x86_64, cp310) | Download size |
+| :--- | ---: |
+| Default PyPI `torch` wheel | 527 MB |
+| plus the CUDA and triton packages it requires on Linux | 1000 MB |
+| **Default total** | **1527 MB** |
+| **CPU-only `torch` wheel, no CUDA packages** | **192 MB** |
+
+So the CPU-only build is worth keeping for build time and disk, but it does not
+get the app under 512 MB.
+
+Two other consequences of the model loading, whichever host is used:
+
+* First boot downloads the `all-MiniLM-L6-v2` model. Render's filesystem is
+  ephemeral, so this repeats after every cold start.
+* Free instances spin down after 15 minutes of inactivity, so that download and
+  model load happen again on the next request.
+
+Resolving this is a team decision and is still open. Do not switch
+`render.yaml` to a paid plan to work around it.
 
 ## API Reference
 
