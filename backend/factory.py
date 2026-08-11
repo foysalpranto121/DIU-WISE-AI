@@ -18,7 +18,8 @@ from routes import ai_bp, auth_bp, calendar_bp, chat_bp, dashboard_bp, pages_bp,
 from services.data_service import DataService
 from services.triage_service import TriageService
 from services.notification_service import NotificationService
-from extensions import cors, limiter, login_manager, migrate
+from extensions import cors, limiter, login_manager, mail, migrate, oauth
+from services.password_reset_service import PasswordResetService
 from services.registry import ServiceRegistry
 
 
@@ -96,6 +97,24 @@ def create_app():
     # Alembic owns the schema now; render_as_batch keeps the SQLite fallback
     # usable for ALTER TABLE style migrations.
     migrate.init_app(app, db, render_as_batch=True)
+    mail.init_app(app)
+    oauth.init_app(app)
+    if app.config["GOOGLE_CLIENT_ID"]:
+        # Discovery metadata gives Authlib the endpoints plus Google's JWKS for
+        # id_token verification. The openid scope makes Authlib generate and
+        # check a nonce alongside the state parameter.
+        oauth.register(
+            name="google",
+            client_id=app.config["GOOGLE_CLIENT_ID"],
+            client_secret=app.config["GOOGLE_CLIENT_SECRET"],
+            server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
+            client_kwargs={"scope": "openid email profile"},
+        )
+    if app.config.get("MAIL_SUPPRESS_SEND"):
+        app.logger.warning(
+            "Brevo SMTP credentials not set; password reset emails are "
+            "suppressed. Set BREVO_SMTP_LOGIN and BREVO_SMTP_PASSWORD."
+        )
 
     # Seed Database inside app context (tables come from 'flask db upgrade')
     with app.app_context():
@@ -153,6 +172,9 @@ def create_app():
 
     data_service = DataService()
     ServiceRegistry.register("data_service", data_service)
+
+    password_reset_service = PasswordResetService()
+    ServiceRegistry.register("password_reset_service", password_reset_service)
 
     with app.app_context():
         if _tables_ready(app):

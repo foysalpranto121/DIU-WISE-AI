@@ -111,11 +111,15 @@ class Config:
 
     SECRET_KEY = resolve_secret_key()
     SESSION_COOKIE_HTTPONLY = True
-    # FIX: was "Lax". Strict is a partial CSRF mitigation and is safe here
-    # because every link in this app is same-site; the only cost is that a
-    # cross-site link into the app renders logged out until the next click.
-    # This is not full CSRF protection. See AGENT.md.
-    SESSION_COOKIE_SAMESITE = "Strict"
+    # FIX: was tightened to "Strict" in Phase 2, but Strict breaks Google
+    # sign-in: the OAuth callback is a top level navigation arriving from
+    # accounts.google.com, and under Strict the browser withholds the session
+    # cookie on it, so the state stored in the session is unreadable and every
+    # callback fails validation. Lax sends the cookie on top level GET
+    # navigations, which is exactly the callback case, while still blocking
+    # cookies on cross site POSTs and subresource requests. This remains a
+    # partial CSRF mitigation only. See AGENT.md.
+    SESSION_COOKIE_SAMESITE = "Lax"
     # Secure cookies need HTTPS, which local development does not have.
     SESSION_COOKIE_SECURE = not DEVELOPMENT
 
@@ -137,6 +141,31 @@ class Config:
     RATELIMIT_STORAGE_URI = os.getenv("RATELIMIT_STORAGE_URI", "memory://")
     RATELIMIT_LOGIN = os.getenv("RATELIMIT_LOGIN", "10 per minute")
     RATELIMIT_CHAT = os.getenv("RATELIMIT_CHAT", "20 per minute")
+    # Password reset requests send real email through Brevo's free tier
+    # (300 per day), so this is deliberately tight.
+    RATELIMIT_PASSWORD_RESET = os.getenv("RATELIMIT_PASSWORD_RESET", "5 per hour")
+
+    # Brevo SMTP relay for password reset email (Flask-Mail settings).
+    # The BREVO_* names are the team's convention; MAIL_DEFAULT_SENDER must be
+    # a sender address verified in the Brevo dashboard.
+    MAIL_SERVER = os.getenv("BREVO_SMTP_SERVER", "smtp-relay.brevo.com")
+    MAIL_PORT = int(os.getenv("BREVO_SMTP_PORT", "587"))
+    MAIL_USE_TLS = True
+    MAIL_USERNAME = os.getenv("BREVO_SMTP_LOGIN", "")
+    MAIL_PASSWORD = os.getenv("BREVO_SMTP_PASSWORD", "")
+    MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER", "")
+    # Without credentials Flask-Mail would raise on connect. Suppress instead,
+    # so a misconfigured deploy logs a loud warning rather than 500ing the
+    # forgot-password page. See PasswordResetService.
+    MAIL_SUPPRESS_SEND = not (MAIL_USERNAME and MAIL_PASSWORD)
+
+    # How long a password reset link stays valid, in seconds.
+    PASSWORD_RESET_MAX_AGE = int(os.getenv("PASSWORD_RESET_MAX_AGE", "3600"))
+
+    # Google OAuth 2.0. Both values come from the Google Cloud Console app the
+    # team registers; sign-in is disabled cleanly when they are unset.
+    GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "")
+    GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "")
 
     MODEL_DIR = os.getenv("MODEL_DIR", os.path.join(BASE_DIR, "ai_engine", "trained"))
     KNOWLEDGE_FILE = os.getenv(
