@@ -12,8 +12,16 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     full_name = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(160), unique=True, nullable=False, index=True)
-    password_hash = db.Column(db.String(255), nullable=False)
+    # Nullable because accounts created through Google sign-in have no local
+    # password at all. check_password treats None as "never matches".
+    password_hash = db.Column(db.String(255), nullable=True)
     role = db.Column(db.String(20), nullable=False, default="student")  # student/admin
+    # 'local' for email+password accounts, 'google' for accounts created via
+    # Google sign-in. Lets the app avoid asking a Google account for a
+    # password it does not have.
+    auth_provider = db.Column(
+        db.String(20), nullable=False, default="local", server_default="local"
+    )
     is_active_account = db.Column(db.Boolean, nullable=False, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
@@ -49,6 +57,9 @@ class User(UserMixin, db.Model):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password: str) -> bool:
+        """True when the password matches. Google-only accounts never match."""
+        if not self.password_hash:
+            return False
         return check_password_hash(self.password_hash, password)
 
     @property
@@ -61,6 +72,7 @@ class User(UserMixin, db.Model):
             "full_name": self.full_name,
             "email": self.email,
             "role": self.role,
+            "auth_provider": self.auth_provider,
             "university": self.university,
             "department": self.department,
             "student_id": self.student_id,
