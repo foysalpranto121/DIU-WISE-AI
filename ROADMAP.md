@@ -233,7 +233,47 @@ changing how anything looks.
 - Local commits only on a new branch (e.g. `feature/frontend-bug-fixes`), nothing pushed
 - Phase summary lists exactly what was changed per bug, one paragraph each
 
-## After Phase 4
+## Phase 5: Mobile responsiveness (plain CSS only, no framework)
+
+**Scope change from the team, read carefully.** The frontend owner has authorized fixing mobile
+responsiveness. This is plain CSS only. Do not add Tailwind, Bootstrap, or any other CSS framework
+or build tool. Do not change desktop layout, colors, or any element's appearance at desktop widths.
+The only goal is that existing pages remain usable and readable at phone width, using the app's
+current design language, not a new one.
+
+**Known bug to fix first:** the sidebar (`.sidebar` in the main layout) does not collapse or hide
+at narrow viewports, confirmed broken at 425px width in Chrome DevTools responsive mode. It should
+collapse behind a hamburger toggle below a reasonable breakpoint (typically 768px), matching how
+the rest of the app already looks and behaves, not a redesigned look.
+
+### Tasks
+1. Identify every page's current layout structure and where it breaks at narrow widths, not just
+   the sidebar, check the dashboard grid, chat widget, and any multi-column panels. List what you
+   find before changing anything.
+2. Add a mobile breakpoint (a `@media (max-width: 768px)` block, or match whatever breakpoint the
+   existing CSS already implies) to collapse the sidebar into a hamburger-triggered menu. Reuse
+   existing colors, spacing, and component styles, don't invent a new visual style.
+3. Fix any other layout that breaks at narrow width found in task 1 (overflowing grids, unreadable
+   tables, buttons running off screen), same rule: adapt the existing design, don't redesign it.
+4. Test at common breakpoints, roughly 375px, 425px, and 768px wide, using Chrome DevTools
+   responsive mode, and confirm nothing regresses at normal desktop width (1280px and above).
+5. Do not touch backend files, routes, or any Python code, this phase is CSS and, if strictly
+   required for a hamburger toggle to function, minimal vanilla JS (no new dependencies).
+
+### Explicitly not in this phase
+- No CSS framework of any kind (Tailwind, Bootstrap, etc.)
+- No redesign of colors, typography, or spacing at desktop width
+- No new features, only making existing pages usable at phone width
+- No backend changes
+
+### Done when
+- Sidebar collapses into a working hamburger menu below the chosen breakpoint
+- No horizontal overflow or unusable layout at 375px, 425px, or 768px width, on every page checked
+- Desktop appearance (1280px and above) is pixel-identical to before this phase
+- Local commits only on a new branch (e.g. `feature/mobile-responsive`), nothing pushed
+- Phase summary lists every page checked, what was broken, and what was changed
+
+## After Phase 5
 
 Claude Code never pushes anything (see AGENT.md's working agreement), all branches and commits
 stay local. Once you've manually tested and reviewed the work yourself, push the branch(es) and

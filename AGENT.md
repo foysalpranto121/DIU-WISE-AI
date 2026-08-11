@@ -21,7 +21,7 @@ Do not exceed it.
   a backend-only, partial CSRF mitigation (see "CSRF protection" note below for why this is a
   partial fix, not full protection)
 
-**You are NOT allowed to, except the Phase 4 exception below:**
+**You are NOT allowed to, except the Phase 4 and Phase 5 exceptions below:**
 - Edit anything in `backend/templates/` (Jinja/HTML)
 - Edit anything in `backend/static/` (CSS, JS, images), this includes `app.js`, `admin.js`,
   `chat.js`, `crisis.js`, and all stylesheets
@@ -32,8 +32,8 @@ Do not exceed it.
   unless a fix strictly requires it, see "Frontend contract safety" below)
 
 If a bug genuinely cannot be fixed without touching a template or JS file, **stop and flag it** in
-your output instead of fixing it. Do not make an exception, except for the specific bugs named in
-Phase 4 of ROADMAP.md, which the frontend owner explicitly authorized.
+your output instead of fixing it. Do not make an exception, except for what's explicitly authorized
+in Phase 4 and Phase 5 of ROADMAP.md.
 
 ### Phase 4 exception: narrow, logic-only frontend fixes
 The frontend owner has authorized fixing three specific bugs listed in ROADMAP.md's Phase 4: the
@@ -42,6 +42,15 @@ profile error display in `profile.html`. This authorization is scoped to exactly
 does not extend to any other file, any visual change, or anything not explicitly named in Phase 4.
 When in doubt whether something counts as "logic" versus "visual," treat it as visual and stop to
 ask rather than guess.
+
+### Phase 5 exception: mobile responsiveness, plain CSS only
+The frontend owner has authorized fixing mobile responsiveness, described in ROADMAP.md's Phase 5.
+This permits editing CSS files, and templates only if strictly required to add a hamburger toggle
+element, to make existing pages usable at phone width. No CSS framework (Tailwind, Bootstrap, or
+otherwise) may be introduced. No color, typography, or spacing change is permitted at desktop
+width, verify this before and after every change. This is a narrower authorization than a general
+license to touch the frontend: it covers making existing layout adapt to smaller screens, not
+changing what anything looks like at the sizes it already works at.
 
 ### Frontend contract safety
 Some backend responses are read by frontend JS (e.g. `burnout_summary` keys, `#emotion-result`
@@ -112,7 +121,7 @@ Current state (confirmed by static review):
 | Hosting | **Render preferred, free tier only.** If the app's dependency footprint genuinely can't fit Render's free tier even after the size-reduction steps in ROADMAP.md, other free-tier hosts may be researched and proposed, but switching hosts needs the team's confirmation first, it's not Claude Code's call to make alone |
 | Seed data | Live Neon database starts **seeded with demo/test data** (same shape as current SQLite demo seed), understood to be wiped/reset later once real users onboard |
 | Backend bug fixes | **All backend-only bugs** found in QA review are in scope, not just the crisis-number one |
-| Frontend | **Untouched for Phases 1 to 3.** Phase 4 permits three named, logic-only bug fixes, see the Phase 4 exception above, nothing else |
+| Frontend | **Untouched for Phases 1 to 3.** Phase 4 permits three named, logic-only bug fixes. Phase 5 permits plain CSS responsiveness fixes, no framework. See both exceptions above, nothing beyond what's named there |
 
 ## Definition of Done (applies to every phase)
 
@@ -157,7 +166,7 @@ Current state (confirmed by static review):
 - This is a **collaborator** relationship on someone else's repo. Every phase's work should be
   small enough to review in one sitting.
 - Work locally on a feature branch (create one per phase, e.g. `feature/postgres-migration`). Local
-  commits on that branch are fine and encouraged, as checkpoints.
+  commits on that branch are fine and encouraged, as checkpoints. When you commit, commit with 3-4 words in past tense.
 - **Never run `git push`, under any circumstances, even if asked to "finish up" or "wrap this
   phase."** Do not push to `origin`, do not open a pull request, do not push any branch, local or
   otherwise. Pushing and PR creation are done manually by the user only, after they've tested and
