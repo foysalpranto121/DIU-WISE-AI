@@ -225,6 +225,27 @@ Set these in Render's dashboard. Never commit them.
 | `CORS_ORIGINS` | No | Empty. Only set this if something genuinely needs cross-origin access. |
 | `RATELIMIT_LOGIN` | No | Defaults to `10 per minute`. |
 | `RATELIMIT_CHAT` | No | Defaults to `20 per minute`. |
+| `RATELIMIT_PASSWORD_RESET` | No | Defaults to `5 per hour`. Each request can send a real email, so keep this tight. |
+| `BREVO_SMTP_SERVER` | For reset email | `smtp-relay.brevo.com`. |
+| `BREVO_SMTP_PORT` | For reset email | `587`. |
+| `BREVO_SMTP_LOGIN` | For reset email | SMTP login from the Brevo dashboard (SMTP & API section). |
+| `BREVO_SMTP_PASSWORD` | For reset email | SMTP key from the Brevo dashboard. With login and password unset, reset emails are suppressed and a warning is logged; the endpoint still responds normally. |
+| `MAIL_DEFAULT_SENDER` | For reset email | Sender address, must be verified in Brevo. |
+| `GOOGLE_CLIENT_ID` | For Google sign-in | OAuth client ID from Google Cloud Console. With it unset the Google button reports sign-in as not configured instead of erroring. |
+| `GOOGLE_CLIENT_SECRET` | For Google sign-in | OAuth client secret. |
+
+### Google OAuth redirect URIs
+
+Register the app in Google Cloud Console (APIs & Services, Credentials, OAuth
+client ID, type Web application) and add both callback URLs as authorized
+redirect URIs:
+
+* Local development: `http://127.0.0.1:5000/auth/google/callback`
+* Render: `https://YOUR-APP.onrender.com/auth/google/callback`
+
+Accounts created through Google sign-in have no local password
+(`auth_provider` is `google`). They sign in only via Google unless they set a
+password through the reset flow.
 | `WEB_CONCURRENCY` | No | Defaults to `1`. See `backend/gunicorn.conf.py` for why more than one worker does not fit. |
 
 `render.yaml` already declares the non secret values and marks the secrets

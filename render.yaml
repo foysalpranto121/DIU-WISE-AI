@@ -57,3 +57,26 @@ services:
         value: 10 per minute
       - key: RATELIMIT_CHAT
         value: 20 per minute
+      # Tight because every request can send a real email through Brevo's
+      # 300 per day free tier.
+      - key: RATELIMIT_PASSWORD_RESET
+        value: 5 per hour
+      # Brevo SMTP relay for password reset email. The login and password come
+      # from the Brevo dashboard; the sender must be verified there.
+      - key: BREVO_SMTP_SERVER
+        value: smtp-relay.brevo.com
+      - key: BREVO_SMTP_PORT
+        value: "587"
+      - key: BREVO_SMTP_LOGIN
+        sync: false
+      - key: BREVO_SMTP_PASSWORD
+        sync: false
+      - key: MAIL_DEFAULT_SENDER
+        sync: false
+      # Google OAuth client. The Render callback URL must be registered as an
+      # authorized redirect URI in Google Cloud Console:
+      # https://YOUR-APP.onrender.com/auth/google/callback
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
