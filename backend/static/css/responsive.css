@@ -1,0 +1,219 @@
+/* Mobile responsiveness.
+ *
+ * Everything that changes layout lives inside the max-width: 768px block, so
+ * desktop rendering is untouched. 768px matches the breakpoint resources.css
+ * already uses.
+ *
+ * This file is linked last in layout.html so it wins over the earlier
+ * stylesheets without needing extra specificity. A few selectors carry a
+ * "body" prefix because the rules they override live in a page level <style>
+ * block that the browser sees after this file (profile.html puts its styles in
+ * the scripts block at the end of the document).
+ */
+
+/* The toggle and its backdrop are new elements, hidden unless the mobile
+ * layout is active. Hiding them here is what keeps desktop identical. */
+.sidebar-toggle,
+.sidebar-backdrop {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  /* Sidebar becomes an off canvas drawer.
+   * It was position: fixed at 261px with .main-content carrying a matching
+   * margin-left, so at phone width it covered most of the screen and pushed
+   * every page into horizontal scroll. */
+  .sidebar {
+    max-width: 86vw;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    will-change: transform;
+  }
+
+  .sidebar.is-open {
+    transform: translateX(0);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+  }
+
+  /* min-width: 0 matters as much as the margin here. .main-content is a flex
+   * item, and a flex item defaults to min-width: auto, so it refuses to shrink
+   * below the widest thing inside it and drags the page into horizontal
+   * scroll no matter what the margin is. */
+  .main-content {
+    margin-left: 0;
+    min-width: 0;
+    padding: 20px 16px 96px;
+  }
+
+  .content-wrapper {
+    min-width: 0;
+  }
+
+  /* Sits just under the sidebar's z-index of 100. */
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 99;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .sidebar-backdrop.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Stops the page behind the drawer from scrolling while it is open. */
+  body.sidebar-open {
+    overflow: hidden;
+  }
+
+  .sidebar-toggle {
+    display: flex;
+    flex-shrink: 0;
+  }
+
+  /* Header: let the action buttons wrap instead of forcing the row wider than
+   * the screen. */
+  .top-header {
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .header-left {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .breadcrumb {
+    flex-wrap: wrap;
+  }
+
+  .page-subtitle {
+    overflow-wrap: anywhere;
+  }
+
+  /* Multi column grids collapse to a single column. */
+  .dashboard-grid,
+  .stats-grid,
+  .predict-layout,
+  .clinical-assessment-grid,
+  .support-pathways,
+  .emotion-analysis-grid,
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  /* Four stat cards across does not fit a phone. Two by two keeps the numbers
+   * readable instead of shrinking them to nothing. */
+  .quick-stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Form controls default to an intrinsic width (a textarea is about 20
+   * columns wide) which is what dragged several pages past the viewport. */
+  /* border-box matters here: these controls are not covered by a global
+   * box-sizing rule, so with the default content-box their padding and border
+   * are added on top of max-width and they still spill out. */
+  input,
+  select,
+  textarea {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  img,
+  canvas {
+    max-width: 100%;
+  }
+
+  .hero-stats {
+    flex-wrap: wrap;
+  }
+
+  /* Profile hub: sidebar nav above the content instead of beside it. */
+  body .hub-container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  body .hub-nav {
+    width: 100%;
+    box-sizing: border-box;
+    position: static;
+    top: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  body .hub-main {
+    min-width: 0;
+  }
+
+  body .academic-stats {
+    grid-template-columns: 1fr;
+  }
+
+  /* Mood history and privacy settings define their own two column grids in a
+   * page level style block, which the browser applies after this file, so
+   * these need the extra "body" to win. */
+  body .mood-grid,
+  body .privacy-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* A child that still spans two columns forces a second implicit track back
+   * into existence, which is why collapsing the template alone was not
+   * enough. */
+  body .full-width,
+  body .chart-card-large {
+    grid-column: span 1;
+  }
+
+  body .full-width {
+    padding: 20px;
+  }
+
+  /* Grid items default to min-width: auto and refuse to shrink below their
+   * content, the same trap as the main content column. */
+  body .mood-grid > *,
+  body .privacy-grid > * {
+    min-width: 0;
+  }
+
+  body .card-header-row {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  /* Heading, avatar and upload control sit on one flex row that has no wrap,
+   * so the upload block hung off the side of its card. */
+  body .section-header {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  /* Tables keep their real column widths and scroll inside their existing
+   * wrapper rather than widening the page. */
+  .table-responsive,
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Chat widget was a fixed 360px pinned 24px from the right, which is wider
+   * than a 375px screen once the offset is counted. */
+  .chat-widget {
+    width: auto;
+    left: 12px;
+    right: 12px;
+    bottom: 72px;
+  }
+}

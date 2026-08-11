@@ -104,8 +104,40 @@ async function logout() {
   }
 }
 
+// Sidebar drawer (mobile only)
+// Below 768px responsive.css moves the sidebar off canvas. This toggles the
+// class that slides it back in. The button and backdrop are hidden at desktop
+// width, so none of this runs there.
+function initSidebarDrawer() {
+  const toggle = document.getElementById("sidebar-toggle");
+  const sidebar = document.getElementById("app-sidebar");
+  const backdrop = document.getElementById("sidebar-backdrop");
+  if (!toggle || !sidebar || !backdrop) return;
+
+  const setOpen = (open) => {
+    sidebar.classList.toggle("is-open", open);
+    backdrop.classList.toggle("is-open", open);
+    document.body.classList.toggle("sidebar-open", open);
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  };
+
+  toggle.addEventListener("click", () => setOpen(!sidebar.classList.contains("is-open")));
+  backdrop.addEventListener("click", () => setOpen(false));
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") setOpen(false);
+  });
+  // Prevents the drawer being stuck open if the viewport grows past the
+  // breakpoint while it is showing.
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 768) setOpen(false);
+  });
+}
+
 // Initialize Global Interactivity immediately
 function initGlobalApp() {
+  // 0. Mobile Sidebar Drawer
+  initSidebarDrawer();
+
   // 1. Theme Toggle
   const themeToggleEl = document.getElementById("theme-toggle-btn");
   if (themeToggleEl) {

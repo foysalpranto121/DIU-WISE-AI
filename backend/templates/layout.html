@@ -164,12 +164,17 @@
         position: relative;
       }
     </style>
+    <!-- Linked last so the mobile rules win without extra specificity. -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/responsive.css') }}" />
   </head>
   <body>
     <div class="app-container">
 
+      <!-- Dimmed layer behind the open drawer. Hidden at desktop width. -->
+      <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
       <!-- ══ SIDEBAR ══ -->
-      <nav class="sidebar">
+      <nav class="sidebar" id="app-sidebar">
 
         <!-- Brand / Logo -->
         <a href="{{ url_for('index') }}" class="sidebar-brand">
@@ -369,6 +374,11 @@
       <!-- ══ MAIN CONTENT ══ -->
       <main class="main-content">
         <header class="top-header">
+          <!-- Opens the sidebar drawer below 768px. Hidden at desktop width by
+               responsive.css. -->
+          <button type="button" class="header-action-btn sidebar-toggle" id="sidebar-toggle" aria-label="Open navigation menu" aria-controls="app-sidebar" aria-expanded="false">
+            <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+          </button>
           <div class="header-left">
             <div class="breadcrumb">
               <span class="breadcrumb-root">DIU WISE</span>
