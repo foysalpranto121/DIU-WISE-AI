@@ -226,13 +226,19 @@ Set these in Render's dashboard. Never commit them.
 | `RATELIMIT_LOGIN` | No | Defaults to `10 per minute`. |
 | `RATELIMIT_CHAT` | No | Defaults to `20 per minute`. |
 | `RATELIMIT_PASSWORD_RESET` | No | Defaults to `5 per hour`. Each request can send a real email, so keep this tight. |
-| `BREVO_SMTP_SERVER` | For reset email | `smtp-relay.brevo.com`. |
-| `BREVO_SMTP_PORT` | For reset email | `587`. |
-| `BREVO_SMTP_LOGIN` | For reset email | SMTP login from the Brevo dashboard (SMTP & API section). |
-| `BREVO_SMTP_PASSWORD` | For reset email | SMTP key from the Brevo dashboard. With login and password unset, reset emails are suppressed and a warning is logged; the endpoint still responds normally. |
+| `BREVO_API_KEY` | For reset email | API key from the Brevo dashboard (Settings, SMTP & API, API Keys). This is the API key, not the SMTP key. With it unset, reset emails are suppressed and a warning is logged; the endpoint still responds normally. |
+| `BREVO_API_TIMEOUT` | No | Defaults to `10` seconds. Bounds every call to Brevo so a network fault fails fast. |
 | `MAIL_DEFAULT_SENDER` | For reset email | Sender address, must be verified in Brevo. |
 | `GOOGLE_CLIENT_ID` | For Google sign-in | OAuth client ID from Google Cloud Console. With it unset the Google button reports sign-in as not configured instead of erroring. |
 | `GOOGLE_CLIENT_SECRET` | For Google sign-in | OAuth client secret. |
+
+### Why email goes over HTTP, not SMTP
+
+Reset email is sent through Brevo's HTTP API (`api.brevo.com`, port 443), not
+their SMTP relay. Render's free instances block outbound traffic to SMTP ports
+25, 465 and 587. A blocked port is blackholed rather than refused, so an SMTP
+connect never returns and the request hangs until gunicorn kills the worker
+after its timeout. Do not switch this back to SMTP on a free instance.
 
 ### Google OAuth redirect URIs
 

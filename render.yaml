@@ -61,18 +61,16 @@ services:
       # 300 per day free tier.
       - key: RATELIMIT_PASSWORD_RESET
         value: 5 per hour
-      # Brevo SMTP relay for password reset email. The login and password come
-      # from the Brevo dashboard; the sender must be verified there.
-      - key: BREVO_SMTP_SERVER
-        value: smtp-relay.brevo.com
-      - key: BREVO_SMTP_PORT
-        value: "587"
-      - key: BREVO_SMTP_LOGIN
-        sync: false
-      - key: BREVO_SMTP_PASSWORD
+      # Brevo for password reset email, over their HTTP API on 443. Do not
+      # switch this back to SMTP: free instances block outbound 25, 465 and
+      # 587, and the send hangs until the worker is killed. The key comes from
+      # the Brevo dashboard and the sender must be verified there.
+      - key: BREVO_API_KEY
         sync: false
       - key: MAIL_DEFAULT_SENDER
         sync: false
+      - key: BREVO_API_TIMEOUT
+        value: "10"
       # Google OAuth client. The Render callback URL must be registered as an
       # authorized redirect URI in Google Cloud Console:
       # https://YOUR-APP.onrender.com/auth/google/callback
