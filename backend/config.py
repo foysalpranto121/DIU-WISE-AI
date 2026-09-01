@@ -145,19 +145,15 @@ class Config:
     # (300 per day), so this is deliberately tight.
     RATELIMIT_PASSWORD_RESET = os.getenv("RATELIMIT_PASSWORD_RESET", "5 per hour")
 
-    # Brevo SMTP relay for password reset email (Flask-Mail settings).
-    # The BREVO_* names are the team's convention; MAIL_DEFAULT_SENDER must be
-    # a sender address verified in the Brevo dashboard.
-    MAIL_SERVER = os.getenv("BREVO_SMTP_SERVER", "smtp-relay.brevo.com")
-    MAIL_PORT = int(os.getenv("BREVO_SMTP_PORT", "587"))
-    MAIL_USE_TLS = True
-    MAIL_USERNAME = os.getenv("BREVO_SMTP_LOGIN", "")
-    MAIL_PASSWORD = os.getenv("BREVO_SMTP_PASSWORD", "")
+    # Brevo, over their HTTP API rather than the SMTP relay. Render's free
+    # instances block outbound traffic to SMTP ports 25, 465 and 587, which
+    # made SMTP sends hang until the worker was killed. The API is on 443.
+    # MAIL_DEFAULT_SENDER must be an address verified in the Brevo dashboard.
+    BREVO_API_KEY = os.getenv("BREVO_API_KEY", "")
     MAIL_DEFAULT_SENDER = os.getenv("MAIL_DEFAULT_SENDER", "")
-    # Without credentials Flask-Mail would raise on connect. Suppress instead,
-    # so a misconfigured deploy logs a loud warning rather than 500ing the
-    # forgot-password page. See PasswordResetService.
-    MAIL_SUPPRESS_SEND = not (MAIL_USERNAME and MAIL_PASSWORD)
+    # Seconds. Bounds every outbound call, so a network fault fails fast and
+    # visibly instead of blocking the request until gunicorn times out.
+    BREVO_API_TIMEOUT = int(os.getenv("BREVO_API_TIMEOUT", "10"))
 
     # How long a password reset link stays valid, in seconds.
     PASSWORD_RESET_MAX_AGE = int(os.getenv("PASSWORD_RESET_MAX_AGE", "3600"))
